@@ -11,6 +11,7 @@ environment:
 
 dependencies:
   build_runner: ^2.4.8
+  card_swiper: ^3.0.1
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
@@ -29,8 +30,20 @@ dev_dependencies:
   lint: ^2.3.0
 
 flutter:
-
-
   uses-material-design: true
 
-
+  assets:
+    - assets/img/
+  fonts:
+    - family: Normal
+      fonts:
+         - asset: assets/font/Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf
+           weight: 500
+         - asset: assets/font/Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf
+           weight: 600
+         - asset: assets/font/Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf
+           weight: 700
+         - asset: assets/font/Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf
+           weight: 800
+         - asset: assets/font/Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf
+           weight: 900
