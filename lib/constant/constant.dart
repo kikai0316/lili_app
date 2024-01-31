@@ -7,6 +7,18 @@ double safeHeight(BuildContext context) {
       MediaQuery.of(context).padding.bottom;
 }
 
+Gradient mainGradation() {
+  return const LinearGradient(
+    begin: FractionalOffset.topRight,
+    end: FractionalOffset.bottomLeft,
+    colors: [
+      Color.fromARGB(255, 245, 213, 94),
+      Color.fromARGB(255, 242, 168, 245),
+      Color.fromARGB(255, 135, 237, 255),
+    ],
+  );
+}
+
 BoxBorder mainBorder({Color? color, double width = 1}) {
   return Border.all(
     color: color ?? Colors.grey.withOpacity(0.3),
@@ -27,6 +39,7 @@ List<BoxShadow> mainBoxShadow({double shadow = 0.5, Color? color}) {
 Gradient mainGradationWithBlackOpacity({
   Color color = mainBackGroundColor,
   double? startOpacity,
+  List<double>? stops,
   AlignmentGeometry begin = FractionalOffset.topCenter,
   AlignmentGeometry end = FractionalOffset.bottomCenter,
 }) {
@@ -37,6 +50,11 @@ Gradient mainGradationWithBlackOpacity({
       color.withOpacity(startOpacity ?? 1),
       color.withOpacity(0),
     ],
+    stops: stops ??
+        const [
+          0.0,
+          1.0,
+        ],
   );
 }
 

@@ -11,6 +11,7 @@ environment:
 
 dependencies:
   build_runner: ^2.4.8
+  camera: ^0.10.5+9
   card_swiper: ^3.0.1
   cupertino_icons: ^1.0.2
   flutter:
@@ -19,6 +20,7 @@ dependencies:
   freezed: ^2.4.6
   freezed_annotation: ^2.4.1
   hooks_riverpod: ^2.4.9
+  permission_handler: ^11.2.0
   riverpod_annotation: ^2.3.3
   riverpod_generator: ^2.3.9
 

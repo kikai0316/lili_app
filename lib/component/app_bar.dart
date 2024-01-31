@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
+import 'package:lili_app/model/model.dart';
 
 PreferredSizeWidget? nAppBar(
   BuildContext context, {
@@ -8,18 +9,15 @@ PreferredSizeWidget? nAppBar(
   Widget? customRightIcon,
   Widget? customLeftIcon,
   Widget? customTitle,
-  Color surfaceTintColor = Colors.transparent,
-  Color backgroundColor = Colors.transparent,
-  bool isCloseIcon = false,
-  bool isLeftIcon = true,
+  Color backgroundColor = const Color.fromRGBO(0, 0, 0, 0),
+  BackIconStyleType? leftIconType = BackIconStyleType.arrowBackLeftIcon,
   VoidCallback? customLeftOnTap,
-  double? leftCustomIconSize,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
 
   return AppBar(
     backgroundColor: backgroundColor,
-    surfaceTintColor: surfaceTintColor,
+    surfaceTintColor: backgroundColor,
     elevation: 10,
     automaticallyImplyLeading: false,
     title: SizedBox(
@@ -31,14 +29,15 @@ PreferredSizeWidget? nAppBar(
                 maintainState: true,
                 maintainAnimation: true,
                 maintainSize: true,
-                visible: isLeftIcon,
-                child: SizedBox(
+                visible: leftIconType != null,
+                child: nContainer(
+                  alignment: Alignment.centerLeft,
                   width: safeAreaWidth * 0.11,
                   child: iconButtonWithCancel(
                     context,
-                    size: safeAreaWidth * 0.11,
-                    isCloseIcon: isCloseIcon,
-                    customIconSize: leftCustomIconSize,
+                    size: safeAreaWidth / 11,
+                    iconType:
+                        leftIconType ?? BackIconStyleType.arrowBackLeftIcon,
                     customOnTap: customLeftOnTap,
                   ),
                 ),
@@ -49,17 +48,15 @@ PreferredSizeWidget? nAppBar(
               child: customTitle ??
                   nText(
                     title ?? "",
-                    fontSize: safeAreaWidth / 23,
-                    bold: 700,
+                    fontSize: safeAreaWidth / 20,
                   ),
             ),
           ),
-          customRightIcon ??
-              Container(
-                alignment: Alignment.centerRight,
-                width: safeAreaWidth * 0.11,
-                child: customRightIcon,
-              ),
+          Container(
+            alignment: Alignment.centerRight,
+            width: safeAreaWidth * 0.11,
+            child: customRightIcon,
+          ),
         ],
       ),
     ),

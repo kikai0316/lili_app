@@ -14,15 +14,12 @@ class InitialPage extends HookConsumerWidget {
       children: [
         Scaffold(
           backgroundColor: mainBackGroundColor,
+          extendBody: true,
           appBar: initialPageAppBar(
             context,
           ),
-          body: Stack(
-            children: [
-              const HomePage(),
-              postIconWidget(context),
-            ],
-          ),
+          body: const HomePage(),
+          bottomNavigationBar: bottomNavigationWidget(context),
         ),
       ],
     );

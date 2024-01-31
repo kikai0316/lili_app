@@ -3,37 +3,39 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 
-Widget onPostWidget(BuildContext context, {required String? imgUrl}) {
+Widget onPostWidget(
+  BuildContext context, {
+  required String? imgUrl,
+  bool? isAccountData,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
-  return Padding(
-    padding: customPadding(right: safeAreaWidth * 0.05),
-    child: SizedBox(
-      width: safeAreaWidth * 0.3,
-      child: AspectRatio(
-        aspectRatio: 3 / 4,
-        child: imgWidget(
-          borderRadius: 15,
-          color: subColor,
-          networkUrl: imgUrl,
-          child: Padding(
-            padding: EdgeInsets.all(safeAreaWidth * 0.02),
-            child: Stack(
-              children: [
-                if (imgUrl == null)
-                  Align(
-                    child: nText("😴", fontSize: safeAreaWidth / 10),
-                  ),
+  return SizedBox(
+    width: safeAreaWidth * 0.3,
+    child: AspectRatio(
+      aspectRatio: 3 / 4,
+      child: imgWidget(
+        borderRadius: 15,
+        color: subColor,
+        networkUrl: imgUrl,
+        child: Padding(
+          padding: EdgeInsets.all(safeAreaWidth * 0.02),
+          child: Stack(
+            children: [
+              if (imgUrl == null)
+                Align(
+                  child: nText("😴", fontSize: safeAreaWidth / 10),
+                ),
+              if (isAccountData != false)
                 Align(
                   alignment: Alignment.topCenter,
                   child: accountWidget(context),
                 ),
-                if (imgUrl != null)
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: textWidget(context),
-                  ),
-              ],
-            ),
+              if (imgUrl != null)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: textWidget(context),
+                ),
+            ],
           ),
         ),
       ),

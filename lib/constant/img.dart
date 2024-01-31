@@ -2,13 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-DecorationImage notImg() {
-  return const DecorationImage(
-    image: AssetImage("assets/img/not.png"),
-    fit: BoxFit.cover,
-  );
-}
-
 DecorationImage assetImg(String file) {
   return DecorationImage(
     image: AssetImage("assets/img/$file"),
@@ -28,4 +21,8 @@ DecorationImage fileImg(File fileData) {
     image: FileImage(fileData),
     fit: BoxFit.cover,
   );
+}
+
+String? notImg(String? img) {
+  return img == null ? "not.png" : null;
 }

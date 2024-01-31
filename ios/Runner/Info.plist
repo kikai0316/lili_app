@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
+<dict> 
+	<key>NSCameraUsageDescription</key>
+	<string>カメラへのアクセスを許可すると、特定の時間を瞬間を撮影し、親しい友達と共有できます。</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>your usage description here</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

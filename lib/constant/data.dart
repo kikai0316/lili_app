@@ -1,4 +1,5 @@
 List<String> postTimeDataList = [
+  "起床",
   "7:00",
   "10:00",
   "12:00",

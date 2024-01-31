@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/component.dart';
-import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/model/model.dart';
 
 class CustomAnimatedOpacityButton extends HookConsumerWidget {
   const CustomAnimatedOpacityButton({
@@ -40,8 +40,8 @@ Widget mainButton(
   BuildContext context, {
   required String text,
   required VoidCallback onTap,
-  Color? backGroundColor,
-  Color textColor = Colors.white,
+  Color backGroundColor = Colors.white,
+  Color textColor = Colors.black,
   double? height,
   double? width,
   double? fontSize,
@@ -77,23 +77,28 @@ Widget mainButton(
 Widget iconButtonWithCancel(
   BuildContext context, {
   required double size,
-  required bool isCloseIcon,
+  BackIconStyleType iconType = BackIconStyleType.cancelIcon,
   VoidCallback? customOnTap,
   List<Shadow>? shadows,
-  Color color = subColor,
-  double? customIconSize,
 }) {
+  IconData icon() {
+    switch (iconType) {
+      case BackIconStyleType.cancelIcon:
+        return Icons.close;
+      case BackIconStyleType.arrowBackLeftIcon:
+        return Icons.arrow_back;
+      case BackIconStyleType.arrowBackBottomIcon:
+        return Icons.keyboard_arrow_down;
+    }
+  }
+
   return CustomAnimatedOpacityButton(
     onTap: customOnTap ?? () => Navigator.pop(context),
-    child: circleWidget(
-      color: color,
+    child: Icon(
       size: size,
-      child: Icon(
-        size: customIconSize ?? size / 2,
-        isCloseIcon ? Icons.close : Icons.arrow_back_ios_new,
-        color: Colors.white,
-        shadows: shadows,
-      ),
+      icon(),
+      color: Colors.white,
+      shadows: shadows,
     ),
   );
 }
