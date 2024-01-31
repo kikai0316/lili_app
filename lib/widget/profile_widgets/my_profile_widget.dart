@@ -4,6 +4,7 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
+import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/profile_pages/edit_profile_page.dart';
@@ -76,11 +77,10 @@ Widget myProfileMainWidget(
   );
 }
 
-List<Widget> todayPostWidget(BuildContext context) {
+List<Widget> todayPostWidget(BuildContext context, UserType userData) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   bool isTime(String timeDate) => timeDate == "起床" || isTimePassed(timeDate);
-
   return [
     myProfilePageTitleWidget(context, "今日の記録", top: 0),
     SingleChildScrollView(
@@ -104,12 +104,11 @@ List<Widget> todayPostWidget(BuildContext context) {
                     ),
                   ),
                   if (isTime(item))
-                    onPostWidget(
-                      context,
-                      isAccountData: false,
-                      imgUrl:
-                          "https://i.pinimg.com/474x/9f/47/b1/9f47b1b74e2b54063e07b99f430916c5.jpg",
-                    ),
+                    onPostWidget(context,
+                        postData: dataFormatUserDataToPostData(item, userData),
+                        notPostEmoji:
+                            notPostEmoji(userData.postList.wakeUp, item),
+                        onTap: () {},),
                   if (!isTime(item)) myProfilePageRockWidget(context),
                 ],
               ),

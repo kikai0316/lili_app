@@ -57,24 +57,29 @@ Widget nText(
   return gradationTextWidget;
 }
 
-Widget nContainer({
-  double? height,
-  double? width,
-  Color? color,
-  double radius = 0,
-  EdgeInsetsGeometry? padding,
-  Gradient? gradient,
-  AlignmentGeometry? alignment,
-  BoxBorder? border,
-  Widget? child,
-  List<BoxShadow>? boxShadow,
-  bool? isCircle,
-}) {
+Widget nContainer(
+    {double? height,
+    double? width,
+    Color? color,
+    double radius = 0,
+    EdgeInsetsGeometry? padding,
+    Gradient? gradient,
+    AlignmentGeometry? alignment,
+    BoxBorder? border,
+    Widget? child,
+    List<BoxShadow>? boxShadow,
+    bool? isCircle,
+    double? maxWidth,}) {
   return Container(
     padding: padding,
     alignment: alignment,
     height: height,
     width: width,
+    constraints: maxWidth != null
+        ? BoxConstraints(
+            maxWidth: maxWidth,
+          )
+        : null,
     decoration: BoxDecoration(
       color: color,
       borderRadius: isCircle != true ? BorderRadius.circular(radius) : null,
@@ -192,42 +197,43 @@ Widget circleWidget({
 //   );
 // }
 
-// Widget nTextFormField(
-//   BuildContext context, {
-//   required TextEditingController? textController,
-//   required String hintText,
-//   double? fontSize,
-//   void Function(String)? onChanged,
-//   TextAlign textAlign = TextAlign.start,
-//   int? maxLines,
-// }) {
-//   final safeAreaWidth = MediaQuery.of(context).size.width;
-//   return TextFormField(
-//     controller: textController,
-//     maxLines: maxLines,
-//     textAlign: textAlign,
-//     onChanged: onChanged,
-//     style: TextStyle(
-//       fontFamily: "Normal",
-//       fontVariations: const [FontVariation("wght", 700)],
-//       color: Colors.white,
-//       fontSize: fontSize ?? safeAreaWidth / 30,
-//       height: 1,
-//     ),
-//     decoration: InputDecoration(
-//       enabledBorder: InputBorder.none,
-//       focusedBorder: InputBorder.none,
-//       hintText: hintText,
-//       hintStyle: TextStyle(
-//         fontFamily: "Normal",
-//         color: Colors.grey,
-//         fontVariations: const [FontVariation("wght", 700)],
-//         fontSize: fontSize ?? safeAreaWidth / 30,
-//         height: 1,
-//       ),
-//     ),
-//   );
-// }
+Widget nTextFormField(BuildContext context,
+    {required TextEditingController? textController,
+    required String hintText,
+    double? fontSize,
+    void Function(String)? onChanged,
+    TextAlign textAlign = TextAlign.start,
+    int? maxLines,
+    TextInputType? keyboardType,}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return TextFormField(
+    controller: textController,
+    maxLines: maxLines,
+    textAlign: textAlign,
+    keyboardType: keyboardType,
+    onChanged: onChanged,
+    cursorColor: Colors.white,
+    style: TextStyle(
+      fontFamily: "Normal",
+      fontVariations: const [FontVariation("wght", 700)],
+      color: Colors.white,
+      fontSize: fontSize ?? safeAreaWidth / 30,
+      height: 1,
+    ),
+    decoration: InputDecoration(
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      hintText: hintText,
+      hintStyle: TextStyle(
+        fontFamily: "Normal",
+        color: Colors.grey,
+        fontVariations: const [FontVariation("wght", 700)],
+        fontSize: fontSize ?? safeAreaWidth / 30,
+        height: 1,
+      ),
+    ),
+  );
+}
 
 Widget nListTile(
   BuildContext context,

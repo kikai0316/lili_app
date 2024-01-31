@@ -9,13 +9,13 @@ Widget nIndicatorWidget(double radius) {
 
 Widget loadinPage({
   required BuildContext context,
-  required bool isLoading,
+  bool? isLoading,
   String? text,
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return Visibility(
-    visible: isLoading,
+    visible: isLoading != false,
     child: Container(
       alignment: Alignment.center,
       color: Colors.black.withOpacity(0.7),

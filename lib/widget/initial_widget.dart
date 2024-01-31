@@ -3,6 +3,8 @@ import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/constant/img.dart';
+import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/pages/add_friend_page.dart';
 import 'package:lili_app/view/pages/photograph_page.dart';
@@ -86,9 +88,8 @@ Widget bottomNavigationWidget(BuildContext context) {
   );
 }
 
-PreferredSizeWidget? initialPageAppBar(
-  BuildContext context,
-) {
+PreferredSizeWidget? homePageAppBar(BuildContext context,
+    {required UserType myProfile,}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return nAppBar(
     context,
@@ -108,10 +109,10 @@ PreferredSizeWidget? initialPageAppBar(
     customRightIcon: CustomAnimatedOpacityButton(
       onTap: () => ScreenTransition(context, const MyProfilePage()).normal(),
       child: imgWidget(
-        size: safeAreaWidth * 0.09,
+        size: safeAreaWidth * 0.11,
         border: mainBorder(),
-        networkUrl:
-            "https://i.pinimg.com/474x/c3/43/2b/c3432b9ca4f20b5dc85a634df3f07274.jpg",
+        networkUrl: myProfile.profileImg,
+        assetFile: notImg(myProfile.profileImg),
         isCircle: true,
       ),
     ),

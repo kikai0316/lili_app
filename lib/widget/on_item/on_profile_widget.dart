@@ -3,9 +3,11 @@ import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/model/model.dart';
 
 Widget onProfileWidget(
   BuildContext context, {
+  required UserType userData,
   required double size,
   VoidCallback? onTap,
 }) {
@@ -17,18 +19,19 @@ Widget onProfileWidget(
         imgWidget(
           size: size,
           isCircle: true,
-          networkUrl:
-              "https://i.pinimg.com/474x/9f/47/b1/9f47b1b74e2b54063e07b99f430916c5.jpg",
-          child: Align(
-            alignment: const Alignment(1.1, 1.1),
-            child: nContainer(
-              padding: EdgeInsets.all(size / 30),
-              border: mainBorder(color: subColor, width: 3),
-              isCircle: true,
-              color: Colors.white,
-              child: nText("😀", fontSize: size / 3),
-            ),
-          ),
+          networkUrl: userData.profileImg,
+          child: userData.toDayMood != null
+              ? Align(
+                  alignment: const Alignment(1.1, 1.1),
+                  child: nContainer(
+                    padding: EdgeInsets.all(size / 30),
+                    border: mainBorder(color: subColor, width: 3),
+                    isCircle: true,
+                    color: Colors.white,
+                    child: nText(userData.toDayMood!, fontSize: size / 3),
+                  ),
+                )
+              : null,
         ),
         Padding(
           padding: EdgeInsets.only(
@@ -39,38 +42,10 @@ Widget onProfileWidget(
             width: size,
             child: FittedBox(
               fit: BoxFit.fitWidth,
-              child: nText("sdasdvdsd", fontSize: size / 6),
+              child: nText(userData.name, fontSize: size / 6),
             ),
           ),
         ),
-        // imgWidget(
-        //   size: safeAreaWidth * 0.175,
-        //   networkUrl:
-        //       "https://i.pinimg.com/474x/9f/47/b1/9f47b1b74e2b54063e07b99f430916c5.jpg",
-        //   isCircle: true,
-        //   child: Stack(
-        //     children: [
-        //       Align(
-        //         alignment: Alignment.bottomRight,
-        //         child: nText("😃", fontSize: safeAreaWidth / 15),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // Padding(
-        //   padding: EdgeInsets.only(top: safeAreaHeight * 0.01),
-        //   child: Container(
-        //     alignment: Alignment.center,
-        //     width: safeAreaWidth * 0.175,
-        //     child: FittedBox(
-        //       fit: BoxFit.fitWidth,
-        //       child: nText(
-        //         "sdasdvdsdd",
-        //         fontSize: safeAreaWidth / 45,
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     ),
   );
