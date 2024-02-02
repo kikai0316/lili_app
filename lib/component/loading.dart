@@ -7,10 +7,23 @@ Widget nIndicatorWidget(double radius) {
   return CupertinoActivityIndicator(color: Colors.white, radius: radius);
 }
 
+Widget nIndicator2Widget(double radius, {double strokeWidth = 2}) {
+  return SizedBox(
+    height: radius,
+    width: radius,
+    child: CircularProgressIndicator(
+      strokeWidth: strokeWidth,
+      backgroundColor: Colors.white,
+      color: Colors.black,
+    ),
+  );
+}
+
 Widget loadinPage({
   required BuildContext context,
   bool? isLoading,
   String? text,
+  bool isDefaultIndicator = true,
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
@@ -23,9 +36,15 @@ Widget loadinPage({
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          nIndicatorWidget(
-            safeAreaHeight * 0.018,
-          ),
+          if (isDefaultIndicator)
+            nIndicatorWidget(
+              safeAreaHeight * 0.018,
+            ),
+          if (!isDefaultIndicator)
+            nIndicator2Widget(
+              safeAreaHeight * 0.08,
+              strokeWidth: 4,
+            ),
           if (text != null) ...{
             Padding(
               padding: EdgeInsets.only(top: safeAreaHeight * 0.01),

@@ -10,24 +10,33 @@ environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
+  another_flushbar: ^1.12.30
   build_runner: ^2.4.8
   camera: ^0.10.5+9
   card_swiper: ^3.0.1
+  cloud_firestore: ^4.15.0
   cupertino_icons: ^1.0.2
+  firebase_auth: ^4.16.0
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.11
+  firebase_storage: ^11.6.3
   flutter:
     sdk: flutter
   flutter_hooks: ^0.20.4
+  flutter_image_compress: ^2.1.0
+  flutter_line_sdk: ^2.3.6
   flutter_localizations:
     sdk: flutter
   freezed: ^2.4.6
   freezed_annotation: ^2.4.1
   hooks_riverpod: ^2.4.9
+  image_cropper: ^5.0.1
+  image_picker: ^1.0.7
   intl: ^0.18.1
   permission_handler: ^11.2.0
   riverpod_annotation: ^2.3.3
   riverpod_generator: ^2.3.9
-
-  
+  url_launcher: ^6.2.4
  
 dev_dependencies:
   flutter_test:

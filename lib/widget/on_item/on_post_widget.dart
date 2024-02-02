@@ -6,11 +6,13 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 
-Widget onPostWidget(BuildContext context,
-    {required PostType? postData,
-    UserType? userData,
-    required String notPostEmoji,
-    required VoidCallback onTap,}) {
+Widget onPostWidget(
+  BuildContext context, {
+  required PostType? postData,
+  UserType? userData,
+  required String notPostEmoji,
+  required VoidCallback onTap,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return CustomAnimatedOpacityButton(
     onTap: onTap,
@@ -58,17 +60,18 @@ Widget accountWidget(BuildContext context, UserType userData) {
         Padding(
           padding: customPadding(right: safeAreaWidth * 0.015),
           child: imgWidget(
-              boxShadow: mainBoxShadow(shadow: 0.8),
-              size: safeAreaWidth * 0.06,
-              isCircle: true,
-              networkUrl: userData.profileImg,
-              assetFile: notImg(userData.profileImg),),
+            boxShadow: mainBoxShadow(shadow: 0.8),
+            size: safeAreaWidth * 0.06,
+            isCircle: true,
+            networkUrl: userData.img,
+            assetFile: notImg(userData.img),
+          ),
         ),
         Expanded(
           child: Container(
             alignment: Alignment.centerLeft,
             child: nText(
-              userData.name,
+              userData.name, //後
               shadows: mainBoxShadow(shadow: 1),
               textAlign: TextAlign.left,
               fontSize: safeAreaWidth / 40,

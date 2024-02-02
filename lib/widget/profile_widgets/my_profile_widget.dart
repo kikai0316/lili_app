@@ -104,11 +104,13 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
                     ),
                   ),
                   if (isTime(item))
-                    onPostWidget(context,
-                        postData: dataFormatUserDataToPostData(item, userData),
-                        notPostEmoji:
-                            notPostEmoji(userData.postList.wakeUp, item),
-                        onTap: () {},),
+                    onPostWidget(
+                      context,
+                      postData: dataFormatUserDataToPostData(item, userData),
+                      notPostEmoji:
+                          notPostEmoji(userData.postList.wakeUp, item),
+                      onTap: () {},
+                    ),
                   if (!isTime(item)) myProfilePageRockWidget(context),
                 ],
               ),

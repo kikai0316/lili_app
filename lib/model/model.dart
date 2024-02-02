@@ -5,17 +5,57 @@ enum CamControllerState { success, systemError, accessError, unInitialize }
 enum BackIconStyleType { cancelIcon, arrowBackLeftIcon, arrowBackBottomIcon }
 
 class UserType {
-  String? profileImg;
+  String? img;
   String name;
-  String id;
+  String userId;
+  String openId;
   PostListType postList;
   String? toDayMood;
-  UserType(
-      {required this.name,
-      required this.id,
-      required this.profileImg,
-      required this.postList,
-      this.toDayMood,});
+  String phoneNumber;
+  String? comment;
+  String? birthday;
+  List<String> friendList;
+  List<String> friendRequestList;
+  UserType({
+    required this.openId,
+    required this.userId,
+    required this.name,
+    required this.postList,
+    required this.friendList,
+    required this.friendRequestList,
+    required this.phoneNumber,
+    this.img,
+    this.birthday,
+    this.toDayMood,
+    this.comment,
+  });
+  factory UserType.fromJson(
+    Map<String, dynamic> json,
+    String openId,
+  ) {
+    final String? img = json["user_img"] as String?;
+    final String userId = json["user_id"] as String? ?? "";
+    final String phoneNumber = json["phone_number"] as String? ?? "";
+    final String userName = json["user_name"] as String? ?? "Unknown";
+    final String? toDayMood = json["today_mood"] as String?;
+    final String? userComment = json["user_comment"] as String?;
+    final List<String> friendList =
+        List<String>.from(json["friend"] as List? ?? []);
+    final List<String> friendRequestList =
+        List<String>.from(json["friend_request"] as List? ?? []);
+    return UserType(
+      name: userName,
+      img: img,
+      userId: userId,
+      openId: openId,
+      phoneNumber: phoneNumber,
+      toDayMood: toDayMood,
+      comment: userComment,
+      postList: PostListType(),
+      friendList: friendList,
+      friendRequestList: friendRequestList,
+    );
+  }
 }
 
 class PostListType {

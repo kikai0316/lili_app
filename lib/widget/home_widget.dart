@@ -11,7 +11,10 @@ import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 
 Widget postWidget(
-    BuildContext context, String timeDate, List<UserType> postDataList,) {
+  BuildContext context,
+  String timeDate,
+  List<UserType> postDataList,
+) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   final isTime = timeDate == "起床" || isTimePassed(timeDate);
@@ -81,13 +84,14 @@ Widget myFriendWidget(BuildContext context, List<UserType> allFriends) {
             padding: customPadding(right: safeAreaWidth * 0.03),
             child: onProfileWidget(
               context,
-              size: safeAreaWidth * 0.175,
+              size: safeAreaWidth * 0.2,
               userData: userData,
               onTap: () => ScreenTransition(
-                  context,
-                  FullScreenFriendPage(
-                    userData: userData,
-                  ),).top(),
+                context,
+                FullScreenFriendPage(
+                  userData: userData,
+                ),
+              ).top(),
             ),
           ),
       ],
@@ -95,8 +99,11 @@ Widget myFriendWidget(BuildContext context, List<UserType> allFriends) {
   );
 }
 
-Widget titleWidget(BuildContext context, String title,
-    {List<PostType?>? postDataList,}) {
+Widget titleWidget(
+  BuildContext context,
+  String title, {
+  List<PostType?>? postDataList,
+}) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final isTimeDataTitle = postTimeDataList.contains(title);

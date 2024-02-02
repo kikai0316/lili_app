@@ -39,7 +39,7 @@ class CustomAnimatedOpacityButton extends HookConsumerWidget {
 Widget mainButton(
   BuildContext context, {
   required String text,
-  required VoidCallback onTap,
+  required VoidCallback? onTap,
   Color backGroundColor = Colors.white,
   Color textColor = Colors.black,
   double? height,
@@ -57,7 +57,7 @@ Widget mainButton(
     child: Container(
       padding: xPadding(context),
       alignment: alignment,
-      height: height ?? safeAreaHeight * 0.07,
+      height: height ?? safeAreaHeight * 0.065,
       width: width ?? safeAreaWidth,
       decoration: BoxDecoration(
         color: backGroundColor,

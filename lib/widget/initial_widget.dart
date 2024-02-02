@@ -88,8 +88,10 @@ Widget bottomNavigationWidget(BuildContext context) {
   );
 }
 
-PreferredSizeWidget? homePageAppBar(BuildContext context,
-    {required UserType myProfile,}) {
+PreferredSizeWidget? homePageAppBar(
+  BuildContext context, {
+  required UserType myProfile,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return nAppBar(
     context,
@@ -111,8 +113,8 @@ PreferredSizeWidget? homePageAppBar(BuildContext context,
       child: imgWidget(
         size: safeAreaWidth * 0.11,
         border: mainBorder(),
-        networkUrl: myProfile.profileImg,
-        assetFile: notImg(myProfile.profileImg),
+        networkUrl: myProfile.img,
+        assetFile: notImg(myProfile.img),
         isCircle: true,
       ),
     ),

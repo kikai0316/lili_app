@@ -19,7 +19,7 @@ Widget onProfileWidget(
         imgWidget(
           size: size,
           isCircle: true,
-          networkUrl: userData.profileImg,
+          networkUrl: userData.img,
           child: userData.toDayMood != null
               ? Align(
                   alignment: const Alignment(1.1, 1.1),
@@ -40,9 +40,10 @@ Widget onProfileWidget(
           child: Container(
             alignment: Alignment.center,
             width: size,
-            child: FittedBox(
-              fit: BoxFit.fitWidth,
-              child: nText(userData.name, fontSize: size / 6),
+            child: nText(
+              "user-ReaxQdp",
+              fontSize: size / 8,
+              bold: 700,
             ),
           ),
         ),

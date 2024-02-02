@@ -7,6 +7,7 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/sort_utility.dart';
+import 'package:lili_app/view/login/line_login_page.dart';
 import 'package:lili_app/view_model/all_friends.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/home_widget.dart';
@@ -29,7 +30,10 @@ class HomePage extends HookConsumerWidget {
     }
     final UserType? userData = userDataState.value;
     final List<UserType>? allFriends = allFriendsState.value;
-    if (userData == null || allFriends == null) {
+    if (userData == null) {
+      return const LineLoginPage();
+    }
+    if (allFriends == null) {
       return nText("エラー", fontSize: safeAreaHeight / 10);
     }
     return Scaffold(
@@ -40,9 +44,6 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: safeAreaHeight * 0.02,
-            ),
             titleWidget(
               context,
               "私の親友たち",
@@ -53,8 +54,11 @@ class HomePage extends HookConsumerWidget {
               child: line(),
             ),
             for (final item in postTimeDataList) ...{
-              postWidget(context, item,
-                  sortPostDataList(item, [...allFriends, userData]),),
+              postWidget(
+                context,
+                item,
+                sortPostDataList(item, [...allFriends, userData]),
+              ),
             },
             SizedBox(
               height: safeAreaHeight * 0.25,

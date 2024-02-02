@@ -6,24 +6,32 @@ import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/model/model.dart';
 
-PreferredSizeWidget? loginAppBar(BuildContext context) {
+PreferredSizeWidget? loginAppBar(
+  BuildContext context, {
+  bool? isLeftIcon,
+  bool? isRightIcon,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return nAppBar(
     context,
-    leftIconType: null,
+    leftIconType:
+        isLeftIcon == true ? BackIconStyleType.arrowBackLeftIcon : null,
     customTitle: nText(
       "RoyalHay",
       fontSize: safeAreaWidth / 15,
     ),
-    customRightIcon: CustomAnimatedOpacityButton(
-      onTap: () {},
-      child: nText(
-        "ヘルプ",
-        fontSize: safeAreaWidth / 25,
-        isFit: true,
-      ),
-    ),
+    customRightIcon: isRightIcon == true
+        ? CustomAnimatedOpacityButton(
+            onTap: () {},
+            child: nText(
+              "ヘルプ",
+              fontSize: safeAreaWidth / 25,
+              isFit: true,
+            ),
+          )
+        : null,
   );
 }
 
@@ -85,6 +93,7 @@ Widget phoneNumberInput(
   required ValueNotifier<int> count,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
+
   return Row(
     children: [
       Padding(
@@ -105,13 +114,41 @@ Widget phoneNumberInput(
         ),
       ),
       Expanded(
-        child: nTextFormField(context,
-            textController: textEditingController,
-            fontSize: safeAreaWidth / 13,
-            keyboardType: TextInputType.phone,
-            hintText: "",
-            onChanged: (value) => count.value = value.length,),
+        child: nTextFormField(
+          context,
+          textController: textEditingController,
+          fontSize: safeAreaWidth / 13,
+          keyboardType: TextInputType.phone,
+          hintText: "",
+          maxLength: 11,
+          onChanged: (value) => count.value = value.length,
+        ),
       ),
     ],
+  );
+}
+
+Widget lineLogInWidget(BuildContext context, {required VoidCallback onTap}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  final safeAreaHeight = safeHeight(context);
+  return CustomAnimatedOpacityButton(
+    onTap: onTap,
+    child: nContainer(
+      alignment: Alignment.center,
+      height: safeAreaHeight * 0.07,
+      width: safeAreaWidth * 0.85,
+      color: const Color.fromARGB(255, 6, 199, 85),
+      radius: 15,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          imgWidget(size: safeAreaHeight * 0.045, assetFile: "line_icon.png"),
+          nText(
+            "LINEアカウントで ログイン/新規登録",
+            fontSize: safeAreaWidth / 28,
+          ),
+        ],
+      ),
+    ),
   );
 }

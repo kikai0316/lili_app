@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
@@ -57,19 +59,20 @@ Widget nText(
   return gradationTextWidget;
 }
 
-Widget nContainer(
-    {double? height,
-    double? width,
-    Color? color,
-    double radius = 0,
-    EdgeInsetsGeometry? padding,
-    Gradient? gradient,
-    AlignmentGeometry? alignment,
-    BoxBorder? border,
-    Widget? child,
-    List<BoxShadow>? boxShadow,
-    bool? isCircle,
-    double? maxWidth,}) {
+Widget nContainer({
+  double? height,
+  double? width,
+  Color? color,
+  double radius = 0,
+  EdgeInsetsGeometry? padding,
+  Gradient? gradient,
+  AlignmentGeometry? alignment,
+  BoxBorder? border,
+  Widget? child,
+  List<BoxShadow>? boxShadow,
+  bool? isCircle,
+  double? maxWidth,
+}) {
   return Container(
     padding: padding,
     alignment: alignment,
@@ -150,83 +153,97 @@ Widget circleWidget({
   );
 }
 
-// Widget bottomSheetScaffold(
-//   BuildContext context, {
-//   required double height,
-//   required Widget body,
-//   Color backGroundColor = mainBackgroundColor,
-//   String? title,
-//   VoidCallback? onComplete,
-// }) {
-//   final safeAreaHeight = safeHeight(context);
-//   final safeAreaWidth = MediaQuery.of(context).size.width;
-//   return Container(
-//     padding: customPadding(top: safeAreaHeight * 0.01),
-//     height: height,
-//     width: safeAreaWidth,
-//     decoration: BoxDecoration(
-//       color: backGroundColor,
-//       borderRadius: const BorderRadius.only(
-//         topLeft: Radius.circular(20),
-//         topRight: Radius.circular(20),
-//       ),
-//     ),
-//     child: Scaffold(
-//       backgroundColor: Colors.transparent,
-//       appBar: nAppBar(
-//         context,
-//         title: title,
-//         isCloseIcon: true,
-//         customRightIcon: onComplete != null
-//             ? CustomAnimatedOpacityButton(
-//                 onTap: onComplete,
-//                 child: Container(
-//                   alignment: Alignment.center,
-//                   width: safeAreaWidth * 0.1,
-//                   child: nText(
-//                     "完了",
-//                     fontSize: safeAreaWidth / 25,
-//                     color: Colors.blue,
-//                   ),
-//                 ),
-//               )
-//             : null,
-//       ),
-//       body: body,
-//     ),
-//   );
-// }
+Widget bottomSheetScaffold(
+  BuildContext context, {
+  required double height,
+  required Widget body,
+  Color backGroundColor = mainBackGroundColor,
+  String? title,
+  VoidCallback? onComplete,
+  Widget? bottomButton,
+}) {
+  final safeAreaHeight = safeHeight(context);
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return Container(
+    padding: customPadding(top: safeAreaHeight * 0.01),
+    height: height,
+    width: safeAreaWidth,
+    decoration: BoxDecoration(
+      color: backGroundColor,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    ),
+    child: Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: nAppBar(
+        context,
+        title: title,
+        leftIconType: BackIconStyleType.arrowBackBottomIcon,
+        customRightIcon: onComplete != null
+            ? CustomAnimatedOpacityButton(
+                onTap: onComplete,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: safeAreaWidth * 0.1,
+                  child: nText(
+                    "完了",
+                    fontSize: safeAreaWidth / 25,
+                    color: Colors.blue,
+                  ),
+                ),
+              )
+            : null,
+      ),
+      body: Column(
+        children: [body, const Spacer(), bottomButton ?? const SizedBox()],
+      ),
+    ),
+  );
+}
 
-Widget nTextFormField(BuildContext context,
-    {required TextEditingController? textController,
-    required String hintText,
-    double? fontSize,
-    void Function(String)? onChanged,
-    TextAlign textAlign = TextAlign.start,
-    int? maxLines,
-    TextInputType? keyboardType,}) {
+Widget nTextFormField(
+  BuildContext context, {
+  required TextEditingController? textController,
+  required String hintText,
+  double? fontSize,
+  void Function(String)? onChanged,
+  TextAlign textAlign = TextAlign.start,
+  int? maxLines,
+  int? maxLength,
+  TextInputType? keyboardType,
+  double? letterSpacing,
+  List<TextInputFormatter>? inputFormatters,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return TextFormField(
     controller: textController,
     maxLines: maxLines,
+    maxLength: maxLength,
     textAlign: textAlign,
+    autofocus: true,
     keyboardType: keyboardType,
     onChanged: onChanged,
+    inputFormatters: inputFormatters,
     cursorColor: Colors.white,
     style: TextStyle(
       fontFamily: "Normal",
       fontVariations: const [FontVariation("wght", 700)],
       color: Colors.white,
+      letterSpacing: letterSpacing,
       fontSize: fontSize ?? safeAreaWidth / 30,
       height: 1,
     ),
     decoration: InputDecoration(
+      counterText: '',
       enabledBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       hintText: hintText,
       hintStyle: TextStyle(
         fontFamily: "Normal",
         color: Colors.grey,
+        letterSpacing: letterSpacing,
         fontVariations: const [FontVariation("wght", 700)],
         fontSize: fontSize ?? safeAreaWidth / 30,
         height: 1,
