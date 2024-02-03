@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,13 @@ DecorationImage networkImg(String url) {
 DecorationImage fileImg(File fileData) {
   return DecorationImage(
     image: FileImage(fileData),
+    fit: BoxFit.cover,
+  );
+}
+
+DecorationImage memorImg(Uint8List memorImg) {
+  return DecorationImage(
+    image: MemoryImage(memorImg),
     fit: BoxFit.cover,
   );
 }

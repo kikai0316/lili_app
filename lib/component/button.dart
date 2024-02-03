@@ -55,7 +55,6 @@ Widget mainButton(
   return CustomAnimatedOpacityButton(
     onTap: onTap,
     child: Container(
-      padding: xPadding(context),
       alignment: alignment,
       height: height ?? safeAreaHeight * 0.065,
       width: width ?? safeAreaWidth,

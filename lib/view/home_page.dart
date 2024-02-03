@@ -26,16 +26,20 @@ class HomePage extends HookConsumerWidget {
     final isDataReady = allFriendsState is AsyncData<List<UserType>?> &&
         userDataState is AsyncData<UserType?>;
     if (!isDataReady) {
-      return loadinPage(context: context, isLoading: true);
+      return loadinPage(
+        context: context,
+      );
     }
     final UserType? userData = userDataState.value;
     final List<UserType>? allFriends = allFriendsState.value;
+
     if (userData == null) {
       return const LineLoginPage();
     }
     if (allFriends == null) {
       return nText("エラー", fontSize: safeAreaHeight / 10);
     }
+
     return Scaffold(
       backgroundColor: mainBackGroundColor,
       extendBody: true,

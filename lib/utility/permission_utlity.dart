@@ -24,3 +24,18 @@ Future<bool> checkPhotoPermission() async {
     return result.isGranted;
   }
 }
+
+Future<bool> checkContactsPermission() async {
+  PermissionStatus status = await Permission.contacts.status;
+  if (status.isGranted) {
+    return true;
+  } else if (status.isDenied) {
+    status = await Permission.contacts.request();
+    return status.isGranted;
+  } else if (status.isPermanentlyDenied) {
+    return false;
+  } else {
+    status = await Permission.contacts.request();
+    return status.isGranted;
+  }
+}

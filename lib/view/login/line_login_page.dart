@@ -76,6 +76,18 @@ class LineLoginPage extends HookConsumerWidget {
     BuildContext context,
     ValueNotifier<bool> isLoading,
   ) async {
+    final result = await LineSDK.instance.currentAccessToken;
+    if (result != null) {
+      final getProfile = await LineSDK.instance.getProfile();
+      if (!context.mounted) return;
+      ScreenTransition(
+        context,
+        PhoneLoginPage(
+          userProfile: getProfile,
+        ),
+      ).normal();
+      return;
+    }
     try {
       isLoading.value = true;
       final result = await LineSDK.instance.login();

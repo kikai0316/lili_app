@@ -82,7 +82,7 @@ class FullScreenFriendPage extends HookConsumerWidget {
                                   isCircle: true,
                                   color: Colors.white,
                                   child: nText(
-                                    userData.toDayMood!,
+                                    userData.toDayMood ?? "",
                                     fontSize: safeAreaWidth / 15,
                                   ),
                                 ),

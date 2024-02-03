@@ -99,6 +99,7 @@ Widget imgWidget({
   String? assetFile,
   String? networkUrl,
   File? fileData,
+  Uint8List? memoryData,
   double? size,
   BoxBorder? border,
   bool? isCircle,
@@ -120,7 +121,9 @@ Widget imgWidget({
               ? fileImg(fileData)
               : networkUrl != null
                   ? networkImg(networkUrl)
-                  : null,
+                  : memoryData != null
+                      ? memorImg(memoryData)
+                      : null,
       borderRadius:
           isCircle != true ? BorderRadius.circular(borderRadius) : null,
       boxShadow: boxShadow,
@@ -209,11 +212,13 @@ Widget nTextFormField(
   required String hintText,
   double? fontSize,
   void Function(String)? onChanged,
+  void Function(String)? onFieldSubmitted,
   TextAlign textAlign = TextAlign.start,
   int? maxLines,
   int? maxLength,
   TextInputType? keyboardType,
   double? letterSpacing,
+  bool autofocus = true,
   List<TextInputFormatter>? inputFormatters,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
@@ -222,10 +227,11 @@ Widget nTextFormField(
     maxLines: maxLines,
     maxLength: maxLength,
     textAlign: textAlign,
-    autofocus: true,
+    autofocus: autofocus,
     keyboardType: keyboardType,
     onChanged: onChanged,
     inputFormatters: inputFormatters,
+    onFieldSubmitted: onFieldSubmitted,
     cursorColor: Colors.white,
     style: TextStyle(
       fontFamily: "Normal",

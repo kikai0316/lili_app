@@ -28,14 +28,6 @@ class MyApp extends HookConsumerWidget {
       ],
       debugShowCheckedModeBanner: false,
       home: HomePage(),
-      //  PhoneVerificationPage(
-      //   phoneNumber: "",
-      //   resendToken: null,
-      //   verificationId: "",
-      // )
-      //  LineLoginPage()
-      //  LoginPage(),
-      // HomePage(),
     );
   }
 }

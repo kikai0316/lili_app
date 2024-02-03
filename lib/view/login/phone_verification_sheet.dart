@@ -13,8 +13,8 @@ import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/firebase/firebase_firestore_utility.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
-import 'package:lili_app/view/home_page.dart';
 import 'package:lili_app/view/login/phone_login_page.dart';
+import 'package:lili_app/view/login/search_friend.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/login_widget.dart';
 
@@ -180,7 +180,12 @@ class PhoneVerificationPage extends HookConsumerWidget {
       final userDataNotifier = ref.read(userDataNotifierProvider.notifier);
       await userDataNotifier.userDataUpDate(dbUpData);
       if (!context.mounted) return;
-      ScreenTransition(context, const HomePage()).normal();
+      ScreenTransition(
+        context,
+        SearchFriendPage(
+          myProfile: dbUpData,
+        ),
+      ).normal();
       successSnackbar(context, "ようそこ！${dbUpData.name}さん！");
     } catch (_) {
       isLoading.value = false;

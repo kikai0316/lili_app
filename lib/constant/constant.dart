@@ -66,8 +66,8 @@ EdgeInsetsGeometry xPadding(
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return EdgeInsets.only(
-    left: xSize ?? safeAreaWidth * 0.03,
-    right: xSize ?? safeAreaWidth * 0.03,
+    left: xSize ?? safeAreaWidth * 0.05,
+    right: xSize ?? safeAreaWidth * 0.05,
     top: top,
     bottom: bottom,
   );

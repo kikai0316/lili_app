@@ -6,7 +6,7 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
-import 'package:lili_app/view/pages/add_friend_page.dart';
+import 'package:lili_app/view/pages/friend_page.dart';
 import 'package:lili_app/view/pages/photograph_page.dart';
 import 'package:lili_app/view/profile_pages/my_profile_page.dart';
 
@@ -96,7 +96,12 @@ PreferredSizeWidget? homePageAppBar(
   return nAppBar(
     context,
     customLeftIcon: CustomAnimatedOpacityButton(
-      onTap: () => ScreenTransition(context, const AddFriendPage()).left(),
+      onTap: () => ScreenTransition(
+        context,
+        FriendPage(
+          myProfile: myProfile,
+        ),
+      ).left(),
       child: nContainer(
         padding: EdgeInsets.all(safeAreaWidth * 0.013),
         height: safeAreaWidth * 0.11,

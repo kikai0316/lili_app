@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
+import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/model/model.dart';
 
 PreferredSizeWidget? nAppBar(
@@ -35,7 +38,7 @@ PreferredSizeWidget? nAppBar(
                   width: safeAreaWidth * 0.11,
                   child: iconButtonWithCancel(
                     context,
-                    size: safeAreaWidth / 11,
+                    size: safeAreaWidth / 14,
                     iconType:
                         leftIconType ?? BackIconStyleType.arrowBackLeftIcon,
                     customOnTap: customLeftOnTap,
@@ -58,6 +61,37 @@ PreferredSizeWidget? nAppBar(
             child: customRightIcon,
           ),
         ],
+      ),
+    ),
+  );
+}
+
+Widget nTabBar(
+  BuildContext context, {
+  required TabController tabController,
+  required List<String> titleList,
+}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return TabBar(
+    controller: tabController,
+    unselectedLabelColor: Colors.white.withOpacity(0.4),
+    labelStyle: TextStyle(
+      decoration: TextDecoration.none,
+      fontFamily: "Normal",
+      fontVariations: const [FontVariation("wght", 900)],
+      height: 1.5,
+      color: Colors.white,
+      fontSize: safeAreaWidth / 30,
+    ),
+    indicatorSize: TabBarIndicatorSize.tab,
+    dividerColor: Colors.grey.withOpacity(0.2),
+    indicatorColor: Colors.white,
+    labelColor: Colors.white,
+    overlayColor: MaterialStateProperty.all<Color>(subColor.withOpacity(0.3)),
+    tabs: List.generate(
+      titleList.length,
+      (i) => Tab(
+        text: titleList[i],
       ),
     ),
   );

@@ -1,6 +1,6 @@
 const eMessageUpLoad = "データのアップロードに失敗しました。\n少し時間を置いてからもう一度お試しください。";
-const eMessageNotPhotoPermission =
-    "写真へのアクセス権限が許可されていません。次の手順を実行して再度お試しください。\n「設定画面へ」をタップ →「写真」を選択→「すべての写真」";
+const eMessageNotPhotoPermission = "カメラロールへのアクセスを許可するためには設定を開いてください。";
 const eMessagePhoto =
     "選択された画像の読み込みに失敗しました。\n画像ファイルが破損している可能性があるか、またはサポートされていない形式である可能性があります。";
 const eMessageSystem = "システムエラーが発生しました。\n少し時間を置いてからもう一度お試しください。";
+const eMessageNotContactsPermission = "連絡先へのアクセスを許可するためには設定を開いてください。";

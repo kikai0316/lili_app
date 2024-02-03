@@ -1,8 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 enum CamControllerState { success, systemError, accessError, unInitialize }
 
 enum BackIconStyleType { cancelIcon, arrowBackLeftIcon, arrowBackBottomIcon }
+
+enum FriendsStateType {
+  notAppUser,
+  appUserNoRelationship,
+  appUserApplication,
+  appUserReceivedApplication,
+  appUserFriended,
+}
 
 class UserType {
   String? img;
@@ -111,5 +121,28 @@ class NListTileItemType {
     this.leftImgIcon,
     this.isOpacity = false,
     this.textColor = Colors.white,
+  });
+}
+
+class OnContactListType {
+  Uint8List? contactsImg;
+  String? contactsName;
+  String phoneNumber;
+  UserType? userData;
+  OnContactListType({
+    required this.phoneNumber,
+    this.contactsImg,
+    this.contactsName,
+    this.userData,
+  });
+}
+
+class ContactListType {
+  List<OnContactListType> appUserList;
+  List<OnContactListType> contactUserList;
+
+  ContactListType({
+    required this.appUserList,
+    required this.contactUserList,
   });
 }

@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'all_friends.dart';
+part of 'contact_list.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allFriendsNotifierHash() =>
-    r'be7a5705940b91e7cc948835466146aa89790bf1';
+String _$contactListNotifierHash() =>
+    r'25bcb63849d8ee34c3c15e3a46894371d18be2d1';
 
-/// See also [AllFriendsNotifier].
-@ProviderFor(AllFriendsNotifier)
-final allFriendsNotifierProvider =
-    AsyncNotifierProvider<AllFriendsNotifier, List<UserType>?>.internal(
-  AllFriendsNotifier.new,
-  name: r'allFriendsNotifierProvider',
+/// See also [ContactListNotifier].
+@ProviderFor(ContactListNotifier)
+final contactListNotifierProvider =
+    AsyncNotifierProvider<ContactListNotifier, ContactListType?>.internal(
+  ContactListNotifier.new,
+  name: r'contactListNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$allFriendsNotifierHash,
+      : _$contactListNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$AllFriendsNotifier = AsyncNotifier<List<UserType>?>;
+typedef _$ContactListNotifier = AsyncNotifier<ContactListType?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

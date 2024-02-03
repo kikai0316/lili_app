@@ -121,7 +121,8 @@ Widget cupertinoAlertDialog(
       title,
       color: Colors.black,
       fontSize: safeAreaWidth / 25,
-      bold: 700,
+      isOverflow: false,
+      bold: 600,
     ),
     content: subTitle != null
         ? Padding(
@@ -129,7 +130,7 @@ Widget cupertinoAlertDialog(
             child: nText(
               subTitle,
               fontSize: safeAreaWidth / 35,
-              bold: 400,
+              bold: 600,
               height: 1.2,
               color: Colors.black.withOpacity(0.6),
               isOverflow: false,
@@ -146,6 +147,7 @@ Widget cupertinoAlertDialog(
           leftButtonText,
           color: Colors.blue,
           fontSize: safeAreaWidth / 27,
+          bold: 600,
         ),
       ),
       if (rightButtonText != null)
@@ -154,8 +156,9 @@ Widget cupertinoAlertDialog(
           onPressed: rightButtonOnTap,
           child: nText(
             rightButtonText,
-            color: Colors.red,
+            color: Colors.blue,
             fontSize: safeAreaWidth / 28,
+            bold: 600,
           ),
         ),
     ],
