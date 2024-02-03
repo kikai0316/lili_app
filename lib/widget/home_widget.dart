@@ -70,7 +70,8 @@ Widget postWidget(
   );
 }
 
-Widget myFriendWidget(BuildContext context, List<UserType> allFriends) {
+Widget myFriendWidget(
+    BuildContext context, List<UserType> allFriends, UserType myProfile,) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
@@ -90,6 +91,8 @@ Widget myFriendWidget(BuildContext context, List<UserType> allFriends) {
                 context,
                 FullScreenFriendPage(
                   userData: userData,
+                  myProfile: myProfile,
+                  friendsStateType: FriendsStateType.appUserFriended,
                 ),
               ).top(),
             ),

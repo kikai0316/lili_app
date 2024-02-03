@@ -94,10 +94,9 @@ Widget iconButtonWithCancel(
   return CustomAnimatedOpacityButton(
     onTap: customOnTap ?? () => Navigator.pop(context),
     child: Icon(
-      size: size,
-      icon(),
-      color: Colors.white,
-      shadows: shadows,
-    ),
+        size: size,
+        icon(),
+        color: Colors.white,
+        shadows: mainBoxShadow(color: Colors.black),),
   );
 }

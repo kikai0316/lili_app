@@ -20,11 +20,11 @@ import 'package:lili_app/view_model/all_request_friends.dart';
 class OnAddFriend extends HookConsumerWidget {
   const OnAddFriend({
     super.key,
-    required this.onAddFriendType,
+    required this.onContactListType,
     required this.applyingList,
     required this.myProfile,
   });
-  final OnContactListType onAddFriendType;
+  final OnContactListType onContactListType;
   final ValueNotifier<List<String>?> applyingList;
   final UserType myProfile;
 
@@ -33,8 +33,8 @@ class OnAddFriend extends HookConsumerWidget {
     final safeAreaHeight = safeHeight(context);
     final safeAreaWidth = MediaQuery.of(context).size.width;
     final isLoading = useState<bool>(false);
-    final userData = onAddFriendType.userData;
-    final contactsName = onAddFriendType.contactsName;
+    final userData = onContactListType.userData;
+    final contactsName = onContactListType.contactsName;
     final friendsStateType = addFriendsStateType(userData);
     final List<String> dataList = userData != null
         ? [
@@ -42,7 +42,10 @@ class OnAddFriend extends HookConsumerWidget {
             userData.userId,
             if (contactsName != null) contactsName,
           ]
-        : [if (contactsName != null) contactsName, onAddFriendType.phoneNumber];
+        : [
+            if (contactsName != null) contactsName,
+            onContactListType.phoneNumber,
+          ];
 
     return Padding(
       padding: customPadding(bottom: safeAreaHeight * 0.02),
@@ -59,6 +62,8 @@ class OnAddFriend extends HookConsumerWidget {
                         context,
                         FullScreenFriendPage(
                           userData: userData,
+                          myProfile: myProfile,
+                          friendsStateType: friendsStateType,
                         ),
                       ).top()
                   : null,
@@ -73,7 +78,7 @@ class OnAddFriend extends HookConsumerWidget {
                         isCircle: true,
                         assetFile: notImg(null),
                         networkUrl: userData?.img,
-                        memoryData: onAddFriendType.contactsImg,
+                        memoryData: onContactListType.contactsImg,
                       ),
                     ),
                     Expanded(
@@ -140,11 +145,13 @@ class OnAddFriend extends HookConsumerWidget {
                       fontSize: safeAreaWidth / 30,
                       text: mainButtonText(friendsStateType),
                       onTap: mainButtonTapEvent(
-                        context,
-                        ref,
-                        friendsStateType,
-                        isLoading,
-                      ),
+                          context,
+                          ref,
+                          friendsStateType,
+                          isLoading,
+                          onContactListType,
+                          applyingList,
+                          myProfile,),
                     )
                   : Padding(
                       padding: xPadding(context),
@@ -172,117 +179,132 @@ class OnAddFriend extends HookConsumerWidget {
     }
     return FriendsStateType.appUserNoRelationship;
   }
+}
 
-  Color mainButtonBackGroundColor(FriendsStateType addFriendsStateType) {
-    switch (addFriendsStateType) {
-      case FriendsStateType.notAppUser:
-        return subColor;
-      case FriendsStateType.appUserNoRelationship:
-        return Colors.white;
-      case FriendsStateType.appUserReceivedApplication:
-        return Colors.blue;
-      default:
-        return Colors.transparent;
-    }
+Color mainButtonBackGroundColor(FriendsStateType addFriendsStateType) {
+  switch (addFriendsStateType) {
+    case FriendsStateType.notAppUser:
+      return subColor;
+    case FriendsStateType.appUserNoRelationship:
+      return Colors.white;
+    case FriendsStateType.appUserReceivedApplication:
+      return Colors.blue;
+    default:
+      return Colors.transparent;
+  }
+}
+
+Color mainButtonTextColor(FriendsStateType addFriendsStateType) {
+  switch (addFriendsStateType) {
+    case FriendsStateType.appUserNoRelationship:
+      return Colors.black;
+    case FriendsStateType.appUserApplication:
+      return Colors.grey;
+    case FriendsStateType.appUserFriended:
+      return Colors.blue;
+    default:
+      return Colors.white;
+  }
+}
+
+String mainButtonText(FriendsStateType addFriendsStateType) {
+  switch (addFriendsStateType) {
+    case FriendsStateType.notAppUser:
+      return "招待";
+    case FriendsStateType.appUserNoRelationship:
+      return "追加";
+    case FriendsStateType.appUserApplication:
+      return "申請中";
+    case FriendsStateType.appUserReceivedApplication:
+      return "許可";
+    case FriendsStateType.appUserFriended:
+      return "追加済";
+  }
+}
+
+VoidCallback? mainButtonTapEvent(
+  BuildContext context,
+  WidgetRef ref,
+  FriendsStateType addFriendsStateType,
+  ValueNotifier<bool> isLoading,
+  OnContactListType onContactListType,
+  ValueNotifier<List<String>?> applyingList,
+  UserType myProfile,
+) {
+  if (addFriendsStateType == FriendsStateType.notAppUser) {
+    return () => sendSMSMessage(onContactListType.phoneNumber);
+  }
+  if (addFriendsStateType == FriendsStateType.appUserNoRelationship) {
+    return () => friendRequest(
+        context, isLoading, applyingList, onContactListType, myProfile,);
+  }
+  if (addFriendsStateType == FriendsStateType.appUserReceivedApplication) {
+    return () => friendRequestPermission(
+          context,
+          ref,
+          isLoading,
+          onContactListType,
+          myProfile,
+        );
+  }
+  return null;
+}
+
+Future<void> sendSMSMessage(String phoneNumber) async {
+  await sendSMS(
+    message: "LiLi-appをダウンローどして、日常を共有する友達になりませんか？https://test",
+    recipients: [phoneNumber],
+  );
+}
+
+Future<void> friendRequest(
+  BuildContext context,
+  ValueNotifier<bool> isLoading,
+  ValueNotifier<List<String>?> applyingList,
+  OnContactListType onContactListType,
+  UserType myProfile,
+) async {
+  final userData = onContactListType.userData;
+  if (userData == null) return;
+  isLoading.value = true;
+  final isRequest =
+      await dbFirestoreFriendRequest(userData.openId, myProfile.openId);
+  if (!context.mounted) return;
+  if (!isRequest) {
+    errorAlertDialog(context, subTitle: eMessageSystem);
+    return;
   }
 
-  Color mainButtonTextColor(FriendsStateType addFriendsStateType) {
-    switch (addFriendsStateType) {
-      case FriendsStateType.appUserNoRelationship:
-        return Colors.black;
-      case FriendsStateType.appUserApplication:
-        return Colors.grey;
-      case FriendsStateType.appUserFriended:
-        return Colors.blue;
-      default:
-        return Colors.white;
-    }
+  applyingList.value = [
+    ...applyingList.value ?? [],
+    userData.openId,
+  ];
+  await localWriteList(applyingList.value ?? []);
+
+  isLoading.value = false;
+}
+
+Future<void> friendRequestPermission(
+  BuildContext context,
+  WidgetRef ref,
+  ValueNotifier<bool> isLoading,
+  OnContactListType onContactListType,
+  UserType myProfile,
+) async {
+  final userData = onContactListType.userData;
+  if (userData == null) return;
+  isLoading.value = true;
+  final isRequest = await dbFirestoreFriendRequestPermission(
+    userData.openId,
+    myProfile.openId,
+  );
+  if (!context.mounted) return;
+  if (!isRequest) {
+    errorAlertDialog(context, subTitle: eMessageSystem);
+    return;
   }
-
-  String mainButtonText(FriendsStateType addFriendsStateType) {
-    switch (addFriendsStateType) {
-      case FriendsStateType.notAppUser:
-        return "招待";
-      case FriendsStateType.appUserNoRelationship:
-        return "追加";
-      case FriendsStateType.appUserApplication:
-        return "申請中";
-      case FriendsStateType.appUserReceivedApplication:
-        return "許可";
-      case FriendsStateType.appUserFriended:
-        return "追加済";
-    }
-  }
-
-  VoidCallback? mainButtonTapEvent(
-    BuildContext context,
-    WidgetRef ref,
-    FriendsStateType addFriendsStateType,
-    ValueNotifier<bool> isLoading,
-  ) {
-    if (addFriendsStateType == FriendsStateType.notAppUser) {
-      return () => sendSMSMessage();
-    }
-    if (addFriendsStateType == FriendsStateType.appUserNoRelationship) {
-      return () => friendRequest(context, isLoading);
-    }
-    if (addFriendsStateType == FriendsStateType.appUserReceivedApplication) {
-      return () => friendRequestPermission(context, ref, isLoading);
-    }
-    return null;
-  }
-
-  Future<void> sendSMSMessage() async {
-    await sendSMS(
-      message: "LiLi-appをダウンローどして、日常を共有する友達になりませんか？https://test",
-      recipients: [onAddFriendType.phoneNumber],
-    );
-  }
-
-  Future<void> friendRequest(
-    BuildContext context,
-    ValueNotifier<bool> isLoading,
-  ) async {
-    final userData = onAddFriendType.userData;
-    if (userData == null) return;
-    isLoading.value = true;
-    final isRequest =
-        await dbFirestoreFriendRequest(userData.openId, myProfile.openId);
-    if (!context.mounted) return;
-    if (!isRequest) {
-      errorAlertDialog(context, subTitle: eMessageSystem);
-      return;
-    }
-
-    applyingList.value = [
-      ...applyingList.value ?? [],
-      userData.openId,
-    ];
-    await localWriteList(applyingList.value ?? []);
-
-    isLoading.value = false;
-  }
-
-  Future<void> friendRequestPermission(
-    BuildContext context,
-    WidgetRef ref,
-    ValueNotifier<bool> isLoading,
-  ) async {
-    final userData = onAddFriendType.userData;
-    if (userData == null) return;
-    isLoading.value = true;
-    final isRequest = await dbFirestoreFriendRequestPermission(
-      userData.openId,
-      myProfile.openId,
-    );
-    if (!context.mounted) return;
-    if (!isRequest) {
-      errorAlertDialog(context, subTitle: eMessageSystem);
-      return;
-    }
-    final allRequestFriendsNotifier =
-        ref.read(allRequestFriendsNotifierProvider.notifier);
-    await allRequestFriendsNotifier.delete(userData.openId);
-    isLoading.value = false;
-  }
+  final allRequestFriendsNotifier =
+      ref.read(allRequestFriendsNotifierProvider.notifier);
+  await allRequestFriendsNotifier.delete(userData.openId);
+  isLoading.value = false;
 }

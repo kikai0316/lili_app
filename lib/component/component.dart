@@ -115,14 +115,14 @@ Widget imgWidget({
     decoration: BoxDecoration(
       color: color,
       border: border,
-      image: assetFile != null
-          ? assetImg(assetFile)
-          : fileData != null
-              ? fileImg(fileData)
-              : networkUrl != null
-                  ? networkImg(networkUrl)
-                  : memoryData != null
-                      ? memorImg(memoryData)
+      image: fileData != null
+          ? fileImg(fileData)
+          : networkUrl != null
+              ? networkImg(networkUrl)
+              : memoryData != null
+                  ? memorImg(memoryData)
+                  : assetFile != null
+                      ? assetImg(assetFile)
                       : null,
       borderRadius:
           isCircle != true ? BorderRadius.circular(borderRadius) : null,

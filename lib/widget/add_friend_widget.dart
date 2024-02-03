@@ -123,7 +123,7 @@ Widget addFriendLists(
         ),
         ...appUserList.map(
           (item) => OnAddFriend(
-            onAddFriendType: item,
+            onContactListType: item,
             applyingList: applyingList,
             myProfile: myProfile,
           ),
@@ -143,7 +143,7 @@ Widget addFriendLists(
         ),
         ...contactUserList.map(
           (item) => OnAddFriend(
-            onAddFriendType: item,
+            onContactListType: item,
             applyingList: applyingList,
             myProfile: myProfile,
           ),
@@ -181,7 +181,7 @@ Widget addFriendSearchList(
           ),
         ...(searchResults.value ?? []).map(
           (item) => OnAddFriend(
-            onAddFriendType: OnContactListType(
+            onContactListType: OnContactListType(
               phoneNumber: item.phoneNumber,
               userData: item,
             ),
@@ -221,7 +221,7 @@ Widget friendRequestLists(
         ),
         ...requestUsers.map(
           (item) => OnAddFriend(
-            onAddFriendType: OnContactListType(
+            onContactListType: OnContactListType(
               phoneNumber: item.phoneNumber,
               userData: item,
             ),

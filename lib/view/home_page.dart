@@ -52,7 +52,7 @@ class HomePage extends HookConsumerWidget {
               context,
               "私の親友たち",
             ),
-            myFriendWidget(context, allFriends),
+            myFriendWidget(context, allFriends, userData),
             Padding(
               padding: yPadding(context),
               child: line(),

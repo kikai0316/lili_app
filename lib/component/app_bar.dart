@@ -38,7 +38,10 @@ PreferredSizeWidget? nAppBar(
                   width: safeAreaWidth * 0.11,
                   child: iconButtonWithCancel(
                     context,
-                    size: safeAreaWidth / 14,
+                    size: safeAreaWidth /
+                        (leftIconType == BackIconStyleType.arrowBackLeftIcon
+                            ? 14
+                            : 11),
                     iconType:
                         leftIconType ?? BackIconStyleType.arrowBackLeftIcon,
                     customOnTap: customLeftOnTap,
