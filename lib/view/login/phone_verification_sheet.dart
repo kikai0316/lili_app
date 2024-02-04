@@ -170,6 +170,7 @@ class PhoneVerificationPage extends HookConsumerWidget {
           friendList: [],
           friendRequestList: [],
           phoneNumber: phoneNumber,
+          comment: "",
         ),
       );
       if (!context.mounted) return;

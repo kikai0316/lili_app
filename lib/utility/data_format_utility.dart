@@ -1,4 +1,6 @@
 // import 'package:intl/intl.dart';
+import 'dart:math';
+
 import 'package:intl/intl.dart';
 import 'package:lili_app/model/model.dart';
 
@@ -68,3 +70,19 @@ String formattedDate(DateTime dateTime) =>
 
 String formattedTime(DateTime dateTime) =>
     DateFormat('aah:mm', 'ja_JP').format(dateTime).toLowerCase();
+String generateRandomString() {
+  const String chars = 'abcdefghijklmnopqrstuvwxyz0123456789._';
+  final Random rnd = Random();
+  return String.fromCharCodes(
+    Iterable.generate(
+      32,
+      (_) => chars.codeUnitAt(rnd.nextInt(chars.length)),
+    ),
+  );
+}
+
+DateTime getTwentyYearsAgoJanFirst() {
+  final DateTime now = DateTime.now();
+  final int yearTwentyYearsAgo = now.year - 20;
+  return DateTime(yearTwentyYearsAgo);
+}

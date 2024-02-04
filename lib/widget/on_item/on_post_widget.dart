@@ -64,7 +64,7 @@ Widget accountWidget(BuildContext context, UserType userData) {
             size: safeAreaWidth * 0.06,
             isCircle: true,
             networkUrl: userData.img,
-            assetFile: notImg(userData.img),
+            assetFile: notImg(),
           ),
         ),
         Expanded(

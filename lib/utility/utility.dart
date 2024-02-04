@@ -1,10 +1,16 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/message.dart';
+import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/crop_img_utility.dart';
+import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
 import 'package:lili_app/utility/permission_utlity.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -92,4 +98,84 @@ Future<File?> getMobileImage(
     errorShowDialog(true);
     return null;
   }
+}
+
+Future<void> showBottomMenu(
+  BuildContext context, {
+  required List<BottomMenuItemType> itemList,
+  int? selectIndex,
+}) async {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  bool isSelect(int index) => selectIndex != null || selectIndex == index;
+  await showCupertinoModalPopup(
+    context: context,
+    builder: (BuildContext context) => CupertinoActionSheet(
+      actions: List.generate(
+        itemList.length,
+        (i) => ColoredBox(
+          color: Colors.white,
+          child: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(
+                context,
+              );
+              itemList[i].onTap();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (isSelect(i))
+                  Padding(
+                    padding: EdgeInsets.only(right: safeAreaWidth * 0.01),
+                    child: Icon(
+                      Icons.done,
+                      color: itemList[i].color ?? Colors.blue,
+                      size: safeAreaWidth / 20,
+                    ),
+                  ),
+                nText(
+                  itemList[i].text,
+                  color: itemList[i].color ?? Colors.blue,
+                  fontSize: safeAreaWidth / 27,
+                  bold: 700,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      cancelButton: CupertinoActionSheetAction(
+        isDefaultAction: true,
+        onPressed: () => Navigator.pop(
+          context,
+        ),
+        child: nText(
+          "キャンセル",
+          color: Colors.blue,
+          fontSize: safeAreaWidth / 25,
+          bold: 700,
+        ),
+      ),
+    ),
+  );
+}
+
+Future<String?> showBottomDatePicker(
+  BuildContext context, {
+  String? initData,
+}) async {
+  DateTime? selectData;
+  final currentTime = initData != null
+      ? DateFormat('yyyy/MM/dd').parse(initData)
+      : getTwentyYearsAgoJanFirst();
+  await DatePicker.showDatePicker(
+    context,
+    minTime: DateTime(1950),
+    maxTime: DateTime(2022, 8, 17),
+    currentTime: currentTime,
+    locale: LocaleType.jp,
+    onConfirm: (date) => selectData = date,
+  );
+  if (selectData == null) return null;
+  return DateFormat('yyyy/MM/dd').format(selectData!);
 }

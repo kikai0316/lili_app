@@ -22,7 +22,7 @@ class UserType {
   PostListType postList;
   String? toDayMood;
   String phoneNumber;
-  String? comment;
+  String comment;
   String? birthday;
   List<String> friendList;
   List<String> friendRequestList;
@@ -34,10 +34,10 @@ class UserType {
     required this.friendList,
     required this.friendRequestList,
     required this.phoneNumber,
+    required this.comment,
     this.img,
     this.birthday,
     this.toDayMood,
-    this.comment,
   });
   factory UserType.fromJson(
     Map<String, dynamic> json,
@@ -48,7 +48,7 @@ class UserType {
     final String phoneNumber = json["phone_number"] as String? ?? "";
     final String userName = json["user_name"] as String? ?? "Unknown";
     final String? toDayMood = json["today_mood"] as String?;
-    final String? userComment = json["user_comment"] as String?;
+    final String userComment = json["user_comment"] as String? ?? "";
     final List<String> friendList =
         List<String>.from(json["friend"] as List? ?? []);
     final List<String> friendRequestList =
@@ -144,5 +144,16 @@ class ContactListType {
   ContactListType({
     required this.appUserList,
     required this.contactUserList,
+  });
+}
+
+class BottomMenuItemType {
+  String text;
+  Color? color;
+  void Function() onTap;
+  BottomMenuItemType({
+    required this.text,
+    this.color,
+    required this.onTap,
   });
 }

@@ -23,6 +23,7 @@ dependencies:
   firebase_storage: ^11.6.3
   flutter:
     sdk: flutter
+  flutter_datetime_picker_plus: ^2.1.0
   flutter_hooks: ^0.20.4
   flutter_image_compress: ^2.1.0
   flutter_line_sdk: ^2.3.6

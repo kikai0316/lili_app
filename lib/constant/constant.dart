@@ -31,7 +31,7 @@ List<BoxShadow> mainBoxShadow({double shadow = 0.5, Color? color}) {
     BoxShadow(
       color: color ?? Colors.black.withOpacity(shadow),
       blurRadius: 20,
-      spreadRadius: 20.0,
+      spreadRadius: 10.0,
     ),
   ];
 }

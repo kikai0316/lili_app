@@ -7,7 +7,7 @@ part of 'contact_list.dart';
 // **************************************************************************
 
 String _$contactListNotifierHash() =>
-    r'25bcb63849d8ee34c3c15e3a46894371d18be2d1';
+    r'a15690c5eeab0e5320d4cebba816249c145f3ac7';
 
 /// See also [ContactListNotifier].
 @ProviderFor(ContactListNotifier)

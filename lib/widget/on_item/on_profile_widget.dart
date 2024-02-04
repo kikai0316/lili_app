@@ -3,16 +3,27 @@ import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
+import 'package:lili_app/utility/screen_transition_utility.dart';
+import 'package:lili_app/view/pages/fullscreen_friend_page.dart';
 
 Widget onProfileWidget(
   BuildContext context, {
   required UserType userData,
+  required UserType myProfile,
   required double size,
-  VoidCallback? onTap,
+  bool isName = true,
 }) {
   return CustomAnimatedOpacityButton(
-    onTap: onTap,
+    onTap: () => ScreenTransition(
+      context,
+      FullScreenFriendPage(
+        userData: userData,
+        myProfile: myProfile,
+        friendsStateType: FriendsStateType.appUserFriended,
+      ),
+    ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -20,6 +31,7 @@ Widget onProfileWidget(
           size: size,
           isCircle: true,
           networkUrl: userData.img,
+          assetFile: notImg(),
           child: userData.toDayMood != null
               ? Align(
                   alignment: const Alignment(1.1, 1.1),
@@ -33,20 +45,21 @@ Widget onProfileWidget(
                 )
               : null,
         ),
-        Padding(
-          padding: EdgeInsets.only(
-            top: size / 10,
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: size,
-            child: nText(
-              "user-ReaxQdp",
-              fontSize: size / 8,
-              bold: 700,
+        if (isName)
+          Padding(
+            padding: EdgeInsets.only(
+              top: size / 10,
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              width: size,
+              child: nText(
+                "user-ReaxQdp",
+                fontSize: size / 8,
+                bold: 700,
+              ),
             ),
           ),
-        ),
       ],
     ),
   );

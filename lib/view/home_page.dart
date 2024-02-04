@@ -11,7 +11,6 @@ import 'package:lili_app/view/login/line_login_page.dart';
 import 'package:lili_app/view_model/all_friends.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/home_widget.dart';
-import 'package:lili_app/widget/initial_widget.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({

@@ -20,6 +20,7 @@ class UserDataNotifier extends _$UserDataNotifier {
   }
 
   Future<void> userDataUpDate(UserType userData) async {
+    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       return userData;
     });

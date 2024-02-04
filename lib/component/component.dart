@@ -271,6 +271,7 @@ Widget nListTile(
   Widget textWidget(String text, Color textColor) => nText(
         text,
         fontSize: safeAreaWidth / 27,
+        height: 0,
         color: textColor,
       );
 

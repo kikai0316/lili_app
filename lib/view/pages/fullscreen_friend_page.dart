@@ -14,11 +14,12 @@ import 'package:lili_app/widget/on_item/on_add_friend_widget.dart';
 import 'package:lili_app/widget/profile_widgets/my_profile_widget.dart';
 
 class FullScreenFriendPage extends HookConsumerWidget {
-  const FullScreenFriendPage(
-      {super.key,
-      required this.userData,
-      required this.friendsStateType,
-      required this.myProfile,});
+  const FullScreenFriendPage({
+    super.key,
+    required this.userData,
+    required this.friendsStateType,
+    required this.myProfile,
+  });
   final UserType userData;
   final FriendsStateType friendsStateType;
   final UserType myProfile;
@@ -61,7 +62,7 @@ class FullScreenFriendPage extends HookConsumerWidget {
                 child: imgWidget(
                   borderRadius: 15,
                   networkUrl: userData.img,
-                  assetFile: notImg(userData.img),
+                  assetFile: notImg(),
                   child: Stack(
                     children: [
                       for (int i = 0; i < 2; i++)
@@ -130,7 +131,7 @@ class FullScreenFriendPage extends HookConsumerWidget {
                               padding:
                                   customPadding(top: safeAreaHeight * 0.02),
                               child: nText(
-                                userData.comment ?? "",
+                                userData.comment,
                                 textAlign: TextAlign.left,
                                 fontSize: safeAreaWidth / 30,
                                 bold: 700,

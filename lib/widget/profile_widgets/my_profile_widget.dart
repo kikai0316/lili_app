@@ -9,12 +9,12 @@ import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/profile_pages/edit_profile_page.dart';
 import 'package:lili_app/view/profile_pages/past_records_page.dart';
+import 'package:lili_app/view/profile_pages/today_mode_page.dart';
 import 'package:lili_app/widget/on_item/on_past_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
+import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 
-Widget myProfileMainWidget(
-  BuildContext context,
-) {
+Widget myProfileMainWidget(BuildContext context, UserType myProfile) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return Padding(
@@ -26,27 +26,28 @@ Widget myProfileMainWidget(
       color: subColor,
       child: Column(
         children: [
-          imgWidget(
-            size: safeAreaWidth * 0.25,
-            isCircle: true,
-            networkUrl:
-                "https://i.pinimg.com/474x/9f/47/b1/9f47b1b74e2b54063e07b99f430916c5.jpg",
-            child: Align(
-              alignment: const Alignment(1.1, 1.1),
-              child: nContainer(
-                padding: EdgeInsets.all(
-                  safeAreaWidth * 0.005,
-                ),
-                border: mainBorder(color: subColor, width: 3),
-                radius: 50,
-                color: Colors.white,
-                child: nText("😀", fontSize: safeAreaWidth / 13),
-              ),
-            ),
+          onProfileWidget(
+            context,
+            userData: myProfile,
+            size: safeAreaWidth * 0.22,
+            myProfile: myProfile,
+            isName: false,
           ),
           Padding(
-            padding: yPadding(context),
-            child: nText("edafwdsac", fontSize: safeAreaWidth / 20),
+            padding: customPadding(top: safeAreaHeight * 0.02),
+            child: nText(myProfile.name, fontSize: safeAreaWidth / 20),
+          ),
+          Padding(
+            padding: customPadding(
+              bottom: safeAreaHeight * 0.02,
+              top: safeAreaHeight * 0.008,
+            ),
+            child: nText(
+              myProfile.userId,
+              fontSize: safeAreaWidth / 25,
+              color: Colors.grey,
+              bold: 700,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -65,9 +66,16 @@ Widget myProfileMainWidget(
                   ][i],
                   fontSize: safeAreaWidth / 32,
                   textColor: Colors.white,
-                  onTap: () =>
-                      ScreenTransition(context, const EditProfilePage())
-                          .normal(),
+                  onTap: [
+                    () => ScreenTransition(
+                          context,
+                          ToDayModePage(
+                            myProfile: myProfile,
+                          ),
+                        ).top(),
+                    () => ScreenTransition(context, const EditProfilePage())
+                        .normal(),
+                  ][i],
                 ),
             ],
           ),

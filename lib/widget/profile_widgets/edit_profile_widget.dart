@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
@@ -7,12 +5,13 @@ import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
+import 'package:lili_app/utility/screen_transition_utility.dart';
+import 'package:lili_app/view/profile_pages/on_edith_page.dart';
 
 Widget editImgWidget(
   BuildContext context, {
-  required File? editImg,
   required VoidCallback onTap,
-  required String? defaultImg,
+  required String? img,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
@@ -23,9 +22,9 @@ Widget editImgWidget(
       child: imgWidget(
         size: safeAreaHeight * 0.15,
         isCircle: true,
-        fileData: editImg,
-        networkUrl: defaultImg,
-        assetFile: editImg == null ? notImg(defaultImg) : null,
+        networkUrl: img,
+        assetFile: notImg(),
+        color: subColor,
         child: nContainer(
           border: mainBorder(color: mainBackGroundColor, width: 4),
           padding: EdgeInsets.all(
@@ -44,82 +43,41 @@ Widget editImgWidget(
   );
 }
 
-Widget editBasicWidget(BuildContext context, List<String> dataList) {
+Widget editBasicWidget(
+  BuildContext context, {
+  required UserType userData,
+  required VoidCallback onBirthdayTapEvent,
+}) {
+  final titleList = ["名前", "ユーザー名", "ひとこと", "生年月日", "電話番号"];
+  final dataList = [
+    userData.name,
+    userData.userId,
+    userData.comment,
+    userData.birthday ?? "",
+    userData.phoneNumber,
+  ];
   return Padding(
     padding: yPadding(context),
     child: nListTile(
       context,
       List.generate(
-        2,
+        titleList.length,
         (i) => NListTileItemType(
-          leftTitle: ["ユーザー名", "生年月日"][i],
-          dataText: dataList[i],
-          onTap: [
-            () {
-              // bottomSheet(
-              //   context,
-              //   page: StringEditSheet(
-              //     title: "ユーザー名",
-              //     initData: dataList[i],
-              //     onTap: (value) => editName.value = value,
-              //   ),
-              // );
-            },
-            () async {
-              // final selectDate = await showBottomDatePicker(
-              //   context,
-              // );
-              // if (selectDate != null) {
-              //   editBirthday.value = formatDateTimeToBirthdayString(
-              //     selectDate,
-              //     false,
-              //   );
-              // }
-            }
-          ][i],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget editTodayMoodWidget(BuildContext context, String data) {
-  final safeAreaHeight = safeHeight(context);
-  final safeAreaWidth = MediaQuery.of(context).size.width;
-  return Padding(
-    padding: customPadding(top: safeAreaHeight * 0.02),
-    child: CustomAnimatedOpacityButton(
-      opacity: 0.5,
-      onTap: () {},
-      child: nContainer(
-        color: subColor,
-        padding: xPadding(context),
-        height: safeAreaHeight * 0.08,
-        radius: 15,
-        child: Row(
-          children: [
-            nText(
-              "今日の気分",
-              fontSize: safeAreaWidth / 27,
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.centerRight,
-                child: nText(
-                  data,
-                  fontSize: safeAreaWidth / 15,
-                ),
-              ),
-            ),
-            Padding(
-              padding: customPadding(left: safeAreaWidth * 0.03),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                size: safeAreaWidth / 25,
-                color: Colors.white,
-              ),
-            ),
-          ],
+          leftTitle: titleList[i],
+          dataText: dataList[i].isNotEmpty ? dataList[i] : "未設定",
+          isOpacity: i == 4,
+          onTap: i != 4
+              ? i != 3
+                  ? () => ScreenTransition(
+                        context,
+                        OnEditPage(
+                          title: titleList[i],
+                          initData: dataList[i],
+                          userData: userData,
+                        ),
+                      ).normal()
+                  : () => onBirthdayTapEvent()
+              : null,
         ),
       ),
     ),

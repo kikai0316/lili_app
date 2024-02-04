@@ -76,7 +76,7 @@ class OnAddFriend extends HookConsumerWidget {
                       child: imgWidget(
                         size: safeAreaWidth * 0.17,
                         isCircle: true,
-                        assetFile: notImg(null),
+                        assetFile: notImg(),
                         networkUrl: userData?.img,
                         memoryData: onContactListType.contactsImg,
                       ),
@@ -145,13 +145,14 @@ class OnAddFriend extends HookConsumerWidget {
                       fontSize: safeAreaWidth / 30,
                       text: mainButtonText(friendsStateType),
                       onTap: mainButtonTapEvent(
-                          context,
-                          ref,
-                          friendsStateType,
-                          isLoading,
-                          onContactListType,
-                          applyingList,
-                          myProfile,),
+                        context,
+                        ref,
+                        friendsStateType,
+                        isLoading,
+                        onContactListType,
+                        applyingList,
+                        myProfile,
+                      ),
                     )
                   : Padding(
                       padding: xPadding(context),
@@ -236,7 +237,12 @@ VoidCallback? mainButtonTapEvent(
   }
   if (addFriendsStateType == FriendsStateType.appUserNoRelationship) {
     return () => friendRequest(
-        context, isLoading, applyingList, onContactListType, myProfile,);
+          context,
+          isLoading,
+          applyingList,
+          onContactListType,
+          myProfile,
+        );
   }
   if (addFriendsStateType == FriendsStateType.appUserReceivedApplication) {
     return () => friendRequestPermission(

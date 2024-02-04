@@ -50,7 +50,7 @@ Future<UserType?> dbFirestoreWriteUser(UserType userData) async {
       "user_id": userData.userId,
       "phone_number": userData.phoneNumber,
       if (userData.toDayMood != null) "today_mood": userData.toDayMood,
-      if (userData.comment != null) "user_comment": userData.comment,
+      "user_comment": userData.comment,
       if (userData.birthday != null) "birthday": userData.birthday,
       "friend": [],
       "friend_request": [],
@@ -189,4 +189,21 @@ Future<List<UserType>> dbFirestoreGetUsers(List<String> userIds) async {
   });
   final List<UserType?> results = await Future.wait(futures);
   return results.where((user) => user != null).cast<UserType>().toList();
+}
+
+Future<bool> dbFirestoreUpDataData(
+  String myOpneID,
+  Map<String, dynamic> data,
+) async {
+  try {
+    final docRef = firestore.doc(
+      myOpneID,
+    );
+    await docRef.update(
+      data,
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
 }

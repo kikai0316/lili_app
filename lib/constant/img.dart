@@ -31,6 +31,6 @@ DecorationImage memorImg(Uint8List memorImg) {
   );
 }
 
-String? notImg(String? img) {
-  return img == null ? "not.png" : null;
+String? notImg() {
+  return "not.png";
 }

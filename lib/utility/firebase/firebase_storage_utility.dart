@@ -8,10 +8,7 @@ Future<String?> dbStorageProfileImgUpload({
 }) async {
   final storageRef = FirebaseStorage.instance.ref("users/$id");
   try {
-    await storageRef.listAll().then(
-          (result) =>
-              Future.forEach<Reference>(result.items, (ref) => ref.delete()),
-        );
+    await dbStorageProfileImgDelete(id);
     final mountainsRef = storageRef.child(
       "${DateTime.now()}",
     );
@@ -19,5 +16,17 @@ Future<String?> dbStorageProfileImgUpload({
     return mountainsRef.getDownloadURL();
   } catch (e) {
     return null;
+  }
+}
+
+Future<void> dbStorageProfileImgDelete(String id) async {
+  final storageRef = FirebaseStorage.instance.ref("users/$id");
+  try {
+    await storageRef.listAll().then(
+          (result) =>
+              Future.forEach<Reference>(result.items, (ref) => ref.delete()),
+        );
+  } catch (e) {
+    return;
   }
 }

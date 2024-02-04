@@ -26,6 +26,7 @@ class MyProfilePage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: mainBackGroundColor,
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
       appBar: nAppBar(
         context,
         title: "プロフィール",
@@ -43,9 +44,7 @@ class MyProfilePage extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  myProfileMainWidget(
-                    context,
-                  ),
+                  myProfileMainWidget(context, userData),
                   ...todayPostWidget(context, userData),
                   ...pastPostWidget(context),
                 ],
