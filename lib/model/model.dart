@@ -14,6 +14,18 @@ enum FriendsStateType {
   appUserFriended,
 }
 
+enum PostTimeType {
+  wakeUp,
+  am7,
+  am10,
+  pm12,
+  pm15,
+  pm18,
+  pm20,
+  pm22,
+  pm24,
+}
+
 class UserType {
   String? img;
   String name;
@@ -90,19 +102,77 @@ class PostListType {
     this.pm22,
     this.pm24,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'wakeUp': wakeUp?.toMap(),
+      'am7': am7?.toMap(),
+      'am10': am10?.toMap(),
+      'pm12': pm12?.toMap(),
+      'pm15': pm15?.toMap(),
+      'pm18': pm18?.toMap(),
+      'pm20': pm20?.toMap(),
+      'pm22': pm22?.toMap(),
+      'pm24': pm24?.toMap(),
+    };
+  }
+
+  factory PostListType.fromMap(Map<String, dynamic> map) {
+    return PostListType(
+      wakeUp: map['wakeUp'] != null
+          ? PostType.fromMap(map['wakeUp'] as Map<String, dynamic>)
+          : null,
+      am7: map['am7'] != null
+          ? PostType.fromMap(map['am7'] as Map<String, dynamic>)
+          : null,
+      am10: map['am10'] != null
+          ? PostType.fromMap(map['am10'] as Map<String, dynamic>)
+          : null,
+      pm12: map['pm12'] != null
+          ? PostType.fromMap(map['pm12'] as Map<String, dynamic>)
+          : null,
+      pm15: map['pm15'] != null
+          ? PostType.fromMap(map['pm15'] as Map<String, dynamic>)
+          : null,
+      pm18: map['pm18'] != null
+          ? PostType.fromMap(map['pm18'] as Map<String, dynamic>)
+          : null,
+      pm20: map['pm20'] != null
+          ? PostType.fromMap(map['pm20'] as Map<String, dynamic>)
+          : null,
+      pm22: map['pm22'] != null
+          ? PostType.fromMap(map['pm22'] as Map<String, dynamic>)
+          : null,
+      pm24: map['pm24'] != null
+          ? PostType.fromMap(map['pm24'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 }
 
 class PostType {
   String postImg;
-  String dateText;
   String? doing;
   DateTime postDateTime;
   PostType({
     required this.postImg,
-    required this.dateText,
-    this.doing,
+    required this.doing,
     required this.postDateTime,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'postImg': postImg,
+      'doing': doing,
+      'postDateTime': postDateTime.toString(),
+    };
+  }
+
+  factory PostType.fromMap(Map<String, dynamic> map) {
+    return PostType(
+      postImg: map['postImg'] as String,
+      doing: map['doing'] as String?,
+      postDateTime: DateTime.parse(map['postDateTime'] as String),
+    );
+  }
 }
 
 class NListTileItemType {

@@ -38,7 +38,6 @@ class HomePage extends HookConsumerWidget {
     if (allFriends == null) {
       return nText("エラー", fontSize: safeAreaHeight / 10);
     }
-
     return Scaffold(
       backgroundColor: mainBackGroundColor,
       extendBody: true,
@@ -56,7 +55,7 @@ class HomePage extends HookConsumerWidget {
               padding: yPadding(context),
               child: line(),
             ),
-            for (final item in postTimeDataList) ...{
+            for (final item in postTimeData.values) ...{
               postWidget(
                 context,
                 item,
@@ -69,7 +68,7 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: bottomNavigationWidget(context),
+      bottomNavigationBar: bottomNavigationWidget(context, userData),
     );
   }
 }

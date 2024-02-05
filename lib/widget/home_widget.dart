@@ -81,6 +81,18 @@ Widget myFriendWidget(
   UserType myProfile,
 ) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
+  if (allFriends.isEmpty) {
+    return Align(
+      child: Padding(
+        padding: yPadding(context),
+        child: nText(
+          "まだ友達がいません。親友を招待しよう！",
+          fontSize: safeAreaWidth / 30,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
@@ -110,7 +122,7 @@ Widget titleWidget(
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
-  final isTimeDataTitle = postTimeDataList.contains(title);
+  final isTimeDataTitle = postTimeData.values.contains(title);
   final isTime = title == "起床" || !isTimeDataTitle || isTimePassed(title);
   final total = (postDataList ?? []).length;
   final postCount = postDataList?.where((item) => item != null).length ?? 0;
@@ -188,20 +200,14 @@ PreferredSizeWidget? homePageAppBar(
   );
 }
 
-Widget bottomNavigationWidget(BuildContext context) {
+Widget bottomNavigationWidget(BuildContext context, UserType myProfile) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   return nContainer(
     width: safeAreaWidth,
-    height: safeAreaHeight * 0.25,
-    gradient: mainGradationWithBlackOpacity(
-      begin: FractionalOffset.bottomCenter,
-      end: FractionalOffset.topCenter,
-      startOpacity: 0.95,
-      stops: [0.1, 1],
-    ),
-    child: Padding(
-      padding: customPadding(bottom: safeAreaHeight * 0.04),
+    height: safeAreaHeight * 0.2,
+    // color: Colors.white,
+    child: SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -214,49 +220,29 @@ Widget bottomNavigationWidget(BuildContext context) {
           // ),
           // nText(
           //   "50:01",
-          //   fontSize: safeAreaWidth / 10,
+          //   fontSize: safeAreaWidth / 8,
           //   shadows: mainBoxShadow(
           //     shadow: 1,
           //   ),
           // ),
-          nText(
-            "残り",
-            fontSize: safeAreaWidth / 35,
-            shadows: mainBoxShadow(
-              shadow: 1,
-            ),
-          ),
-          Padding(
-            padding: customPadding(bottom: safeAreaHeight * 0.01),
-            child: nText(
-              "50:01",
-              fontSize: safeAreaWidth / 15,
-              shadows: mainBoxShadow(
-                shadow: 1,
-              ),
-            ),
-          ),
+
           CustomAnimatedOpacityButton(
-            onTap: () =>
-                ScreenTransition(context, const PhotographPage()).top(),
+            onTap: () => ScreenTransition(
+              context,
+              PhotographPage(
+                myProfile: myProfile,
+              ),
+            ).top(),
             child: nContainer(
               padding: EdgeInsets.all(safeAreaWidth * 0.05),
               alignment: Alignment.center,
-              height: safeAreaHeight * 0.08,
-              width: safeAreaHeight * 0.08,
-              radius: 20,
-              color: Colors.white,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  for (int i = 0; i < 2; i++)
-                    nContainer(
-                      height: i == 0 ? safeAreaWidth * 0.01 : double.infinity,
-                      width: i == 1 ? safeAreaWidth * 0.01 : double.infinity,
-                      color: Colors.black,
-                      radius: 50,
-                    ),
-                ],
+              boxShadow: mainBoxShadow(shadow: 0.1),
+              height: safeAreaWidth * 0.21,
+              width: safeAreaWidth * 0.21,
+              isCircle: true,
+              border: mainBorder(
+                color: Colors.white,
+                width: 6,
               ),
             ),
           ),

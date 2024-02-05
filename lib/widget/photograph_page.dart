@@ -1,4 +1,6 @@
-import 'package:camera/camera.dart';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
@@ -7,15 +9,18 @@ import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Widget photographPageSuccessWidget(
-  BuildContext context,
-  CameraController cameraController,
-  ValueNotifier<bool> isFlash,
-) {
+Widget photographShootingButtonWidget(
+  BuildContext context, {
+  required bool isAccess,
+  required ValueNotifier<bool> isFlash,
+  required void Function(bool) flashTapEvent,
+  required VoidCallback returnTapEvent,
+  required VoidCallback shootingTapEvent,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   Widget photographPageIconWidget(
     IconData icon, {
-    required VoidCallback onTap,
+    required VoidCallback? onTap,
   }) =>
       CustomAnimatedOpacityButton(
         onTap: onTap,
@@ -25,45 +30,81 @@ Widget photographPageSuccessWidget(
           size: safeAreaWidth / 9,
         ),
       );
-
-  return Column(
-    children: [
-      AspectRatio(
-        aspectRatio: 3 / 4,
-        child: nContainer(
-          color: subColor,
-          radius: 40,
-          child: CameraPreview(cameraController),
-        ),
-      ),
-      Expanded(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            photographPageIconWidget(
-              isFlash.value ? Icons.flash_on : Icons.flash_off,
-              onTap: () => isFlash.value = !isFlash.value,
-            ),
-            CustomAnimatedOpacityButton(
-              onTap: () {},
-              child: circleWidget(
-                padingSize: safeAreaWidth * 0.01,
-                size: safeAreaWidth * 0.2,
+  return Expanded(
+    child: Opacity(
+      opacity: isAccess ? 1 : 0.3,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          photographPageIconWidget(
+            isFlash.value ? Icons.flash_on : Icons.flash_off,
+            onTap: isAccess
+                ? () {
+                    isFlash.value = !isFlash.value;
+                    flashTapEvent(isFlash.value);
+                  }
+                : null,
+          ),
+          CustomAnimatedOpacityButton(
+            onTap: shootingTapEvent,
+            // isAccess ? shootingTapEvent : null,
+            child: nContainer(
+              alignment: Alignment.center,
+              height: safeAreaWidth * 0.22,
+              width: safeAreaWidth * 0.22,
+              isCircle: true,
+              border: mainBorder(
                 color: Colors.white,
-                child: circleWidget(
-                  color: Colors.white,
-                  border: mainBorder(color: Colors.black, width: 2),
-                ),
+                width: 6,
               ),
             ),
-            photographPageIconWidget(
-              Icons.cached,
-              onTap: () {},
-            ),
-          ],
+          ),
+          photographPageIconWidget(
+            Icons.cached,
+            onTap: isAccess ? returnTapEvent : null,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget photographPostButtonWidget(
+  BuildContext context, {
+  required ValueNotifier<Uint8List?> picture,
+  required VoidCallback postTapEvent,
+}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+
+  return Expanded(
+    child: Container(
+      alignment: Alignment.center,
+      child: CustomAnimatedOpacityButton(
+        onTap: postTapEvent,
+        child: Container(
+          width: safeAreaWidth * 0.33,
+          padding: EdgeInsets.all(safeAreaWidth * 0.01),
+          color: Colors.transparent,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              nText(
+                "投稿",
+                fontSize: safeAreaWidth / 10,
+              ),
+              Padding(
+                padding: customPadding(top: safeAreaWidth * 0.01),
+                child: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                  size: safeAreaWidth / 12,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ],
+    ),
   );
 }
 
@@ -71,25 +112,24 @@ Widget photographPageLoagingWidget(
   BuildContext context,
 ) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
-  return Column(
-    children: [
-      AspectRatio(
-        aspectRatio: 3 / 4,
+  return imgWidget(
+    size: double.infinity,
+    assetFile: "photograph.png",
+    borderRadius: 40,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(40),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 50.0,
+          sigmaY: 50.0,
+        ),
         child: nContainer(
           alignment: Alignment.center,
-          color: subColor,
           radius: 40,
           child: nIndicatorWidget(safeAreaWidth / 30),
         ),
       ),
-      Padding(
-        padding: customPadding(top: safeAreaWidth * 0.15),
-        child: nText(
-          "準備中",
-          fontSize: safeAreaWidth / 15,
-        ),
-      ),
-    ],
+    ),
   );
 }
 
@@ -98,39 +138,54 @@ Widget photographPageAccessErrorWidget(
 ) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
-  return SafeArea(
-    child: Column(
-      children: [
-        Padding(
-          padding: yPadding(context, ySize: safeAreaHeight * 0.1),
-          child: nText(
-            "カメラへのアクセス\n権限がありません",
-            height: 1.3,
-            fontSize: safeAreaWidth / 14,
-            color: Colors.grey.withOpacity(0.5),
+  return imgWidget(
+    size: double.infinity,
+    assetFile: "photograph.png",
+    borderRadius: 40,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(40),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 50.0,
+          sigmaY: 50.0,
+        ),
+        child: nContainer(
+          alignment: Alignment.center,
+          radius: 40,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              nText(
+                "カメラへのアクセス権限がありません",
+                fontSize: safeAreaWidth / 20,
+              ),
+              Padding(
+                padding: xPadding(context, top: safeAreaHeight * 0.03),
+                child: nText(
+                  "カメラへのアクセスを許可するためには\n設定を開いてください。",
+                  isOverflow: false,
+                  fontSize: safeAreaWidth / 25,
+                  height: 1.5,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+              Padding(
+                padding: customPadding(top: safeAreaHeight * 0.03),
+                child: nContainer(
+                  width: safeAreaWidth * 0.45,
+                  height: safeAreaHeight * 0.06,
+                  child: mainButton(
+                    context,
+                    text: "設定画面へ",
+                    radius: 10,
+                    onTap: () => openAppSettings(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        Padding(
-          padding: customPadding(),
-          child: nText(
-            """
-    アクセス権を許可するには、次の手順で変更してください。
-
-    下記の「設定画面へ」をタップ > 「カメラ」項目を許可 
-    最後にアプリを再起動してください。""",
-            height: 1.3,
-            fontSize: safeAreaWidth / 25,
-            isOverflow: false,
-            bold: 600,
-          ),
-        ),
-        const Spacer(),
-        mainButton(
-          context,
-          text: "設定画面へ",
-          onTap: () => openAppSettings(),
-        ),
-      ],
+      ),
     ),
   );
 }
@@ -141,32 +196,86 @@ Widget photographPageSystemErrorWidget(
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
-  return SafeArea(
-    child: GestureDetector(
-      onTap: onTap,
-      child: ColoredBox(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            Padding(
-              padding: yPadding(context, ySize: safeAreaHeight * 0.1),
-              child: nText(
-                "不明なエラーが発生しました",
-                height: 1.3,
-                fontSize: safeAreaWidth / 15,
-                color: Colors.grey.withOpacity(0.5),
-              ),
-            ),
-            Padding(
-              padding: customPadding(top: safeAreaHeight * 0.15),
-              child: nText(
-                "画面をタップして再試行してください",
-                height: 1.3,
-                fontSize: safeAreaWidth / 25,
-              ),
-            ),
-          ],
+  return imgWidget(
+    size: double.infinity,
+    assetFile: "photograph.png",
+    borderRadius: 40,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(40),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 50.0,
+          sigmaY: 50.0,
         ),
+        child: nContainer(
+          alignment: Alignment.center,
+          radius: 40,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              nText(
+                "不明なエラーが発生しました",
+                fontSize: safeAreaWidth / 18,
+              ),
+              Padding(
+                padding: customPadding(top: safeAreaHeight * 0.03),
+                child: SizedBox(
+                  width: safeAreaWidth * 0.45,
+                  height: safeAreaHeight * 0.06,
+                  child: mainButton(
+                    context,
+                    text: "再試行",
+                    radius: 10,
+                    onTap: onTap,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget afterTakingPhoto(
+  BuildContext context,
+  Uint8List picture, {
+  required VoidCallback cancelOnTap,
+  required VoidCallback saveOnTap,
+}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return imgWidget(
+    size: double.infinity,
+    borderRadius: 40,
+    memoryData: picture,
+    child: Padding(
+      padding: EdgeInsets.all(safeAreaWidth * 0.04),
+      child: Stack(
+        children: [
+          for (int i = 0; i < 2; i++)
+            Align(
+              alignment: [
+                Alignment.topRight,
+                Alignment.bottomRight,
+              ][i],
+              child: GestureDetector(
+                onTap: [cancelOnTap, saveOnTap][i],
+                child: circleWidget(
+                  size: safeAreaWidth * 0.09,
+                  color: subColor.withOpacity(0.5),
+                  child: Icon(
+                    [
+                      Icons.close,
+                      Icons.save_alt,
+                    ][i],
+                    color: Colors.white,
+                    size: safeAreaWidth / 20,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     ),
   );

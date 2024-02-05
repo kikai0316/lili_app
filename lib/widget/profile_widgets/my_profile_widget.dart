@@ -98,7 +98,7 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
           SizedBox(
             width: safeAreaWidth * 0.01,
           ),
-          for (final item in postTimeDataList) ...{
+          for (final item in postTimeData.values) ...{
             Padding(
               padding: xPadding(context, xSize: safeAreaWidth * 0.02),
               child: Column(
