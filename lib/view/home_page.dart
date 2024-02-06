@@ -46,10 +46,7 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            titleWidget(
-              context,
-              "私の親友たち",
-            ),
+            titleWidget(context, "私の親友たち", isView: true),
             myFriendWidget(context, allFriends, userData),
             Padding(
               padding: yPadding(context),
@@ -57,10 +54,13 @@ class HomePage extends HookConsumerWidget {
             ),
             for (final item in postTimeData.values) ...{
               postWidget(
-                context,
-                item,
-                sortPostDataList(item, [...allFriends, userData]),
-              ),
+                  context,
+                  item,
+                  sortPostDataList(
+                    item,
+                    [...allFriends, userData],
+                  ),
+                  userData,),
             },
             SizedBox(
               height: safeAreaHeight * 0.25,
@@ -68,7 +68,9 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: bottomNavigationWidget(context, userData),
+      bottomNavigationBar: PostTinerWidget(
+        myProfile: userData,
+      ),
     );
   }
 }

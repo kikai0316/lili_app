@@ -40,6 +40,22 @@ PostListType postListTypeUpDate(
     pm18: postTime == PostTimeType.pm18 ? postData : oldData.pm18,
     pm20: postTime == PostTimeType.pm20 ? postData : oldData.pm20,
     pm22: postTime == PostTimeType.pm22 ? postData : oldData.pm22,
-    pm24: postTime == PostTimeType.pm24 ? postData : oldData.pm24,
+  );
+}
+
+PastPostListType pastPstListTypeUpDate(
+  PastPostListType oldData,
+  PostTimeType postTime,
+  PastPostType postData,
+) {
+  return PastPostListType(
+    wakeUp: postTime == PostTimeType.wakeUp ? postData : oldData.wakeUp,
+    am7: postTime == PostTimeType.am7 ? postData : oldData.am7,
+    am10: postTime == PostTimeType.am10 ? postData : oldData.am10,
+    pm12: postTime == PostTimeType.pm12 ? postData : oldData.pm12,
+    pm15: postTime == PostTimeType.pm15 ? postData : oldData.pm15,
+    pm18: postTime == PostTimeType.pm18 ? postData : oldData.pm18,
+    pm20: postTime == PostTimeType.pm20 ? postData : oldData.pm20,
+    pm22: postTime == PostTimeType.pm22 ? postData : oldData.pm22,
   );
 }

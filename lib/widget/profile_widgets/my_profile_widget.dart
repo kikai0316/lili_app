@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
+import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
+import 'package:lili_app/view/pages/past_records_page.dart';
+import 'package:lili_app/view/pages/today_mode_page.dart';
 import 'package:lili_app/view/profile_pages/edit_profile_page.dart';
-import 'package:lili_app/view/profile_pages/past_records_page.dart';
-import 'package:lili_app/view/profile_pages/today_mode_page.dart';
 import 'package:lili_app/widget/on_item/on_past_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 Widget myProfileMainWidget(BuildContext context, UserType myProfile) {
   final safeAreaHeight = safeHeight(context);
@@ -117,6 +119,7 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
                       postData: dataFormatUserDataToPostData(item, userData),
                       notPostEmoji:
                           notPostEmoji(userData.postList.wakeUp, item),
+                      isView: true,
                       onTap: () {},
                     ),
                   if (!isTime(item)) myProfilePageRockWidget(context),
@@ -130,9 +133,81 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
   ];
 }
 
-List<Widget> pastPostWidget(BuildContext context) {
+List<Widget> pastPostWidget(BuildContext context,
+    AsyncValue<Map<String, PastPostListType>?> allPastPost,) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
+  final allPastPostWidet = allPastPost.when(
+      data: (value) {
+        final dateStrings = pastPostDateStrings(value!.keys);
+        return [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: safeAreaWidth * 0.03,
+                ),
+                for (final item in dateStrings)
+                  Padding(
+                    padding: customPadding(right: safeAreaWidth * 0.02),
+                    child: onPastPostdWidget(
+                      context,
+                      width: safeAreaWidth * 0.22,
+                      date: item,
+                      postListData: value[item],
+                      isMini: false,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (dateStrings.isNotEmpty)
+            Padding(
+              padding: xPadding(
+                context,
+                top: safeAreaHeight * 0.02,
+                xSize: safeAreaWidth * 0.2,
+              ),
+              child: mainButton(
+                context,
+                height: safeAreaHeight * 0.055,
+                width: safeAreaWidth,
+                text: "過去の記録全て表示",
+                backGroundColor: subColor,
+                radius: 13,
+                textColor: Colors.white,
+                borderColor: Colors.white.withOpacity(0.3),
+                fontSize: safeAreaWidth / 30,
+                onTap: () => ScreenTransition(
+                  context,
+                  PastRecordsPage(
+                    allPastPost: value,
+                  ),
+                ).top(),
+              ),
+            ),
+          if (dateStrings.isEmpty)
+            Align(
+                child: Padding(
+              padding: yPadding(context),
+              child: nText(
+                "まだ過去に投稿した日がありません。",
+                fontSize: safeAreaWidth / 25,
+                color: Colors.grey,
+              ),
+            ),),
+        ];
+      },
+      error: (e, s) => [const SizedBox()],
+      loading: () => [
+            Align(
+              child: Padding(
+                padding: yPadding(context, ySize: safeAreaHeight * 0.05),
+                child: nIndicatorWidget(safeAreaWidth / 30),
+              ),
+            ),
+          ],);
   return [
     myProfilePageTitleWidget(
       context,
@@ -157,44 +232,7 @@ List<Widget> pastPostWidget(BuildContext context) {
         ],
       ),
     ),
-    SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          SizedBox(
-            width: safeAreaWidth * 0.03,
-          ),
-          for (int i = 0; i < 10; i++)
-            Padding(
-              padding: customPadding(right: safeAreaWidth * 0.02),
-              child: onPastPostdWidget(
-                context,
-                width: safeAreaWidth * 0.22,
-                date: "3/16",
-              ),
-            ),
-        ],
-      ),
-    ),
-    Padding(
-      padding: xPadding(
-        context,
-        top: safeAreaHeight * 0.02,
-        xSize: safeAreaWidth * 0.2,
-      ),
-      child: mainButton(
-        context,
-        height: safeAreaHeight * 0.055,
-        width: safeAreaWidth,
-        text: "過去の記録全て表示",
-        backGroundColor: subColor,
-        radius: 13,
-        textColor: Colors.white,
-        borderColor: Colors.white.withOpacity(0.3),
-        fontSize: safeAreaWidth / 30,
-        onTap: () => ScreenTransition(context, const PastRecordsPage()).top(),
-      ),
-    ),
+    ...allPastPostWidet,
   ];
 }
 

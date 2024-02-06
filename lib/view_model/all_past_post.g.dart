@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'all_friends.dart';
+part of 'all_past_post.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allFriendsNotifierHash() =>
-    r'6e80f4d78ef1575efcca7d54688cb977245d7596';
+String _$allPastPostNotifierHash() =>
+    r'ca23d57ea8cd400afb2796b1bd458a3d2e4f004d';
 
-/// See also [AllFriendsNotifier].
-@ProviderFor(AllFriendsNotifier)
-final allFriendsNotifierProvider =
-    AsyncNotifierProvider<AllFriendsNotifier, List<UserType>?>.internal(
-  AllFriendsNotifier.new,
-  name: r'allFriendsNotifierProvider',
+/// See also [AllPastPostNotifier].
+@ProviderFor(AllPastPostNotifier)
+final allPastPostNotifierProvider = AsyncNotifierProvider<AllPastPostNotifier,
+    Map<String, PastPostListType>>.internal(
+  AllPastPostNotifier.new,
+  name: r'allPastPostNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$allFriendsNotifierHash,
+      : _$allPastPostNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$AllFriendsNotifier = AsyncNotifier<List<UserType>?>;
+typedef _$AllPastPostNotifier = AsyncNotifier<Map<String, PastPostListType>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

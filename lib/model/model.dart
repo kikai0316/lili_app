@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -23,7 +24,6 @@ enum PostTimeType {
   pm18,
   pm20,
   pm22,
-  pm24,
 }
 
 class UserType {
@@ -89,7 +89,6 @@ class PostListType {
   PostType? pm18;
   PostType? pm20;
   PostType? pm22;
-  PostType? pm24;
 
   PostListType({
     this.wakeUp,
@@ -100,7 +99,74 @@ class PostListType {
     this.pm18,
     this.pm20,
     this.pm22,
-    this.pm24,
+  });
+  void assignPostToTimeSlot(
+    List<PostType> posts,
+  ) {
+    for (final post in posts) {
+      final hour = post.postDateTime.hour;
+      final minute = post.postDateTime.minute;
+      if (hour == 7 && minute <= 9) {
+        am7 = post;
+      } else if (hour == 10 && minute <= 9) {
+        am10 = post;
+      } else if (hour == 12 && minute <= 9) {
+        pm12 = post;
+      } else if (hour == 15 && minute <= 9) {
+        pm15 = post;
+      } else if (hour == 18 && minute <= 9) {
+        pm18 = post;
+      } else if (hour == 20 && minute <= 9) {
+        pm20 = post;
+      } else if (hour == 22 && minute <= 9) {
+        pm22 = post;
+      }
+    }
+  }
+
+  bool isPostTimeNotNull(String time) {
+    switch (time) {
+      case "起床":
+        return true;
+      case "7:00":
+        return am7 != null;
+      case "10:00":
+        return am10 != null;
+      case "12:00":
+        return pm12 != null;
+      case "15:00":
+        return pm15 != null;
+      case "18:00":
+        return pm18 != null;
+      case "20:00":
+        return pm20 != null;
+      case "22:00":
+        return pm22 != null;
+      default:
+        return false;
+    }
+  }
+}
+
+class PastPostListType {
+  PastPostType? wakeUp;
+  PastPostType? am7;
+  PastPostType? am10;
+  PastPostType? pm12;
+  PastPostType? pm15;
+  PastPostType? pm18;
+  PastPostType? pm20;
+  PastPostType? pm22;
+
+  PastPostListType({
+    this.wakeUp,
+    this.am7,
+    this.am10,
+    this.pm12,
+    this.pm15,
+    this.pm18,
+    this.pm20,
+    this.pm22,
   });
   Map<String, dynamic> toMap() {
     return {
@@ -112,40 +178,65 @@ class PostListType {
       'pm18': pm18?.toMap(),
       'pm20': pm20?.toMap(),
       'pm22': pm22?.toMap(),
-      'pm24': pm24?.toMap(),
     };
   }
 
-  factory PostListType.fromMap(Map<String, dynamic> map) {
-    return PostListType(
+  factory PastPostListType.fromMap(Map<String, dynamic> map) {
+    return PastPostListType(
       wakeUp: map['wakeUp'] != null
-          ? PostType.fromMap(map['wakeUp'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['wakeUp'] as Map<String, dynamic>)
           : null,
       am7: map['am7'] != null
-          ? PostType.fromMap(map['am7'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['am7'] as Map<String, dynamic>)
           : null,
       am10: map['am10'] != null
-          ? PostType.fromMap(map['am10'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['am10'] as Map<String, dynamic>)
           : null,
       pm12: map['pm12'] != null
-          ? PostType.fromMap(map['pm12'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['pm12'] as Map<String, dynamic>)
           : null,
       pm15: map['pm15'] != null
-          ? PostType.fromMap(map['pm15'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['pm15'] as Map<String, dynamic>)
           : null,
       pm18: map['pm18'] != null
-          ? PostType.fromMap(map['pm18'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['pm18'] as Map<String, dynamic>)
           : null,
       pm20: map['pm20'] != null
-          ? PostType.fromMap(map['pm20'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['pm20'] as Map<String, dynamic>)
           : null,
       pm22: map['pm22'] != null
-          ? PostType.fromMap(map['pm22'] as Map<String, dynamic>)
-          : null,
-      pm24: map['pm24'] != null
-          ? PostType.fromMap(map['pm24'] as Map<String, dynamic>)
+          ? PastPostType.fromMap(map['pm22'] as Map<String, dynamic>)
           : null,
     );
+  }
+  int countNulls() {
+    final List<PastPostType?> properties = [
+      wakeUp,
+      am7,
+      am10,
+      pm12,
+      pm15,
+      pm18,
+      pm20,
+      pm22,
+    ];
+    return properties.where((p) => p != null).length;
+  }
+
+  List<PastPostType> toNonNullList() {
+    final List<PastPostType?> allPosts = [
+      wakeUp,
+      am7,
+      am10,
+      pm12,
+      pm15,
+      pm18,
+      pm20,
+      pm22,
+    ];
+    final List<PastPostType> nonNullPosts =
+        allPosts.whereType<PastPostType>().toList();
+    return nonNullPosts;
   }
 }
 
@@ -158,6 +249,17 @@ class PostType {
     required this.doing,
     required this.postDateTime,
   });
+}
+
+class PastPostType {
+  File postImg;
+  String? doing;
+  DateTime postDateTime;
+  PastPostType({
+    required this.postImg,
+    required this.doing,
+    required this.postDateTime,
+  });
   Map<String, dynamic> toMap() {
     return {
       'postImg': postImg,
@@ -166,9 +268,9 @@ class PostType {
     };
   }
 
-  factory PostType.fromMap(Map<String, dynamic> map) {
-    return PostType(
-      postImg: map['postImg'] as String,
+  factory PastPostType.fromMap(Map<String, dynamic> map) {
+    return PastPostType(
+      postImg: map['postImg'] as File,
       doing: map['doing'] as String?,
       postDateTime: DateTime.parse(map['postDateTime'] as String),
     );

@@ -2,16 +2,69 @@
 import 'dart:math';
 
 import 'package:intl/intl.dart';
+import 'package:lili_app/constant/data.dart';
 import 'package:lili_app/model/model.dart';
 
 bool isTimePassed(String timeString) {
   final DateTime now = DateTime.now();
+  final DateTime timeToCheck = convertTimeStringToDateTime(timeString);
+  return now.isAfter(timeToCheck);
+}
+
+bool isAfterThreeAM(DateTime dateTime) {
+  final DateTime now = DateTime.now();
+  DateTime threeAMToday = DateTime(now.year, now.month, now.day, 3);
+  if (now.isBefore(threeAMToday)) {
+    threeAMToday = threeAMToday.subtract(const Duration(days: 1));
+  }
+  return dateTime.isAfter(threeAMToday);
+}
+
+List<String> pastPostDateStrings(Iterable<String> dateString) {
+  final DateTime today = DateTime.now();
+  final DateFormat format = DateFormat('yyyy/MM/dd');
+
+  final List<DateTime> dates = dateString
+      .map((dateStr) {
+        try {
+          return format.parse(dateStr);
+        } catch (e) {
+          return null;
+        }
+      })
+      .where((date) => date != null && date.isBefore(today))
+      .cast<DateTime>()
+      .toList();
+  dates.sort((a, b) => a
+      .difference(today)
+      .inDays
+      .abs()
+      .compareTo(b.difference(today).inDays.abs()),);
+  return dates.map((date) => format.format(date)).toList();
+}
+
+DateTime convertTimeStringToDateTime(String timeString) {
   final List<String> parts = timeString.split(':');
   final int hour = int.parse(parts[0]);
   final int minute = int.parse(parts[1]);
-  final DateTime timeToCheck =
-      DateTime(now.year, now.month, now.day, hour, minute);
-  return now.isAfter(timeToCheck);
+
+  final DateTime now = DateTime.now();
+  return DateTime(now.year, now.month, now.day, hour, minute);
+}
+
+bool isWithinPostTimeRange(DateTime dateTime) {
+  for (final entry in postTimeData.entries) {
+    final List<String> timeParts = entry.value.split(':');
+    final int hour = int.parse(timeParts[0]);
+    final int minute = int.parse(timeParts[1]);
+    final DateTime startTime =
+        DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
+    final DateTime endTime = startTime.add(const Duration(minutes: 10));
+    if (dateTime.isAfter(startTime) && dateTime.isBefore(endTime)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 PostType? dataFormatUserDataToPostData(String dateText, UserType user) {
@@ -32,8 +85,6 @@ PostType? dataFormatUserDataToPostData(String dateText, UserType user) {
       return user.postList.pm20;
     case "22:00":
       return user.postList.pm22;
-    case "24:00":
-      return user.postList.pm24;
     default:
       return null;
   }
@@ -135,6 +186,14 @@ PostTimeType? getPostTimeType(DateTime dateTime) {
     }
   }
   return null;
+}
+
+String formatDuration(Duration duration) {
+  final String twoDigitMinutes =
+      duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final String twoDigitSeconds =
+      duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return "$twoDigitMinutes:$twoDigitSeconds";
 }
 
 List<PostTimeType> getPostTimeTypesAfterIncluding(PostTimeType postTime) {

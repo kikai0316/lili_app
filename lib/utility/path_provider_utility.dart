@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:lili_app/model/model.dart';
+import 'package:lili_app/utility/type_updata_utility.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<String> get _localPath async {
@@ -35,9 +36,10 @@ Future<List<String>> localReadList() async {
   }
 }
 
-Future<bool> localWritePostData(PostListType postListData) async {
+Future<bool> localWritePastPostData(
+    PostTimeType postTime, PastPostType postData,) async {
   try {
-    final file = await localFile("post");
+    final file = await localFile("pastpost");
     Map<String, dynamic> jsonMapDecode;
     if (await file.exists()) {
       final String jsonString = await file.readAsString();
@@ -46,7 +48,9 @@ Future<bool> localWritePostData(PostListType postListData) async {
       jsonMapDecode = {};
     }
     final date = DateFormat('yyyy/MM/dd').format(DateTime.now());
-    jsonMapDecode[date] = postListData.toMap();
+    final pastPostListData = pastPstListTypeUpDate(
+        PastPostListType.fromMap(jsonMapDecode), postTime, postData,);
+    jsonMapDecode[date] = pastPostListData.toMap();
     final String jsonStringEncode = jsonEncode(jsonMapDecode);
     await file.writeAsString(jsonStringEncode);
     return true;
@@ -55,15 +59,24 @@ Future<bool> localWritePostData(PostListType postListData) async {
   }
 }
 
-Future<Map<String, PostListType>?> localReadPostData() async {
+// final pastPostListData = pastPstListTypeUpDate(
+//   myProfile.postList,
+//   isWakeUp ? PostTimeType.wakeUp : getPostTimeType(nowTime)!,
+//   PostType(
+//     postImg: postUpload,
+//     postDateTime: nowTime,
+//     doing: nowState,
+//   ),
+// );
+Future<Map<String, PastPostListType>?> localReadPastPostData() async {
   try {
-    final file = await localFile("post");
+    final file = await localFile("pastpost");
     final String jsonString = await file.readAsString();
     final Map<String, dynamic> jsonMapDecode =
         jsonDecode(jsonString) as Map<String, dynamic>? ?? {};
-    final Map<String, PostListType> result = {};
+    final Map<String, PastPostListType> result = {};
     jsonMapDecode.forEach((key, value) {
-      result[key] = PostListType.fromMap(value as Map<String, dynamic>);
+      result[key] = PastPostListType.fromMap(value as Map<String, dynamic>);
     });
     return result;
   } catch (e) {

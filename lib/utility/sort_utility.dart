@@ -1,7 +1,6 @@
 import 'package:lili_app/model/model.dart';
 
 List<UserType> sortPostDataList(String dateText, List<UserType> allFriends) {
-  // dateTextに基づいて適切なPostTypeプロパティを取得する関数
   PostType? getRelevantPost(UserType user) {
     switch (dateText) {
       case "起床":
@@ -20,8 +19,6 @@ List<UserType> sortPostDataList(String dateText, List<UserType> allFriends) {
         return user.postList.pm20;
       case "22:00":
         return user.postList.pm22;
-      case "24:00":
-        return user.postList.pm24;
       default:
         return null;
     }

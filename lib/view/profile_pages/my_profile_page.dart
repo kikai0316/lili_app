@@ -6,6 +6,7 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/model/model.dart';
+import 'package:lili_app/view_model/all_past_post.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/profile_widgets/my_profile_widget.dart';
 
@@ -17,6 +18,7 @@ class MyProfilePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final safeAreaWidth = MediaQuery.of(context).size.width;
     final userDataState = ref.watch(userDataNotifierProvider);
+    final allPadtPostState = ref.watch(allPastPostNotifierProvider);
     final isDataReady = userDataState is AsyncData<UserType?>;
     final UserType? userData = userDataState.value;
     if (userData == null) {
@@ -46,7 +48,7 @@ class MyProfilePage extends HookConsumerWidget {
                 children: [
                   myProfileMainWidget(context, userData),
                   ...todayPostWidget(context, userData),
-                  ...pastPostWidget(context),
+                  ...pastPostWidget(context, allPadtPostState),
                 ],
               ),
             )

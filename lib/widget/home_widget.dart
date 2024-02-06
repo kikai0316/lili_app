@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
@@ -15,20 +20,18 @@ import 'package:lili_app/view/profile_pages/my_profile_page.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 
-Widget postWidget(
-  BuildContext context,
-  String timeDate,
-  List<UserType> postDataList,
-) {
+Widget postWidget(BuildContext context, String timeDate,
+    List<UserType> postDataList, UserType myProfile,) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   final isTime = timeDate == "起床" || isTimePassed(timeDate);
-
+  final isView = myProfile.postList.isPostTimeNotNull(timeDate);
   return Column(
     children: [
       titleWidget(
         context,
         timeDate,
+        isView: isView,
         postDataList: postDataList
             .map((e) => dataFormatUserDataToPostData(timeDate, e))
             .toList(),
@@ -49,6 +52,7 @@ Widget postWidget(
                     child: onPostWidget(
                       context,
                       userData: item,
+                      isView: isView,
                       notPostEmoji:
                           notPostEmoji(item.postList.wakeUp, timeDate),
                       postData: dataFormatUserDataToPostData(timeDate, item),
@@ -115,11 +119,8 @@ Widget myFriendWidget(
   );
 }
 
-Widget titleWidget(
-  BuildContext context,
-  String title, {
-  List<PostType?>? postDataList,
-}) {
+Widget titleWidget(BuildContext context, String title,
+    {List<PostType?>? postDataList, required bool isView,}) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final isTimeDataTitle = postTimeData.values.contains(title);
@@ -157,6 +158,23 @@ Widget titleWidget(
             isGradation: total == postCount,
             fontSize: safeAreaWidth / 35,
           ),
+        const Spacer(),
+        if (!isView && isTime) ...{
+          Padding(
+            padding: customPadding(right: safeAreaWidth * 0.01),
+            child: Icon(
+              Icons.lock,
+              size: safeAreaWidth / 30,
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          nText(
+            "閲覧できません。",
+            isGradation: total == postCount,
+            color: Colors.grey.withOpacity(0.5),
+            fontSize: safeAreaWidth / 40,
+          ),
+        },
       ],
     ),
   );
@@ -200,54 +218,151 @@ PreferredSizeWidget? homePageAppBar(
   );
 }
 
-Widget bottomNavigationWidget(BuildContext context, UserType myProfile) {
-  final safeAreaWidth = MediaQuery.of(context).size.width;
-  final safeAreaHeight = safeHeight(context);
-  return nContainer(
-    width: safeAreaWidth,
-    height: safeAreaHeight * 0.2,
-    // color: Colors.white,
-    child: SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          // nText(
-          //   "次の投稿まで",
-          //   fontSize: safeAreaWidth / 35,
-          //   shadows: mainBoxShadow(
-          //     shadow: 1,
-          //   ),
-          // ),
-          // nText(
-          //   "50:01",
-          //   fontSize: safeAreaWidth / 8,
-          //   shadows: mainBoxShadow(
-          //     shadow: 1,
-          //   ),
-          // ),
+class PostTinerWidget extends HookConsumerWidget {
+  const PostTinerWidget({super.key, required this.myProfile});
+  final UserType myProfile;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final safeAreaHeight = safeHeight(context);
+    final safeAreaWidth = MediaQuery.of(context).size.width;
+    final timeText = useState<String?>("");
+    Timer? timer;
+    void timeMessageUpData(
+      DateTime targetTime,
+    ) {
+      timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+        final now = DateTime.now();
+        final difference = targetTime.difference(now);
+        if (difference.isNegative) {
+        } else {
+          timeText.value = formatDuration(difference);
+        }
+      });
+    }
 
-          CustomAnimatedOpacityButton(
-            onTap: () => ScreenTransition(
-              context,
-              PhotographPage(
-                myProfile: myProfile,
-              ),
-            ).top(),
-            child: nContainer(
-              padding: EdgeInsets.all(safeAreaWidth * 0.05),
-              alignment: Alignment.center,
-              boxShadow: mainBoxShadow(shadow: 0.1),
-              height: safeAreaWidth * 0.21,
-              width: safeAreaWidth * 0.21,
-              isCircle: true,
-              border: mainBorder(
-                color: Colors.white,
-                width: 6,
-              ),
-            ),
-          ),
-        ],
+    useEffect(
+      () {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          final postTimeType = getNextPostTime();
+          if (postTimeType != null) {
+            final time =
+                convertTimeStringToDateTime(postTimeData[postTimeType]!);
+            final targetTime = time.add(const Duration(minutes: 10));
+            timeMessageUpData(
+              targetTime,
+            );
+          } else {
+            timeText.value = null;
+          }
+        });
+        return () => timer?.cancel();
+      },
+      [],
+    );
+
+    return SizedBox(
+      width: safeAreaWidth,
+      height: safeAreaHeight * 0.25,
+      // color: Colors.white,
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: isPostTimeAvailable() || myProfile.postList.wakeUp == null
+              ? [
+                  if (myProfile.postList.wakeUp == null)
+                    Padding(
+                      padding: customPadding(bottom: safeAreaHeight * 0.01),
+                      child: nContainer(
+                        padding: xPadding(context,
+                            top: safeAreaWidth * 0.025,
+                            bottom: safeAreaWidth * 0.025,),
+                        radius: 20,
+                        color: Colors.white,
+                        child: nText(
+                          "起きましたか？\n起きたら投稿しましょう！！",
+                          fontSize: safeAreaWidth / 30,
+                          height: 1.5,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  CustomAnimatedOpacityButton(
+                    onTap: () => ScreenTransition(
+                      context,
+                      PhotographPage(
+                        myProfile: myProfile,
+                      ),
+                    ).top(),
+                    child: nContainer(
+                      padding: EdgeInsets.all(safeAreaWidth * 0.05),
+                      alignment: Alignment.center,
+                      boxShadow: mainBoxShadow(shadow: 0.1),
+                      height: safeAreaWidth * 0.21,
+                      width: safeAreaWidth * 0.21,
+                      isCircle: true,
+                      border: mainBorder(
+                        color: Colors.white,
+                        width: 6,
+                      ),
+                    ),
+                  ),
+                ]
+              : [
+                  if (timeText.value != null)
+                    nText(
+                      "次の投稿時間まで",
+                      fontSize: safeAreaWidth / 30,
+                      shadows: mainBoxShadow(
+                        shadow: 1,
+                      ),
+                    ),
+                  nText(
+                    timeText.value ?? "今日の投稿は終了しました",
+                    fontSize: timeText.value != null
+                        ? safeAreaWidth / 9
+                        : safeAreaWidth / 20,
+                    shadows: mainBoxShadow(
+                      shadow: 1,
+                    ),
+                  ),
+                ],
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  bool isPostTimeAvailable() {
+    final DateTime now = DateTime.now();
+    for (final entry in postTimeData.entries) {
+      if (entry.key == PostTimeType.wakeUp) {
+        continue;
+      }
+      final List<String> timeParts = entry.value.split(':');
+      final int hour = int.parse(timeParts[0]);
+      final int minute = int.parse(timeParts[1]);
+      final DateTime postTime =
+          DateTime(now.year, now.month, now.day, hour, minute);
+      final DateTime postTimeEnd = postTime.add(const Duration(minutes: 10));
+
+      if (now.isAfter(postTime) && now.isBefore(postTimeEnd)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  PostTimeType? getNextPostTime() {
+    final now = DateTime.now();
+    final List<PostTimeType> postTimes = postTimeData.keys.toList();
+    for (final postTime in postTimes) {
+      if (postTime == PostTimeType.wakeUp) {
+        continue;
+      }
+      final time = convertTimeStringToDateTime(postTimeData[postTime]!);
+      if (now.isBefore(time)) {
+        return postTime;
+      }
+    }
+    return null;
+  }
 }

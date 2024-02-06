@@ -10,8 +10,11 @@ import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
 
 class FullScreenPostPage extends HookConsumerWidget {
-  const FullScreenPostPage(
-      {super.key, required this.userData, required this.postData,});
+  const FullScreenPostPage({
+    super.key,
+    required this.userData,
+    required this.postData,
+  });
   final UserType userData;
   final PostType? postData;
   @override
@@ -42,10 +45,13 @@ class FullScreenPostPage extends HookConsumerWidget {
                   for (int i = 0; i < 2; i++)
                     Padding(
                       padding: customPadding(
-                          bottom: i == 0 ? safeAreaHeight * 0.01 : 0,),
-                      child: nText([postDate, postTime][i],
-                          fontSize: safeAreaWidth / [20, 30][i],
-                          color: [Colors.white, Colors.grey][i],),
+                        bottom: i == 0 ? safeAreaHeight * 0.01 : 0,
+                      ),
+                      child: nText(
+                        [postDate, postTime][i],
+                        fontSize: safeAreaWidth / [20, 30][i],
+                        color: [Colors.white, Colors.grey][i],
+                      ),
                     ),
                 ],
               ),
@@ -59,31 +65,32 @@ class FullScreenPostPage extends HookConsumerWidget {
                   AspectRatio(
                     aspectRatio: 3 / 4,
                     child: imgWidget(
-                      borderRadius: 30,
-                      color: subColor,
-                      boxShadow: mainBoxShadow(),
-                      networkUrl: postData?.postImg,
-                      child: Padding(
-                        padding: EdgeInsets.all(safeAreaWidth * 0.03),
-                        child: nContainer(
-                          padding: xPadding(
-                            context,
-                            xSize: safeAreaWidth * 0.04,
-                            top: safeAreaWidth * 0.02,
-                            bottom: safeAreaWidth * 0.02,
-                          ),
-                          color: Colors.black.withOpacity(0.6),
-                          radius: 50,
-                          child: nText(
-                            postData?.doing ?? "",
-                            fontSize: safeAreaWidth / 30,
-                            textAlign: TextAlign.right,
-                            bold: 700,
-                            maxLiune: 2,
-                          ),
-                        ),
-                      ),
-                    ),
+                        borderRadius: 30,
+                        color: subColor,
+                        boxShadow: mainBoxShadow(),
+                        networkUrl: postData?.postImg,
+                        child: postData?.doing != null
+                            ? Padding(
+                                padding: EdgeInsets.all(safeAreaWidth * 0.03),
+                                child: nContainer(
+                                  padding: xPadding(
+                                    context,
+                                    xSize: safeAreaWidth * 0.04,
+                                    top: safeAreaWidth * 0.02,
+                                    bottom: safeAreaWidth * 0.02,
+                                  ),
+                                  color: Colors.black.withOpacity(0.6),
+                                  radius: 50,
+                                  child: nText(
+                                    postData?.doing ?? "",
+                                    fontSize: safeAreaWidth / 30,
+                                    textAlign: TextAlign.right,
+                                    bold: 700,
+                                    maxLiune: 2,
+                                  ),
+                                ),
+                              )
+                            : null,),
                   ),
                 ],
               ),

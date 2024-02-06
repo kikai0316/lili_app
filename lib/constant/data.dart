@@ -9,7 +9,6 @@ Map<PostTimeType, String> postTimeData = {
   PostTimeType.pm18: "18:00",
   PostTimeType.pm20: "20:00",
   PostTimeType.pm22: "22:00",
-  PostTimeType.pm24: "24:00",
 };
 
 List<String> nowStateDataList = [

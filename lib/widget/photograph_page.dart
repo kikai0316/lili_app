@@ -7,6 +7,8 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/constant/data.dart';
+import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Widget photographShootingButtonWidget(
@@ -46,8 +48,7 @@ Widget photographShootingButtonWidget(
                 : null,
           ),
           CustomAnimatedOpacityButton(
-            onTap: shootingTapEvent,
-            // isAccess ? shootingTapEvent : null,
+            onTap: isAccess ? shootingTapEvent : null,
             child: nContainer(
               alignment: Alignment.center,
               height: safeAreaWidth * 0.22,
@@ -276,6 +277,71 @@ Widget afterTakingPhoto(
               ),
             ),
         ],
+      ),
+    ),
+  );
+}
+
+Widget timeOutWidget(
+  BuildContext context,
+) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  final safeAreaHeight = safeHeight(context);
+  return ClipRect(
+    child: BackdropFilter(
+      filter: ImageFilter.blur(
+        sigmaX: 5.0,
+        sigmaY: 5.0,
+      ),
+      child: Container(
+        height: double.infinity,
+        color: Colors.black.withOpacity(0.8),
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: yPadding(context, ySize: safeAreaHeight * 0.06),
+                child: nText(
+                  "投稿時間が終了しました。\n次の投稿時間にお試しください。",
+                  height: 1.5,
+                  color: Colors.grey,
+                  fontSize: safeAreaWidth / 17,
+                ),
+              ),
+              Padding(
+                padding: yPadding(context),
+                child: nText(
+                  "投稿時間スケジュール",
+                  fontSize: safeAreaWidth / 15,
+                ),
+              ),
+              for (int i = 0; i < postTimeData.values.length; i++)
+                if (i != 0)
+                  Padding(
+                    padding: customPadding(top: safeAreaHeight * 0.02),
+                    child: nContainer(
+                      padding: EdgeInsets.all(safeAreaWidth * 0.02),
+                      radius: 10,
+                      border: mainBorder(color: Colors.white.withOpacity(0.5)),
+                      color: isTimePassed(
+                        postTimeData.values.elementAt(i),
+                      )
+                          ? Colors.white
+                          : Colors.transparent,
+                      child: nText(
+                        postTimeData.values.elementAt(i),
+                        fontSize: safeAreaWidth / 25,
+                        color: isTimePassed(
+                          postTimeData.values.elementAt(i),
+                        )
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+            ],
+          ),
+        ),
       ),
     ),
   );
