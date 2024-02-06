@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
@@ -101,6 +102,8 @@ Widget addFriendLists(
   required UserType myProfile,
   required ContactListType? contactList,
   required ValueNotifier<List<String>?> applyingList,
+  required ValueNotifier<bool> isRefresAddFriend,
+  required Future<void> Function() onRefresh,
   required bool isDataReady,
 }) {
   final safeAreaHeight = safeHeight(context);
@@ -113,45 +116,65 @@ Widget addFriendLists(
       child: nIndicatorWidget(safeAreaWidth / 30),
     );
   }
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: yPadding(context),
-          child: nText("RoyalHayユーザーのお友達", fontSize: safeAreaWidth / 30),
-        ),
-        ...appUserList.map(
-          (item) => OnAddFriend(
-            onContactListType: item,
-            applyingList: applyingList,
-            myProfile: myProfile,
+
+  return CustomMaterialIndicator(
+    indicatorBuilder: (context, controller) {
+      return nIndicatorWidget(safeAreaWidth / 30);
+    },
+    backgroundColor: Colors.transparent,
+    withRotation: false,
+    onRefresh: onRefresh,
+    onStateChanged: (change) {
+      if (change.didChange(to: IndicatorState.dragging)) {
+        isRefresAddFriend.value = true;
+      } else if (change.didChange(to: IndicatorState.idle)) {
+        isRefresAddFriend.value = false;
+      }
+    },
+    child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isRefresAddFriend.value)
+            SizedBox(
+              height: safeAreaHeight * 0.15,
+            ),
+          Padding(
+            padding: yPadding(context),
+            child: nText("RoyalHayユーザーのお友達", fontSize: safeAreaWidth / 30),
           ),
-        ),
-        if (appUserList.isEmpty)
-          nText(
-            "現在、RoyalHayにはまだお友達がいません。",
-            fontSize: safeAreaWidth / 33,
-            color: Colors.grey.withOpacity(0.5),
-            bold: 700,
-            height: 1.2,
-            isOverflow: false,
+          ...appUserList.map(
+            (item) => OnAddFriend(
+              onContactListType: item,
+              applyingList: applyingList,
+              myProfile: myProfile,
+            ),
           ),
-        Padding(
-          padding: yPadding(context),
-          child: nText("連絡先のお友達を招待", fontSize: safeAreaWidth / 30),
-        ),
-        ...contactUserList.map(
-          (item) => OnAddFriend(
-            onContactListType: item,
-            applyingList: applyingList,
-            myProfile: myProfile,
+          if (appUserList.isEmpty)
+            nText(
+              "現在、RoyalHayにはまだお友達がいません。",
+              fontSize: safeAreaWidth / 33,
+              color: Colors.grey.withOpacity(0.5),
+              bold: 700,
+              height: 1.2,
+              isOverflow: false,
+            ),
+          Padding(
+            padding: yPadding(context),
+            child: nText("連絡先のお友達を招待", fontSize: safeAreaWidth / 30),
           ),
-        ),
-        SizedBox(
-          height: safeAreaHeight * 0.1,
-        ),
-      ],
+          ...contactUserList.map(
+            (item) => OnAddFriend(
+              onContactListType: item,
+              applyingList: applyingList,
+              myProfile: myProfile,
+            ),
+          ),
+          SizedBox(
+            height: safeAreaHeight * 0.1,
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -203,6 +226,8 @@ Widget friendRequestLists(
   required List<UserType>? userList,
   required ValueNotifier<List<String>?> applyingList,
   required bool isDataReady,
+  required ValueNotifier<bool> isRefresfriendRequest,
+  required Future<void> Function() onRefresh,
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
@@ -213,33 +238,54 @@ Widget friendRequestLists(
       child: nIndicatorWidget(safeAreaWidth / 30),
     );
   }
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        SizedBox(
-          height: safeAreaHeight * 0.03,
-        ),
-        ...requestUsers.map(
-          (item) => OnAddFriend(
-            onContactListType: OnContactListType(
-              phoneNumber: item.phoneNumber,
-              userData: item,
+  return CustomMaterialIndicator(
+    indicatorBuilder: (context, controller) {
+      return nIndicatorWidget(safeAreaWidth / 30);
+    },
+    backgroundColor: Colors.transparent,
+    withRotation: false,
+    onRefresh: onRefresh,
+    onStateChanged: (change) {
+      if (change.didChange(to: IndicatorState.dragging)) {
+        isRefresfriendRequest.value = true;
+      } else if (change.didChange(to: IndicatorState.idle)) {
+        isRefresfriendRequest.value = false;
+      }
+    },
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          if (isRefresfriendRequest.value)
+            SizedBox(
+              height: safeAreaHeight * 0.15,
             ),
-            applyingList: applyingList,
-            myProfile: myProfile,
+          SizedBox(
+            height: safeAreaHeight * 0.03,
           ),
-        ),
-        if (requestUsers.isEmpty)
-          Padding(
-            padding: yPadding(context, ySize: safeAreaHeight * 0.05),
-            child: nText(
-              "フレンドリクエストはありません。",
-              fontSize: safeAreaWidth / 25,
-              height: 1.2,
-              isOverflow: false,
+          ...requestUsers.map(
+            (item) => OnAddFriend(
+              onContactListType: OnContactListType(
+                phoneNumber: item.phoneNumber,
+                userData: item,
+              ),
+              applyingList: applyingList,
+              myProfile: myProfile,
             ),
           ),
-      ],
+          if (requestUsers.isEmpty)
+            Padding(
+              padding: yPadding(context, ySize: safeAreaHeight * 0.05),
+              child: Align(
+                child: nText(
+                  "フレンドリクエストはありません。",
+                  fontSize: safeAreaWidth / 25,
+                  height: 1.2,
+                  isOverflow: false,
+                ),
+              ),
+            ),
+        ],
+      ),
     ),
   );
 }

@@ -14,7 +14,6 @@ class ContactListNotifier extends _$ContactListNotifier {
   }
 
   Future<void> reacquisition() async {
-    state = const AsyncValue.loading();
     final getData = await getContactList();
     state = await AsyncValue.guard(() async {
       return getData;

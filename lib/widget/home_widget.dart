@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
+import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
 import 'package:lili_app/constant/img.dart';
@@ -20,8 +21,12 @@ import 'package:lili_app/view/profile_pages/my_profile_page.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 
-Widget postWidget(BuildContext context, String timeDate,
-    List<UserType> postDataList, UserType myProfile,) {
+Widget postWidget(
+  BuildContext context,
+  String timeDate,
+  List<UserType> postDataList,
+  UserType myProfile,
+) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   final isTime = timeDate == "起床" || isTimePassed(timeDate);
@@ -119,8 +124,12 @@ Widget myFriendWidget(
   );
 }
 
-Widget titleWidget(BuildContext context, String title,
-    {List<PostType?>? postDataList, required bool isView,}) {
+Widget titleWidget(
+  BuildContext context,
+  String title, {
+  List<PostType?>? postDataList,
+  required bool isView,
+}) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final isTimeDataTitle = postTimeData.values.contains(title);
@@ -187,6 +196,7 @@ PreferredSizeWidget? homePageAppBar(
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return nAppBar(
     context,
+    backgroundColor: mainBackGroundColor,
     customLeftIcon: CustomAnimatedOpacityButton(
       onTap: () => ScreenTransition(
         context,
@@ -201,9 +211,13 @@ PreferredSizeWidget? homePageAppBar(
         child: imgWidget(assetFile: "friend_icon.png"),
       ),
     ),
-    customTitle: nText(
-      "RoyalHy",
-      fontSize: safeAreaWidth / 14,
+    customTitle: Container(
+      color: mainBackGroundColor,
+      width: safeAreaWidth,
+      child: nText(
+        "RoyalHy",
+        fontSize: safeAreaWidth / 14,
+      ),
     ),
     customRightIcon: CustomAnimatedOpacityButton(
       onTap: () => ScreenTransition(context, const MyProfilePage()).normal(),
@@ -273,9 +287,11 @@ class PostTinerWidget extends HookConsumerWidget {
                     Padding(
                       padding: customPadding(bottom: safeAreaHeight * 0.01),
                       child: nContainer(
-                        padding: xPadding(context,
-                            top: safeAreaWidth * 0.025,
-                            bottom: safeAreaWidth * 0.025,),
+                        padding: xPadding(
+                          context,
+                          top: safeAreaWidth * 0.025,
+                          bottom: safeAreaWidth * 0.025,
+                        ),
                         radius: 20,
                         color: Colors.white,
                         child: nText(

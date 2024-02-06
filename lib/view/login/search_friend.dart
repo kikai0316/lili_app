@@ -27,6 +27,7 @@ class SearchFriendPage extends HookConsumerWidget {
     final contactListState = ref.watch(contactListNotifierProvider);
     final isCancelIcon = useState<bool>(false);
     final isSearch = useState<bool>(false);
+    final isRefresAddFriend = useState<bool>(false);
     final applyingList = useState<List<String>?>(null);
     final searchResults = useState<List<UserType>?>(null);
     final isDataReady = contactListState is AsyncData<ContactListType?>;
@@ -78,9 +79,11 @@ class SearchFriendPage extends HookConsumerWidget {
                   : addFriendLists(
                       context,
                       myProfile: myProfile,
+                      isRefresAddFriend: isRefresAddFriend,
                       contactList: contactList,
                       applyingList: applyingList,
                       isDataReady: isDataReady,
+                      onRefresh: () => reFetch(ref, applyingList),
                     ),
             ),
           ],
@@ -97,6 +100,16 @@ class SearchFriendPage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> reFetch(
+    WidgetRef ref,
+    ValueNotifier<List<String>?> applyingList,
+  ) async {
+    final contactListNotifier = ref.read(contactListNotifierProvider.notifier);
+    await contactListNotifier.reacquisition();
+    final getApplyingList = await localReadList();
+    applyingList.value = getApplyingList;
   }
 }
 

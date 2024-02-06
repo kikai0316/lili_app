@@ -10,4 +10,9 @@ class AllPastPostNotifier extends _$AllPastPostNotifier {
   Future<Map<String, PastPostListType>> build() async {
     return await localReadPastPostData() ?? {};
   }
+
+  Future<void> reFetch() async {
+    final get = await localReadPastPostData() ?? {};
+    state = await AsyncValue.guard(() async => get);
+  }
 }

@@ -16,7 +16,8 @@ import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-Widget myProfileMainWidget(BuildContext context, UserType myProfile) {
+Widget myProfileMainWidget(BuildContext context, UserType myProfile,
+    {required VoidCallback onRefresh,}) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return Padding(
@@ -28,12 +29,33 @@ Widget myProfileMainWidget(BuildContext context, UserType myProfile) {
       color: subColor,
       child: Column(
         children: [
-          onProfileWidget(
-            context,
-            userData: myProfile,
-            size: safeAreaWidth * 0.22,
-            myProfile: myProfile,
-            isName: false,
+          SizedBox(
+            height: safeAreaWidth * 0.22,
+            width: double.infinity,
+            child: Stack(
+              children: [
+                Align(
+                  child: onProfileWidget(
+                    context,
+                    userData: myProfile,
+                    size: safeAreaWidth * 0.22,
+                    myProfile: myProfile,
+                    isName: false,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: CustomAnimatedOpacityButton(
+                    onTap: onRefresh,
+                    child: Icon(
+                      Icons.sync,
+                      color: Colors.white,
+                      size: safeAreaWidth / 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: customPadding(top: safeAreaHeight * 0.02),
@@ -133,81 +155,85 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
   ];
 }
 
-List<Widget> pastPostWidget(BuildContext context,
-    AsyncValue<Map<String, PastPostListType>?> allPastPost,) {
+List<Widget> pastPostWidget(
+  BuildContext context,
+  AsyncValue<Map<String, PastPostListType>?> allPastPost,
+) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final allPastPostWidet = allPastPost.when(
-      data: (value) {
-        final dateStrings = pastPostDateStrings(value!.keys);
-        return [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: safeAreaWidth * 0.03,
-                ),
-                for (final item in dateStrings)
-                  Padding(
-                    padding: customPadding(right: safeAreaWidth * 0.02),
-                    child: onPastPostdWidget(
-                      context,
-                      width: safeAreaWidth * 0.22,
-                      date: item,
-                      postListData: value[item],
-                      isMini: false,
-                    ),
+    data: (value) {
+      final dateStrings = pastPostDateStrings(value!.keys);
+      return [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              SizedBox(
+                width: safeAreaWidth * 0.03,
+              ),
+              for (final item in dateStrings)
+                Padding(
+                  padding: customPadding(right: safeAreaWidth * 0.02),
+                  child: onPastPostdWidget(
+                    context,
+                    width: safeAreaWidth * 0.22,
+                    date: item,
+                    postListData: value[item],
+                    isMini: false,
                   ),
-              ],
+                ),
+            ],
+          ),
+        ),
+        if (dateStrings.isNotEmpty)
+          Padding(
+            padding: xPadding(
+              context,
+              top: safeAreaHeight * 0.02,
+              xSize: safeAreaWidth * 0.2,
+            ),
+            child: mainButton(
+              context,
+              height: safeAreaHeight * 0.055,
+              width: safeAreaWidth,
+              text: "過去の記録全て表示",
+              backGroundColor: subColor,
+              radius: 13,
+              textColor: Colors.white,
+              borderColor: Colors.white.withOpacity(0.3),
+              fontSize: safeAreaWidth / 30,
+              onTap: () => ScreenTransition(
+                context,
+                PastRecordsPage(
+                  allPastPost: value,
+                ),
+              ).top(),
             ),
           ),
-          if (dateStrings.isNotEmpty)
-            Padding(
-              padding: xPadding(
-                context,
-                top: safeAreaHeight * 0.02,
-                xSize: safeAreaWidth * 0.2,
-              ),
-              child: mainButton(
-                context,
-                height: safeAreaHeight * 0.055,
-                width: safeAreaWidth,
-                text: "過去の記録全て表示",
-                backGroundColor: subColor,
-                radius: 13,
-                textColor: Colors.white,
-                borderColor: Colors.white.withOpacity(0.3),
-                fontSize: safeAreaWidth / 30,
-                onTap: () => ScreenTransition(
-                  context,
-                  PastRecordsPage(
-                    allPastPost: value,
-                  ),
-                ).top(),
-              ),
-            ),
-          if (dateStrings.isEmpty)
-            Align(
-                child: Padding(
+        if (dateStrings.isEmpty)
+          Align(
+            child: Padding(
               padding: yPadding(context),
               child: nText(
                 "まだ過去に投稿した日がありません。",
                 fontSize: safeAreaWidth / 25,
                 color: Colors.grey,
               ),
-            ),),
-        ];
-      },
-      error: (e, s) => [const SizedBox()],
-      loading: () => [
-            Align(
-              child: Padding(
-                padding: yPadding(context, ySize: safeAreaHeight * 0.05),
-                child: nIndicatorWidget(safeAreaWidth / 30),
-              ),
             ),
-          ],);
+          ),
+      ];
+    },
+    error: (e, s) => [const SizedBox()],
+    loading: () => [
+      Align(
+        child: Padding(
+          padding: yPadding(context, ySize: safeAreaHeight * 0.05),
+          child: nIndicatorWidget(safeAreaWidth / 30),
+        ),
+      ),
+    ],
+  );
   return [
     myProfilePageTitleWidget(
       context,
