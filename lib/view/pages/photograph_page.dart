@@ -54,12 +54,16 @@ class PhotographPage extends HookConsumerWidget {
         useState<CamControllerState>(CamControllerState.unInitialize);
     Timer? timer;
     void startTimer(PostTimeType postTime) {
-      final time = convertTimeStringToDateTime(postTimeData[postTime]!);
+      final time = convertTimeStringToDateTime(postTimeData[postTime]!, null);
       final targetTime = time.add(const Duration(minutes: 10));
       timer = Timer.periodic(
-          const Duration(seconds: 1),
-          (timer) => timeMessageUpData(timeMessage, targetTime,
-              onTimeOut: () => timer.cancel(),),);
+        const Duration(seconds: 1),
+        (timer) => timeMessageUpData(
+          timeMessage,
+          targetTime,
+          onTimeOut: () => timer.cancel(),
+        ),
+      );
     }
 
     useEffect(
@@ -87,158 +91,159 @@ class PhotographPage extends HookConsumerWidget {
     return Stack(
       children: [
         Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: mainBackGroundColor,
-            appBar: nAppBar(
-              context,
-              leftIconType: BackIconStyleType.arrowBackBottomIcon,
-              customTitle: nText(
-                "RoyalHy",
-                fontSize: safeAreaWidth / 14,
-              ),
+          resizeToAvoidBottomInset: false,
+          backgroundColor: mainBackGroundColor,
+          appBar: nAppBar(
+            context,
+            leftIconType: BackIconStyleType.arrowBackBottomIcon,
+            customTitle: nText(
+              "RoyalHy",
+              fontSize: safeAreaWidth / 14,
             ),
-            body: Stack(
-              children: [
-                SafeArea(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: customPadding(bottom: safeAreaHeight * 0.02),
-                          child: nText(
-                            timeMessage.value ?? "",
-                            fontSize: timeMessage.value == "おはようございます！"
-                                ? safeAreaWidth / 25
-                                : safeAreaWidth / 17,
-                            color: Colors.grey,
-                          ),
+          ),
+          body: Stack(
+            children: [
+              SafeArea(
+                child: Center(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: customPadding(bottom: safeAreaHeight * 0.02),
+                        child: nText(
+                          timeMessage.value ?? "",
+                          fontSize: timeMessage.value == "おはようございます！"
+                              ? safeAreaWidth / 25
+                              : safeAreaWidth / 17,
+                          color: Colors.grey,
                         ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 3 / 4,
-                                child: Stack(
-                                  children: [
-                                    SizedBox(
-                                      child: picture.value != null
-                                          ? afterTakingPhoto(
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 3 / 4,
+                              child: Stack(
+                                children: [
+                                  SizedBox(
+                                    child: picture.value != null
+                                        ? afterTakingPhoto(
+                                            context,
+                                            picture.value!,
+                                            cancelOnTap: () =>
+                                                picture.value = null,
+                                            saveOnTap: () => saveImageToGallery(
                                               context,
                                               picture.value!,
-                                              cancelOnTap: () =>
-                                                  picture.value = null,
-                                              saveOnTap: () =>
-                                                  saveImageToGallery(
-                                                context,
-                                                picture.value!,
-                                                isLoading,
-                                              ),
-                                            )
-                                          : () {
-                                              switch (
-                                                  camControllerState.value) {
-                                                case CamControllerState.success:
-                                                  return ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            40,),
-                                                    child: imgWidget(
-                                                      size: double.infinity,
-                                                      assetFile:
-                                                          "photograph.png",
+                                              isLoading,
+                                            ),
+                                          )
+                                        : () {
+                                            switch (camControllerState.value) {
+                                              case CamControllerState.success:
+                                                return ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    40,
+                                                  ),
+                                                  child: RepaintBoundary(
+                                                    key: repaintBoundaryKey,
+                                                    child: CameraPreview(
+                                                      cameraController!,
                                                     ),
-                                                  );
-                                                case CamControllerState
-                                                      .systemError:
-                                                  return photographPageSystemErrorWidget(
+                                                  ),
+                                                );
+                                              case CamControllerState
+                                                    .systemError:
+                                                return photographPageSystemErrorWidget(
+                                                  context,
+                                                  onTap: () =>
+                                                      cameraControllerInitialize(
                                                     context,
-                                                    onTap: () =>
-                                                        cameraControllerInitialize(
-                                                      context,
-                                                      camControllerState,
-                                                    ),
-                                                  );
-                                                case CamControllerState
-                                                      .accessError:
-                                                  return photographPageAccessErrorWidget(
+                                                    camControllerState,
+                                                  ),
+                                                );
+                                              case CamControllerState
+                                                    .accessError:
+                                                return photographPageAccessErrorWidget(
+                                                  context,
+                                                );
+                                              case CamControllerState
+                                                    .unInitialize:
+                                                return Center(
+                                                  child:
+                                                      photographPageLoagingWidget(
                                                     context,
-                                                  );
-                                                case CamControllerState
-                                                      .unInitialize:
-                                                  return Center(
-                                                    child:
-                                                        photographPageLoagingWidget(
-                                                      context,
-                                                    ),
-                                                  );
-                                              }
-                                            }(),
-                                    ),
-                                    if (picture.value == null)
-                                      AnimatedOpacity(
-                                        duration:
-                                            const Duration(milliseconds: 100),
-                                        opacity:
-                                            isTakePictureLoading.value ? 1 : 0,
-                                        child: nContainer(
-                                          height: double.infinity,
-                                          color: Colors.black,
-                                        ),
+                                                  ),
+                                                );
+                                            }
+                                          }(),
+                                  ),
+                                  if (picture.value == null)
+                                    AnimatedOpacity(
+                                      duration:
+                                          const Duration(milliseconds: 100),
+                                      opacity:
+                                          isTakePictureLoading.value ? 1 : 0,
+                                      child: nContainer(
+                                        height: double.infinity,
+                                        color: Colors.black,
                                       ),
-                                  ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (picture.value == null)
+                              photographShootingButtonWidget(
+                                context,
+                                isAccess: camControllerState.value ==
+                                    CamControllerState.success,
+                                isFlash: isFlash,
+                                flashTapEvent: (valiue) {},
+                                returnTapEvent: () {},
+                                shootingTapEvent: () => takePicture(
+                                  context,
+                                  picture,
+                                  isTakePictureLoading,
                                 ),
                               ),
-                              if (picture.value == null)
-                                photographShootingButtonWidget(
-                                  context,
-                                  isAccess: camControllerState.value ==
-                                      CamControllerState.success,
-                                  isFlash: isFlash,
-                                  flashTapEvent: (valiue) {},
-                                  returnTapEvent: () {},
-                                  shootingTapEvent: () => takePicture(
-                                    context,
-                                    picture,
-                                    isTakePictureLoading,
-                                  ),
-                                ),
-                              if (picture.value != null)
-                                photographPostButtonWidget(
-                                  context,
-                                  picture: picture,
-                                  postTapEvent: isWakeUp
-                                      ? () => postEvent(
-                                            context,
-                                            ref,
-                                            picture.value!,
-                                            isLoading,
-                                            "",
-                                            true,
-                                          )
-                                      : () => bottomSheet(
-                                            context,
-                                            page: NowStateSheet(
-                                              onSuccess: (value) => postEvent(
-                                                context,
-                                                ref,
-                                                picture.value!,
-                                                isLoading,
-                                                value,
-                                                false,
-                                              ),
+                            if (picture.value != null)
+                              photographPostButtonWidget(
+                                context,
+                                picture: picture,
+                                postTapEvent: isWakeUp
+                                    ? () => postEvent(
+                                          context,
+                                          ref,
+                                          picture.value!,
+                                          isLoading,
+                                          "",
+                                          true,
+                                        )
+                                    : () => bottomSheet(
+                                          context,
+                                          page: NowStateSheet(
+                                            onSuccess: (value) => postEvent(
+                                              context,
+                                              ref,
+                                              picture.value!,
+                                              isLoading,
+                                              value,
+                                              false,
                                             ),
                                           ),
-                                ),
-                            ],
-                          ),
+                                        ),
+                              ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                if (timeMessage.value == null) timeOutWidget(context),
-              ],
-            ),),
+              ),
+              if (timeMessage.value == null) timeOutWidget(context),
+            ],
+          ),
+        ),
         loadinPage(context: context, isLoading: isLoading.value),
       ],
     );
@@ -407,8 +412,10 @@ class PhotographPage extends HookConsumerWidget {
   }
 
   void timeMessageUpData(
-      ValueNotifier<String?> timeMessage, DateTime targetTime,
-      {VoidCallback? onTimeOut,}) {
+    ValueNotifier<String?> timeMessage,
+    DateTime targetTime, {
+    VoidCallback? onTimeOut,
+  }) {
     final now = DateTime.now();
     final timer = targetTime.difference(now);
     if (timer.isNegative) {

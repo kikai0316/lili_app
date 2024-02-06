@@ -12,7 +12,12 @@
           "package_name": "com.example.lili_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "568528201860-p5iv8rbuttkovjj9n9p976kt04jinps7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDh73aCdJPZvPHwD2BVseNqLoahHXd0g5o"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568528201860-p5iv8rbuttkovjj9n9p976kt04jinps7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "568528201860-4el0t6mmti58l3o4tpj24bmffsb4teje.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.liliApp.japanese"
+              }
+            }
+          ]
         }
       }
     }

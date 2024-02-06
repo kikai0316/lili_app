@@ -7,7 +7,10 @@ import 'package:lili_app/model/model.dart';
 
 bool isTimePassed(String timeString) {
   final DateTime now = DateTime.now();
-  final DateTime timeToCheck = convertTimeStringToDateTime(timeString);
+  final DateTime baseDate =
+      now.hour < 3 ? DateTime(now.year, now.month, now.day - 1) : now;
+  final DateTime timeToCheck =
+      convertTimeStringToDateTime(timeString, baseDate);
   return now.isAfter(timeToCheck);
 }
 
@@ -35,20 +38,21 @@ List<String> pastPostDateStrings(Iterable<String> dateString) {
       .where((date) => date != null && date.isBefore(today))
       .cast<DateTime>()
       .toList();
-  dates.sort((a, b) => a
-      .difference(today)
-      .inDays
-      .abs()
-      .compareTo(b.difference(today).inDays.abs()),);
+  dates.sort(
+    (a, b) => a
+        .difference(today)
+        .inDays
+        .abs()
+        .compareTo(b.difference(today).inDays.abs()),
+  );
   return dates.map((date) => format.format(date)).toList();
 }
 
-DateTime convertTimeStringToDateTime(String timeString) {
+DateTime convertTimeStringToDateTime(String timeString, DateTime? baseDate) {
   final List<String> parts = timeString.split(':');
   final int hour = int.parse(parts[0]);
   final int minute = int.parse(parts[1]);
-
-  final DateTime now = DateTime.now();
+  final DateTime now = baseDate ?? DateTime.now();
   return DateTime(now.year, now.month, now.day, hour, minute);
 }
 
@@ -167,14 +171,13 @@ DateTime getTwentyYearsAgoJanFirst() {
 
 PostTimeType? getPostTimeType(DateTime dateTime) {
   final List<DateTime> postTimes = [
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 7), // 7:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 10), // 10:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 12), // 12:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 15), // 15:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 18), // 18:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 20), // 20:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 22), // 22:00
-    DateTime(dateTime.year, dateTime.month, dateTime.day, 24), // 24:00
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 7),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 10),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 12),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 15),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 18),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 20),
+    DateTime(dateTime.year, dateTime.month, dateTime.day, 22),
   ];
 
   for (int i = 0; i < postTimes.length; i++) {
@@ -182,18 +185,26 @@ PostTimeType? getPostTimeType(DateTime dateTime) {
     final DateTime end = postTime.add(const Duration(minutes: 10));
     if (dateTime.isAtSameMomentAs(postTime) ||
         (dateTime.isAfter(postTime) && dateTime.isBefore(end))) {
-      return PostTimeType.values[i];
+      return PostTimeType.values[i + 1];
     }
   }
   return null;
 }
 
 String formatDuration(Duration duration) {
+  // 時間の部分を計算
+  final String twoDigitHours = duration.inHours.toString().padLeft(2, '0');
   final String twoDigitMinutes =
       duration.inMinutes.remainder(60).toString().padLeft(2, '0');
   final String twoDigitSeconds =
       duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-  return "$twoDigitMinutes:$twoDigitSeconds";
+
+  // 1時間を超えるかどうかでフォーマットを変更
+  if (duration.inHours > 0) {
+    return "$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds";
+  } else {
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
 }
 
 List<PostTimeType> getPostTimeTypesAfterIncluding(PostTimeType postTime) {

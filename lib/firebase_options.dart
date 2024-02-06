@@ -63,11 +63,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA1IN8ST5bR9sIGSfLaAPf0EmfY4HvRj8A',
-    appId: '1:568528201860:ios:59bae661bf7ac36922fad1',
+    appId: '1:568528201860:ios:22d265be5246109022fad1',
     messagingSenderId: '568528201860',
     projectId: 'lili-app-61e17',
     storageBucket: 'lili-app-61e17.appspot.com',
-    iosBundleId: 'com.liliApp.japanese',
+    iosClientId:
+        '568528201860-mvf783u60cf60hittsp3er0n0pclb0lp.apps.googleusercontent.com',
+    iosBundleId: 'com.liliApp.jp.jds',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,6 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '568528201860',
     projectId: 'lili-app-61e17',
     storageBucket: 'lili-app-61e17.appspot.com',
+    iosClientId:
+        '568528201860-97toacg98lmjc2rlm3h0u32mkb0so5jm.apps.googleusercontent.com',
     iosBundleId: 'com.example.liliApp.RunnerTests',
   );
 }

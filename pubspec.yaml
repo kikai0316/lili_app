@@ -24,10 +24,12 @@ dependencies:
   firebase_storage: ^11.6.3
   flutter:
     sdk: flutter
+  flutter_app_badger: ^1.5.0
   flutter_datetime_picker_plus: ^2.1.0
   flutter_hooks: ^0.20.4
   flutter_image_compress: ^2.1.0
   flutter_line_sdk: ^2.3.6
+  flutter_local_notifications: ^16.3.2
   flutter_localizations:
     sdk: flutter
   flutter_sms: ^2.3.3
@@ -42,6 +44,7 @@ dependencies:
   permission_handler: ^11.2.0
   riverpod_annotation: ^2.3.3
   riverpod_generator: ^2.3.9
+  timezone: ^0.9.2
   url_launcher: ^6.2.4
  
 dev_dependencies:

@@ -1,14 +1,17 @@
 import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> checkCameraPermission() async {
-  final status = await Permission.camera.status;
-  if (status.isGranted) {
+  final cameraStatus = await Permission.camera.status;
+  if (cameraStatus.isGranted) {
     return true;
-  } else if (status.isDenied) {
+  } else if (cameraStatus.isDenied) {
+    final requested = await Permission.camera.request();
+    return requested.isGranted;
+  } else if (cameraStatus.isPermanentlyDenied) {
     return false;
   } else {
-    final newStatus = await Permission.camera.request();
-    return newStatus.isGranted;
+    final requested = await Permission.camera.request();
+    return requested.isGranted;
   }
 }
 
@@ -29,9 +32,6 @@ Future<bool> checkContactsPermission() async {
   PermissionStatus status = await Permission.contacts.status;
   if (status.isGranted) {
     return true;
-  } else if (status.isDenied) {
-    status = await Permission.contacts.request();
-    return status.isGranted;
   } else if (status.isPermanentlyDenied) {
     return false;
   } else {

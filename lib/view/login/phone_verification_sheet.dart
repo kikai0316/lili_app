@@ -10,6 +10,7 @@ import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/message.dart';
 import 'package:lili_app/model/model.dart';
+import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/firebase/firebase_firestore_utility.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
@@ -164,7 +165,7 @@ class PhoneVerificationPage extends HookConsumerWidget {
       final dbUpData = await dbFirestoreLogin(
         UserType(
           openId: userProfile.userId,
-          userId: "user-${userProfile.userId}",
+          userId: generateRandomString(),
           name: userProfile.displayName,
           postList: PostListType(),
           friendList: [],

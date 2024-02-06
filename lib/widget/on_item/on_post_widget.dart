@@ -25,13 +25,30 @@ Widget onPostWidget(
         aspectRatio: 3 / 4,
         child: imgWidget(
           borderRadius: 15,
-          color: subColor,
+          color: mainBackGroundColor,
           networkUrl: postData?.postImg,
+          border: postData?.postImg == null
+              ? mainBorder(color: subColor, width: 4)
+              : null,
           child: Stack(
             children: [
               if (postData?.postImg == null)
                 Align(
-                  child: nText(notPostEmoji, fontSize: safeAreaWidth / 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.no_photography,
+                        color: subColor,
+                        size: safeAreaWidth / 10,
+                      ),
+                      nText(
+                        "投稿していません",
+                        fontSize: safeAreaWidth / 40,
+                        color: subColor,
+                      ),
+                    ],
+                  ),
                 ),
               if (postData?.doing != null)
                 Align(

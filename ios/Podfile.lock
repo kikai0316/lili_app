@@ -636,7 +636,7 @@ PODS:
   - BoringSSL-GRPC/Interface (0.0.24)
   - camera_avfoundation (0.0.1):
     - Flutter
-  - cloud_firestore (4.15.0):
+  - cloud_firestore (4.15.3):
     - Firebase/Firestore (= 10.20.0)
     - firebase_core
     - Flutter
@@ -657,18 +657,18 @@ PODS:
   - Firebase/Storage (10.20.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.20.0)
-  - firebase_auth (4.17.0):
+  - firebase_auth (4.17.3):
     - Firebase/Auth (= 10.20.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.25.2):
+  - firebase_core (2.25.3):
     - Firebase/CoreOnly (= 10.20.0)
     - Flutter
-  - firebase_messaging (14.7.11):
+  - firebase_messaging (14.7.14):
     - Firebase/Messaging (= 10.20.0)
     - firebase_core
     - Flutter
-  - firebase_storage (11.6.3):
+  - firebase_storage (11.6.4):
     - Firebase/Storage (= 10.20.0)
     - firebase_core
     - Flutter
@@ -730,6 +730,8 @@ PODS:
     - FirebaseCoreExtension (~> 10.0)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
   - Flutter (1.0.0)
+  - flutter_app_badger (1.3.0):
+    - Flutter
   - flutter_image_compress_common (1.0.0):
     - Flutter
     - Mantle
@@ -738,6 +740,8 @@ PODS:
   - flutter_line_sdk (2.3.6):
     - Flutter
     - LineSDKSwift (~> 5.3)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_sms (1.1.0):
     - Flutter
   - GoogleDataTransport (9.3.0):
@@ -826,6 +830,8 @@ PODS:
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.6.1)
+  - image_gallery_saver (2.0.2):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - leveldb-library (1.22.2)
@@ -878,10 +884,13 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - flutter_line_sdk (from `.symlinks/plugins/flutter_line_sdk/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_sms (from `.symlinks/plugins/flutter_sms/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
+  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -937,14 +946,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  flutter_app_badger:
+    :path: ".symlinks/plugins/flutter_app_badger/ios"
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
   flutter_line_sdk:
     :path: ".symlinks/plugins/flutter_line_sdk/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_sms:
     :path: ".symlinks/plugins/flutter_sms/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
+  image_gallery_saver:
+    :path: ".symlinks/plugins/image_gallery_saver/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
@@ -958,13 +973,13 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   camera_avfoundation: 8b8d780bcfb6a4a02b0fbe2b4bd17b5b71946e68
-  cloud_firestore: cd4875ae7408bc6ea2ac024d9540b72e19e3ca0c
+  cloud_firestore: c956777ddc3fba2d5f633e307db2db6337ebb81c
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   Firebase: 10c8cb12fb7ad2ae0c09ffc86cd9c1ab392a0031
-  firebase_auth: f54b22ea1a37d039f405708289917ea29d972915
-  firebase_core: 1612f1d8bbc8ed40598b1317e805658f1d79512f
-  firebase_messaging: 30d33503ee8447af738c4778e7a3a9764096c2a6
-  firebase_storage: 3b130181510cd35388f70286e47167b538cdcfc3
+  firebase_auth: 37eb4a237d7407336d9dc3b739e81153c5077d70
+  firebase_core: 96a734ae596de989b81a66f8a205f54485263555
+  firebase_messaging: 9a5136ff704c8aa1e2a664c6b159c41b3c3778d7
+  firebase_storage: cab6237615be4a29f042640cc6364d54e1b6ffc4
   FirebaseAppCheckInterop: e81bdb1cdb82f8e0cef353ba5018a8402682032c
   FirebaseAuth: 9c5c400d2c3055d8ae3a0284944c86fa95d48dac
   FirebaseAuthInterop: 6142981334978f7942ff0e8a6f8966c3b3c8ff37
@@ -978,8 +993,10 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 2fbf73618288b7a36b2014b957745dcdd781389e
   FirebaseStorage: 8505bae8ac6662474b5b50e07759fb2765c15746
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
   flutter_line_sdk: 76198d6c56481253ffda5af6dc8632d1f0c7db67
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_sms: 91ce41530f55c85d6524d82307a5d555844c086a
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
@@ -987,6 +1004,7 @@ SPEC CHECKSUMS:
   gRPC-Core: a21a60aefc08c68c247b439a9ef97174b0c54f96
   GTMSessionFetcher: 8a1b34ad97ebe6f909fb8b9b77fba99943007556
   image_cropper: a3291c624a953049bc6a02e1f8c8ceb162a24b25
+  image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
@@ -1002,6 +1020,6 @@ SPEC CHECKSUMS:
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
 
-PODFILE CHECKSUM: 8992d8935c7cb61c41b994634956536d8e71f873
+PODFILE CHECKSUM: 18dc4043fb266109b3dbcdf35758bc77c023c289
 
 COCOAPODS: 1.11.3

@@ -233,7 +233,7 @@ VoidCallback? mainButtonTapEvent(
   UserType myProfile,
 ) {
   if (addFriendsStateType == FriendsStateType.notAppUser) {
-    return () => sendSMSMessage(onContactListType.phoneNumber);
+    return () => sendSMSMessage(onContactListType.phoneNumber, isLoading);
   }
   if (addFriendsStateType == FriendsStateType.appUserNoRelationship) {
     return () => friendRequest(
@@ -256,11 +256,16 @@ VoidCallback? mainButtonTapEvent(
   return null;
 }
 
-Future<void> sendSMSMessage(String phoneNumber) async {
+Future<void> sendSMSMessage(
+  String phoneNumber,
+  ValueNotifier<bool> isLoading,
+) async {
+  isLoading.value = true;
   await sendSMS(
     message: "LiLi-appをダウンローどして、日常を共有する友達になりませんか？https://test",
     recipients: [phoneNumber],
   );
+  isLoading.value = false;
 }
 
 Future<void> friendRequest(

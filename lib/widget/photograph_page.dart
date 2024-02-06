@@ -264,7 +264,7 @@ Widget afterTakingPhoto(
                 onTap: [cancelOnTap, saveOnTap][i],
                 child: circleWidget(
                   size: safeAreaWidth * 0.09,
-                  color: subColor.withOpacity(0.5),
+                  color: subColor.withOpacity(0.9),
                   child: Icon(
                     [
                       Icons.close,

@@ -204,16 +204,19 @@ PreferredSizeWidget? homePageAppBar(
           myProfile: myProfile,
         ),
       ).left(),
-      child: nContainer(
-        padding: EdgeInsets.all(safeAreaWidth * 0.013),
-        height: safeAreaWidth * 0.11,
-        width: safeAreaWidth * 0.11,
-        child: imgWidget(assetFile: "friend_icon.png"),
+      child: Badge.count(
+        count: myProfile.friendRequestList.length,
+        isLabelVisible: myProfile.friendRequestList.isNotEmpty,
+        child: nContainer(
+          padding: EdgeInsets.all(safeAreaWidth * 0.013),
+          height: safeAreaWidth * 0.11,
+          width: safeAreaWidth * 0.11,
+          child: imgWidget(assetFile: "friend_icon.png"),
+        ),
       ),
     ),
-    customTitle: Container(
+    customTitle: nContainer(
       color: mainBackGroundColor,
-      width: safeAreaWidth,
       child: nText(
         "RoyalHy",
         fontSize: safeAreaWidth / 14,
@@ -248,6 +251,7 @@ class PostTinerWidget extends HookConsumerWidget {
         final now = DateTime.now();
         final difference = targetTime.difference(now);
         if (difference.isNegative) {
+          timeText.value = null;
         } else {
           timeText.value = formatDuration(difference);
         }
@@ -259,12 +263,14 @@ class PostTinerWidget extends HookConsumerWidget {
         SchedulerBinding.instance.addPostFrameCallback((_) {
           final postTimeType = getNextPostTime();
           if (postTimeType != null) {
-            final time =
-                convertTimeStringToDateTime(postTimeData[postTimeType]!);
-            final targetTime = time.add(const Duration(minutes: 10));
-            timeMessageUpData(
-              targetTime,
+            final now = DateTime.now();
+            final DateTime baseDate =
+                now.hour < 3 ? DateTime(now.year, now.month, now.day - 1) : now;
+            final time = convertTimeStringToDateTime(
+              postTimeData[postTimeType]!,
+              baseDate,
             );
+            timeMessageUpData(time);
           } else {
             timeText.value = null;
           }
@@ -323,25 +329,40 @@ class PostTinerWidget extends HookConsumerWidget {
                     ),
                   ),
                 ]
-              : [
-                  if (timeText.value != null)
-                    nText(
-                      "次の投稿時間まで",
-                      fontSize: safeAreaWidth / 30,
-                      shadows: mainBoxShadow(
-                        shadow: 1,
+              : timeText.value != null
+                  ? [
+                      nText(
+                        "次の投稿時間まで",
+                        fontSize: safeAreaWidth / 30,
+                        shadows: mainBoxShadow(
+                          shadow: 1,
+                        ),
                       ),
-                    ),
-                  nText(
-                    timeText.value ?? "今日の投稿は終了しました",
-                    fontSize: timeText.value != null
-                        ? safeAreaWidth / 9
-                        : safeAreaWidth / 20,
-                    shadows: mainBoxShadow(
-                      shadow: 1,
-                    ),
-                  ),
-                ],
+                      nText(
+                        timeText.value ?? "",
+                        fontSize: safeAreaWidth / 9,
+                        shadows: mainBoxShadow(
+                          shadow: 1,
+                        ),
+                      ),
+                    ]
+                  : [
+                      nContainer(
+                        padding: xPadding(
+                          context,
+                          top: safeAreaWidth * 0.025,
+                          bottom: safeAreaWidth * 0.025,
+                        ),
+                        radius: 20,
+                        color: Colors.white,
+                        child: nText(
+                          "今日の投稿は終了しました\n午前3時に起床の投稿ができます",
+                          fontSize: safeAreaWidth / 25,
+                          height: 1.5,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
         ),
       ),
     );
@@ -369,16 +390,27 @@ class PostTinerWidget extends HookConsumerWidget {
 
   PostTimeType? getNextPostTime() {
     final now = DateTime.now();
+    final todayOrYesterday =
+        now.hour < 3 ? now.subtract(const Duration(days: 1)) : now;
+    final resetTime = DateTime(
+      todayOrYesterday.year,
+      todayOrYesterday.month,
+      todayOrYesterday.day,
+      3,
+    );
     final List<PostTimeType> postTimes = postTimeData.keys.toList();
+    postTimes.removeAt(0);
+    final baseTime = now.isBefore(resetTime) ? resetTime : now;
     for (final postTime in postTimes) {
-      if (postTime == PostTimeType.wakeUp) {
-        continue;
-      }
-      final time = convertTimeStringToDateTime(postTimeData[postTime]!);
-      if (now.isBefore(time)) {
+      final time = convertTimeStringToDateTime(postTimeData[postTime]!, null);
+      if (baseTime.isBefore(time) || baseTime.isBefore(resetTime)) {
         return postTime;
       }
     }
+    if (now.hour >= 3) {
+      return postTimes.first;
+    }
+
     return null;
   }
 }
