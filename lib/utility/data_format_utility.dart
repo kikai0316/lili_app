@@ -208,7 +208,7 @@ String formatDuration(Duration duration) {
 }
 
 List<PostTimeType> getPostTimeTypesAfterIncluding(PostTimeType postTime) {
-  const List<PostTimeType> allPostTimes = PostTimeType.values;
+  final List<PostTimeType> allPostTimes = List.from(PostTimeType.values);
   allPostTimes.removeAt(0);
   final int startIndex = allPostTimes.indexOf(postTime);
   return allPostTimes.sublist(startIndex);

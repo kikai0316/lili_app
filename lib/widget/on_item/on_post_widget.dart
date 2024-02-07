@@ -50,7 +50,7 @@ Widget onPostWidget(
                     ],
                   ),
                 ),
-              if (postData?.doing != null)
+              if (postData?.doing != null && (postData?.doing ?? "").isNotEmpty)
                 Align(
                   alignment: Alignment.bottomRight,
                   child: textWidget(context, postData!.doing!),

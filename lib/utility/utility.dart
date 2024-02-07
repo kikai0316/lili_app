@@ -85,7 +85,7 @@ Future<File?> getMobileImage(
     final compressedFile = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       "${file.absolute.path}_bubu.jpg",
-      quality: 80,
+      quality: 50,
     );
     if (compressedFile == null) {
       errorShowDialog(true);

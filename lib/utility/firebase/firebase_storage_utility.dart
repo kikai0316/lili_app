@@ -142,7 +142,10 @@ Future<PostListType?> dbStoragePostDownload({
         final getImg = await item.getDownloadURL();
         dataList.add(
           PostType(
-              postImg: getImg, doing: split[1], postDateTime: postDateTime,),
+            postImg: getImg,
+            doing: split[1],
+            postDateTime: postDateTime,
+          ),
         );
       }());
     }

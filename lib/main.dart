@@ -71,6 +71,7 @@ Future<void> _scheduleDaily8AMNotification() async {
         ),
         iOS: DarwinNotificationDetails(
           badgeNumber: 1,
+          sound: '成功音',
         ),
       ),
       uiLocalNotificationDateInterpretation:
