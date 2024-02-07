@@ -135,7 +135,6 @@ class PhoneVerificationPage extends HookConsumerWidget {
         loadinPage(
           context: context,
           isLoading: isLoading.value,
-          isDefaultIndicator: false,
         ),
       ],
     );
