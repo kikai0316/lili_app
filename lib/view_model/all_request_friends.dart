@@ -12,9 +12,13 @@ class AllRequestFriendsNotifier extends _$AllRequestFriendsNotifier {
   }
 
   Future<void> getUsers(List<String> userIds) async {
-    final getUserData = await dbFirestoreGetUsers(userIds);
+    final List<UserType> oldList = state.value ?? [];
+    final List<String> oldUserIds = oldList.map((e) => e.openId).toList();
+    final addUserIds =
+        userIds.where((element) => !oldUserIds.contains(element)).toList();
+    final getUserData = await dbFirestoreGetUsers(addUserIds);
     state = await AsyncValue.guard(() async {
-      return getUserData;
+      return [...oldList, ...getUserData];
     });
   }
 

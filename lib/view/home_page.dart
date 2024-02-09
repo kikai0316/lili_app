@@ -14,6 +14,7 @@ import 'package:lili_app/utility/sort_utility.dart';
 import 'package:lili_app/utility/type_updata_utility.dart';
 import 'package:lili_app/view/login/line_login_page.dart';
 import 'package:lili_app/view_model/all_friends.dart';
+import 'package:lili_app/view_model/post_timer.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/home_widget.dart';
 
@@ -49,52 +50,54 @@ class HomePage extends HookConsumerWidget {
       backgroundColor: mainBackGroundColor,
       extendBody: true,
       appBar: homePageAppBar(context, myProfile: userData),
-      body: CustomMaterialIndicator(
-        indicatorBuilder: (context, controller) {
-          return nIndicatorWidget(safeAreaWidth / 30);
-        },
-        backgroundColor: Colors.transparent,
-        withRotation: false,
-        onRefresh: () => reFetch(ref, userData),
-        onStateChanged: (change) {
-          if (change.didChange(to: IndicatorState.dragging)) {
-            isRefres.value = true;
-          } else if (change.didChange(to: IndicatorState.idle)) {
-            isRefres.value = false;
-          }
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (isRefres.value)
-                SizedBox(
-                  height: safeAreaHeight * 0.1,
-                ),
-              titleWidget(context, "私の親友たち", isView: true),
-              myFriendWidget(context, allFriends, userData),
-              Padding(
-                padding: yPadding(context),
-                child: line(),
-              ),
-              for (final item in postTimeData.values) ...{
-                postWidget(
-                  context,
-                  item,
-                  sortPostDataList(
-                    item,
-                    [...allFriends, userData],
-                  ),
-                  userData,
-                ),
+      body: userData.postList.wakeUp != null
+          ? CustomMaterialIndicator(
+              indicatorBuilder: (context, controller) {
+                return nIndicatorWidget(safeAreaWidth / 30);
               },
-              SizedBox(
-                height: safeAreaHeight * 0.25,
+              backgroundColor: Colors.transparent,
+              withRotation: false,
+              onRefresh: () => reFetch(ref, userData),
+              onStateChanged: (change) {
+                if (change.didChange(to: IndicatorState.dragging)) {
+                  isRefres.value = true;
+                } else if (change.didChange(to: IndicatorState.idle)) {
+                  isRefres.value = false;
+                }
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isRefres.value)
+                      SizedBox(
+                        height: safeAreaHeight * 0.1,
+                      ),
+                    titleWidget(context, "私の親友たち", isView: true),
+                    myFriendWidget(context, allFriends, userData),
+                    Padding(
+                      padding: yPadding(context),
+                      child: line(),
+                    ),
+                    for (final item in postTimeData.values) ...{
+                      postWidget(
+                        context,
+                        item,
+                        sortPostDataList(
+                          item,
+                          [...allFriends, userData],
+                        ),
+                        userData,
+                      ),
+                    },
+                    SizedBox(
+                      height: safeAreaHeight * 0.25,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : wakeUpPostBackgroundPage(context, userData),
       bottomNavigationBar: PostTinerWidget(
         myProfile: userData,
       ),
@@ -102,14 +105,16 @@ class HomePage extends HookConsumerWidget {
   }
 
   Future<void> reFetch(WidgetRef ref, UserType myProfile) async {
+    final userData = ref.read(userDataNotifierProvider.notifier);
+    final allFriendsNotifier = ref.read(allFriendsNotifierProvider.notifier);
+    final postTimerNotifier = ref.read(postTimerNotifierProvider.notifier);
     final profileData = await dbFirestoreReadUser(myProfile.openId);
     if (profileData == null) return;
     final postData =
         await dbStoragePostDownload(id: profileData.openId) ?? PostListType();
-    final allFriendsNotifier = ref.read(allFriendsNotifierProvider.notifier);
     await allFriendsNotifier.reFetch(profileData.friendList);
-    final userData = ref.read(userDataNotifierProvider.notifier);
     final setUserData = userTypeUpDate(profileData, postListType: postData);
     await userData.userDataUpDate(setUserData);
+    postTimerNotifier.timerPeriodic();
   }
 }

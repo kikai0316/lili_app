@@ -16,11 +16,20 @@ bool isTimePassed(String timeString) {
 
 bool isAfterThreeAM(DateTime dateTime) {
   final DateTime now = DateTime.now();
-  DateTime threeAMToday = DateTime(now.year, now.month, now.day, 3);
+  final DateTime threeAMToday = DateTime(now.year, now.month, now.day, 3);
+  final DateTime yesterday =
+      DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
+  final DateTime today = DateTime(now.year, now.month, now.day);
+
   if (now.isBefore(threeAMToday)) {
-    threeAMToday = threeAMToday.subtract(const Duration(days: 1));
+    return dateTime.year == yesterday.year &&
+        dateTime.month == yesterday.month &&
+        dateTime.day == yesterday.day;
+  } else {
+    return dateTime.year == today.year &&
+        dateTime.month == today.month &&
+        dateTime.day == today.day;
   }
-  return dateTime.isAfter(threeAMToday);
 }
 
 List<String> pastPostDateStrings(Iterable<String> dateString) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/app_bar.dart';
@@ -9,11 +8,11 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/message.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
-import 'package:lili_app/utility/path_provider_utility.dart';
 import 'package:lili_app/utility/permission_utlity.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/home_page.dart';
 import 'package:lili_app/view_model/contact_list.dart';
+import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/add_friend_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -28,28 +27,9 @@ class SearchFriendPage extends HookConsumerWidget {
     final isCancelIcon = useState<bool>(false);
     final isSearch = useState<bool>(false);
     final isRefresAddFriend = useState<bool>(false);
-    final applyingList = useState<List<String>?>(null);
     final searchResults = useState<List<UserType>?>(null);
     final isDataReady = contactListState is AsyncData<ContactListType?>;
     final ContactListType? contactList = contactListState.value;
-
-    useEffect(
-      () {
-        textEditingController ??= TextEditingController();
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Future(() async {
-            await contactPermission(context);
-            if (applyingList.value != null) return;
-            final getApplyingList = await localReadList();
-            if (!context.mounted) return;
-            applyingList.value = getApplyingList;
-          });
-        });
-        return () => textEditingController?.dispose();
-      },
-      [],
-    );
-
     return Scaffold(
       extendBody: true,
       backgroundColor: mainBackGroundColor,
@@ -74,16 +54,16 @@ class SearchFriendPage extends HookConsumerWidget {
                       context,
                       myProfile: myProfile,
                       searchResults: searchResults,
-                      applyingList: applyingList,
                     )
                   : addFriendLists(
                       context,
                       myProfile: myProfile,
                       isRefresAddFriend: isRefresAddFriend,
                       contactList: contactList,
-                      applyingList: applyingList,
                       isDataReady: isDataReady,
-                      onRefresh: () => reFetch(ref, applyingList),
+                      onRefresh: () => reFetch(
+                        ref,
+                      ),
                     ),
             ),
           ],
@@ -104,12 +84,11 @@ class SearchFriendPage extends HookConsumerWidget {
 
   Future<void> reFetch(
     WidgetRef ref,
-    ValueNotifier<List<String>?> applyingList,
   ) async {
     final contactListNotifier = ref.read(contactListNotifierProvider.notifier);
+    final userDataNotifier = ref.read(userDataNotifierProvider.notifier);
     await contactListNotifier.reacquisition();
-    final getApplyingList = await localReadList();
-    applyingList.value = getApplyingList;
+    await userDataNotifier.reacquisition();
   }
 }
 

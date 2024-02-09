@@ -172,12 +172,7 @@ class PhotographPage extends HookConsumerWidget {
                                                 );
                                               case CamControllerState
                                                     .unInitialize:
-                                                return Center(
-                                                  child:
-                                                      photographPageLoagingWidget(
-                                                    context,
-                                                  ),
-                                                );
+                                                return const SizedBox();
                                             }
                                           }(),
                                   ),
