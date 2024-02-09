@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:lili_app/component/app_bar.dart';
@@ -45,6 +46,7 @@ class PhotographPage extends HookConsumerWidget {
     final safeAreaHeight = safeHeight(context);
     final safeAreaWidth = MediaQuery.of(context).size.width;
     final isFlash = useState<bool>(false);
+    final isFrontCamera = useState<bool>(true);
     final picture = useState<Uint8List?>(null);
     final isLoading = useState<bool>(false);
     final timeMessage = useState<String?>("");
@@ -68,7 +70,7 @@ class PhotographPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        cameraControllerInitialize(context, camControllerState);
+        cameraControllerInitialize(context, camControllerState, isFrontCamera);
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (isWakeUp) {
             timeMessage.value = "おはようございます！";
@@ -160,6 +162,7 @@ class PhotographPage extends HookConsumerWidget {
                                                       cameraControllerInitialize(
                                                     context,
                                                     camControllerState,
+                                                    isFrontCamera,
                                                   ),
                                                 );
                                               case CamControllerState
@@ -169,12 +172,7 @@ class PhotographPage extends HookConsumerWidget {
                                                 );
                                               case CamControllerState
                                                     .unInitialize:
-                                                return Center(
-                                                  child:
-                                                      photographPageLoagingWidget(
-                                                    context,
-                                                  ),
-                                                );
+                                                return const SizedBox();
                                             }
                                           }(),
                                   ),
@@ -198,8 +196,17 @@ class PhotographPage extends HookConsumerWidget {
                                 isAccess: camControllerState.value ==
                                     CamControllerState.success,
                                 isFlash: isFlash,
-                                flashTapEvent: (valiue) {},
-                                returnTapEvent: () {},
+                                flashTapEvent: (value) {
+                                  final flashMode =
+                                      value ? FlashMode.torch : FlashMode.off;
+                                  cameraController?.setFlashMode(flashMode);
+                                },
+                                returnTapEvent: () =>
+                                    cameraControllerInitialize(
+                                  context,
+                                  camControllerState,
+                                  isFrontCamera,
+                                ),
                                 shootingTapEvent: () => takePicture(
                                   context,
                                   picture,
@@ -252,6 +259,7 @@ class PhotographPage extends HookConsumerWidget {
   Future<void> cameraControllerInitialize(
     BuildContext context,
     ValueNotifier<CamControllerState> camControllerState,
+    ValueNotifier<bool> isFrontCamera,
   ) async {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final isPermission = await checkCameraPermission();
@@ -262,15 +270,28 @@ class PhotographPage extends HookConsumerWidget {
       }
       final cameras = await availableCameras();
       if (!context.mounted) return;
-      cameraController =
-          CameraController(cameras.first, ResolutionPreset.medium);
-      cameraController
-          ?.initialize()
-          .then((_) => camControllerState.value = CamControllerState.success)
-          .onError(
-            (error, stackTrace) =>
-                camControllerState.value = CamControllerState.systemError,
+      try {
+        if (!isFrontCamera.value) {
+          final frontCamera = cameras.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.front,
+            orElse: () => cameras.first,
           );
+          cameraController =
+              CameraController(frontCamera, ResolutionPreset.medium);
+          await cameraController?.initialize();
+          isFrontCamera.value = true;
+        } else {
+          cameraController =
+              CameraController(cameras.first, ResolutionPreset.medium);
+          await cameraController?.initialize();
+          isFrontCamera.value = false;
+        }
+
+        camControllerState.value = CamControllerState.success;
+      } catch (error) {
+        camControllerState.value = CamControllerState.systemError;
+        cameraController?.dispose();
+      }
     });
   }
 
@@ -350,18 +371,29 @@ class PhotographPage extends HookConsumerWidget {
       await file.writeAsBytes(
         imageBytes,
       );
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path,
+        "${file.absolute.path}_bubu.jpg",
+        quality: 60,
+      );
       if (!context.mounted) return;
+      if (compressedFile == null) {
+        errorAlertDialog(context, subTitle: eMessageSystem);
+        return;
+      }
+      final fileImg = File(compressedFile.path);
       final postUpload = isWakeUp
           ? await dbStorageWakeUpPostUpload(
               id: myProfile.openId,
-              img: file,
-              onError: () =>
-                  errorAlertDialog(context, subTitle: eMessageSystem),
+              img: fileImg,
+              onError: () {
+                errorAlertDialog(context, subTitle: eMessageSystem);
+              },
             )
           : await dbStoragePostUpload(
               nowTime: nowTime,
               id: myProfile.openId,
-              img: file,
+              img: fileImg,
               nowState: nowState,
               onTimeOut: () {
                 isLoading.value = false;
@@ -395,7 +427,7 @@ class PhotographPage extends HookConsumerWidget {
       await localWritePastPostData(
         postTimeType,
         PastPostType(
-          postImg: file,
+          postImg: fileImg,
           doing: nowState,
           postDateTime: nowTime,
         ),

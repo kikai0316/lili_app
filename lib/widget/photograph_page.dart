@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
-import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
@@ -103,31 +102,6 @@ Widget photographPostButtonWidget(
               ),
             ],
           ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget photographPageLoagingWidget(
-  BuildContext context,
-) {
-  final safeAreaWidth = MediaQuery.of(context).size.width;
-  return imgWidget(
-    size: double.infinity,
-    assetFile: "photograph.png",
-    borderRadius: 40,
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(40),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 50.0,
-          sigmaY: 50.0,
-        ),
-        child: nContainer(
-          alignment: Alignment.center,
-          radius: 40,
-          child: nIndicatorWidget(safeAreaWidth / 30),
         ),
       ),
     ),

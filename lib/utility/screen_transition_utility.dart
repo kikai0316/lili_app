@@ -24,6 +24,8 @@ class ScreenTransition {
                 child: child,
               );
             },
+            transitionDuration: const Duration(milliseconds: 100),
+            reverseTransitionDuration: const Duration(milliseconds: 100),
           ),
         )
         .then((value) => onThen?.call());

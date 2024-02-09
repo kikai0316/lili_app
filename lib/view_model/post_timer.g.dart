@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'all_past_post.dart';
+part of 'post_timer.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allPastPostNotifierHash() =>
-    r'2ad11745d7c5e6fcd3ca626aa3aa5627e4fa7481';
+String _$postTimerNotifierHash() => r'fc039fc7a62bed4c57e31e0ede674e186450c233';
 
-/// See also [AllPastPostNotifier].
-@ProviderFor(AllPastPostNotifier)
-final allPastPostNotifierProvider = AsyncNotifierProvider<AllPastPostNotifier,
-    Map<String, PastPostListType>>.internal(
-  AllPastPostNotifier.new,
-  name: r'allPastPostNotifierProvider',
+/// See also [PostTimerNotifier].
+@ProviderFor(PostTimerNotifier)
+final postTimerNotifierProvider =
+    AsyncNotifierProvider<PostTimerNotifier, Duration?>.internal(
+  PostTimerNotifier.new,
+  name: r'postTimerNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$allPastPostNotifierHash,
+      : _$postTimerNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$AllPastPostNotifier = AsyncNotifier<Map<String, PastPostListType>>;
+typedef _$PostTimerNotifier = AsyncNotifier<Duration?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

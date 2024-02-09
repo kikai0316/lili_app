@@ -12,7 +12,6 @@ import 'package:lili_app/constant/message.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/firebase/firebase_firestore_utility.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
-import 'package:lili_app/utility/path_provider_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/pages/fullscreen_friend_page.dart';
 import 'package:lili_app/view_model/all_request_friends.dart';
@@ -21,11 +20,9 @@ class OnAddFriend extends HookConsumerWidget {
   const OnAddFriend({
     super.key,
     required this.onContactListType,
-    required this.applyingList,
     required this.myProfile,
   });
   final OnContactListType onContactListType;
-  final ValueNotifier<List<String>?> applyingList;
   final UserType myProfile;
 
   @override
@@ -35,7 +32,10 @@ class OnAddFriend extends HookConsumerWidget {
     final isLoading = useState<bool>(false);
     final userData = onContactListType.userData;
     final contactsName = onContactListType.contactsName;
-    final friendsStateType = addFriendsStateType(userData);
+    final List<String> appUserIds =
+        onContactListType.userData?.friendRequestList ?? [];
+    final friendsState =
+        useState<FriendsStateType>(addFriendsStateType(userData, appUserIds));
     final List<String> dataList = userData != null
         ? [
             userData.name,
@@ -46,7 +46,9 @@ class OnAddFriend extends HookConsumerWidget {
             if (contactsName != null) contactsName,
             onContactListType.phoneNumber,
           ];
-
+    useEffect(() {
+      return null;
+    }, [],);
     return Padding(
       padding: customPadding(bottom: safeAreaHeight * 0.02),
       child: Container(
@@ -61,10 +63,9 @@ class OnAddFriend extends HookConsumerWidget {
                   ? () => ScreenTransition(
                         context,
                         FullScreenFriendPage(
-                          userData: userData,
-                          myProfile: myProfile,
-                          friendsStateType: friendsStateType,
-                        ),
+                            userData: userData,
+                            myProfile: myProfile,
+                            friendsStateType: friendsState.value,),
                       ).top()
                   : null,
               child: ColoredBox(
@@ -140,18 +141,18 @@ class OnAddFriend extends HookConsumerWidget {
                       height: safeAreaHeight * 0.04,
                       radius: 50,
                       backGroundColor:
-                          mainButtonBackGroundColor(friendsStateType),
-                      textColor: mainButtonTextColor(friendsStateType),
+                          mainButtonBackGroundColor(friendsState.value),
+                      textColor: mainButtonTextColor(friendsState.value),
                       fontSize: safeAreaWidth / 30,
-                      text: mainButtonText(friendsStateType),
+                      text: mainButtonText(friendsState.value),
                       onTap: mainButtonTapEvent(
                         context,
                         ref,
-                        friendsStateType,
+                        friendsState.value,
                         isLoading,
                         onContactListType,
-                        applyingList,
                         myProfile,
+                        onChange: (value) => friendsState.value = value,
                       ),
                     )
                   : Padding(
@@ -167,7 +168,10 @@ class OnAddFriend extends HookConsumerWidget {
     );
   }
 
-  FriendsStateType addFriendsStateType(UserType? userType) {
+  FriendsStateType addFriendsStateType(
+    UserType? userType,
+    List<String> appUserIds,
+  ) {
     if (userType == null) return FriendsStateType.notAppUser;
     if (myProfile.friendList.contains(userType.openId)) {
       return FriendsStateType.appUserFriended;
@@ -175,7 +179,7 @@ class OnAddFriend extends HookConsumerWidget {
     if (myProfile.friendRequestList.contains(userType.openId)) {
       return FriendsStateType.appUserReceivedApplication;
     }
-    if ((applyingList.value ?? []).contains(userType.openId)) {
+    if (appUserIds.contains(myProfile.openId)) {
       return FriendsStateType.appUserApplication;
     }
     return FriendsStateType.appUserNoRelationship;
@@ -224,34 +228,42 @@ String mainButtonText(FriendsStateType addFriendsStateType) {
 }
 
 VoidCallback? mainButtonTapEvent(
-  BuildContext context,
-  WidgetRef ref,
-  FriendsStateType addFriendsStateType,
-  ValueNotifier<bool> isLoading,
-  OnContactListType onContactListType,
-  ValueNotifier<List<String>?> applyingList,
-  UserType myProfile,
-) {
+    BuildContext context,
+    WidgetRef ref,
+    FriendsStateType addFriendsStateType,
+    ValueNotifier<bool> isLoading,
+    OnContactListType onContactListType,
+    UserType myProfile,
+    {void Function(FriendsStateType)? onChange,}) {
   if (addFriendsStateType == FriendsStateType.notAppUser) {
     return () => sendSMSMessage(onContactListType.phoneNumber, isLoading);
   }
   if (addFriendsStateType == FriendsStateType.appUserNoRelationship) {
-    return () => friendRequest(
-          context,
-          isLoading,
-          applyingList,
-          onContactListType,
-          myProfile,
-        );
+    return () async {
+      final isSuccess = await friendRequest(
+        context,
+        isLoading,
+        onContactListType,
+        myProfile,
+      );
+      if (isSuccess && onChange != null) {
+        onChange(FriendsStateType.appUserApplication);
+      }
+    };
   }
   if (addFriendsStateType == FriendsStateType.appUserReceivedApplication) {
-    return () => friendRequestPermission(
-          context,
-          ref,
-          isLoading,
-          onContactListType,
-          myProfile,
-        );
+    return () async {
+      final isSuccess = await friendRequestPermission(
+        context,
+        ref,
+        isLoading,
+        onContactListType,
+        myProfile,
+      );
+      if (isSuccess && onChange != null) {
+        onChange(FriendsStateType.appUserFriended);
+      }
+    };
   }
   return null;
 }
@@ -268,34 +280,27 @@ Future<void> sendSMSMessage(
   isLoading.value = false;
 }
 
-Future<void> friendRequest(
+Future<bool> friendRequest(
   BuildContext context,
   ValueNotifier<bool> isLoading,
-  ValueNotifier<List<String>?> applyingList,
   OnContactListType onContactListType,
   UserType myProfile,
 ) async {
   final userData = onContactListType.userData;
-  if (userData == null) return;
+  if (userData == null) return false;
   isLoading.value = true;
   final isRequest =
       await dbFirestoreFriendRequest(userData.openId, myProfile.openId);
-  if (!context.mounted) return;
+  if (!context.mounted) return false;
   if (!isRequest) {
     errorAlertDialog(context, subTitle: eMessageSystem);
-    return;
+    return false;
   }
-
-  applyingList.value = [
-    ...applyingList.value ?? [],
-    userData.openId,
-  ];
-  await localWriteList(applyingList.value ?? []);
-
   isLoading.value = false;
+  return true;
 }
 
-Future<void> friendRequestPermission(
+Future<bool> friendRequestPermission(
   BuildContext context,
   WidgetRef ref,
   ValueNotifier<bool> isLoading,
@@ -303,19 +308,20 @@ Future<void> friendRequestPermission(
   UserType myProfile,
 ) async {
   final userData = onContactListType.userData;
-  if (userData == null) return;
+  if (userData == null) return false;
   isLoading.value = true;
   final isRequest = await dbFirestoreFriendRequestPermission(
     userData.openId,
     myProfile.openId,
   );
-  if (!context.mounted) return;
+  if (!context.mounted) return false;
   if (!isRequest) {
     errorAlertDialog(context, subTitle: eMessageSystem);
-    return;
+    return false;
   }
   final allRequestFriendsNotifier =
       ref.read(allRequestFriendsNotifierProvider.notifier);
   await allRequestFriendsNotifier.delete(userData.openId);
   isLoading.value = false;
+  return true;
 }

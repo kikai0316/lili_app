@@ -16,28 +16,30 @@ Future<File> localFile(String fileName) async {
   return File('$path/$fileName');
 }
 
-Future<File> localWriteList(
-  List<String> data,
-) async {
-  final file = await localFile("applying");
-  final jsonList = jsonEncode(data);
-  return file.writeAsString(jsonList);
-}
+// Future<File> localWriteList(
+//   List<String> data,
+// ) async {
+//   final file = await localFile("applying");
+//   final jsonList = jsonEncode(data);
+//   return file.writeAsString(jsonList);
+// }
 
-Future<List<String>> localReadList() async {
-  try {
-    final file = await localFile("applying");
-    final String jsonList = await file.readAsString();
-    final List<String> mylist =
-        List<String>.from(jsonDecode(jsonList) as Iterable<dynamic>);
-    return mylist;
-  } catch (e) {
-    return [];
-  }
-}
+// Future<List<String>> localReadList() async {
+//   try {
+//     final file = await localFile("applying");
+//     final String jsonList = await file.readAsString();
+//     final List<String> mylist =
+//         List<String>.from(jsonDecode(jsonList) as Iterable<dynamic>);
+//     return mylist;
+//   } catch (e) {
+//     return [];
+//   }
+// }
 
 Future<bool> localWritePastPostData(
-    PostTimeType postTime, PastPostType postData,) async {
+  PostTimeType postTime,
+  PastPostType postData,
+) async {
   try {
     final file = await localFile("pastpost");
     Map<String, dynamic> jsonMapDecode;
@@ -49,7 +51,10 @@ Future<bool> localWritePastPostData(
     }
     final date = DateFormat('yyyy/MM/dd').format(DateTime.now());
     final pastPostListData = pastPstListTypeUpDate(
-        PastPostListType.fromMap(jsonMapDecode), postTime, postData,);
+      PastPostListType.fromMap(jsonMapDecode),
+      postTime,
+      postData,
+    );
     jsonMapDecode[date] = pastPostListData.toMap();
     final String jsonStringEncode = jsonEncode(jsonMapDecode);
     await file.writeAsString(jsonStringEncode);
@@ -59,15 +64,6 @@ Future<bool> localWritePastPostData(
   }
 }
 
-// final pastPostListData = pastPstListTypeUpDate(
-//   myProfile.postList,
-//   isWakeUp ? PostTimeType.wakeUp : getPostTimeType(nowTime)!,
-//   PostType(
-//     postImg: postUpload,
-//     postDateTime: nowTime,
-//     doing: nowState,
-//   ),
-// );
 Future<Map<String, PastPostListType>?> localReadPastPostData() async {
   try {
     final file = await localFile("pastpost");

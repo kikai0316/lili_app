@@ -15,7 +15,12 @@ class AllFriendsNotifier extends _$AllFriendsNotifier {
   }
 
   Future<void> init(List<String> ids) async {
-    final futures = ids.map((id) async {
+    final List<UserType> oldList = state.value ?? [];
+    final List<String> oldUserIds = oldList.map((e) => e.openId).toList();
+    final addUserIds =
+        ids.where((element) => !oldUserIds.contains(element)).toList();
+
+    final futures = addUserIds.map((id) async {
       final profileData = await dbFirestoreReadUser(id);
       if (profileData == null) return null;
       final postData =
@@ -23,7 +28,7 @@ class AllFriendsNotifier extends _$AllFriendsNotifier {
       return userTypeUpDate(profileData, postListType: postData);
     }).toList();
     final users = (await Future.wait(futures)).whereType<UserType>().toList();
-    state = await AsyncValue.guard(() async => users);
+    state = await AsyncValue.guard(() async => [...oldList, ...users]);
   }
 
   Future<void> reFetch(List<String> ids) async {

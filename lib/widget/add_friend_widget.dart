@@ -101,7 +101,6 @@ Widget addFriendLists(
   BuildContext context, {
   required UserType myProfile,
   required ContactListType? contactList,
-  required ValueNotifier<List<String>?> applyingList,
   required ValueNotifier<bool> isRefresAddFriend,
   required Future<void> Function() onRefresh,
   required bool isDataReady,
@@ -146,7 +145,6 @@ Widget addFriendLists(
           ...appUserList.map(
             (item) => OnAddFriend(
               onContactListType: item,
-              applyingList: applyingList,
               myProfile: myProfile,
             ),
           ),
@@ -166,7 +164,6 @@ Widget addFriendLists(
           ...contactUserList.map(
             (item) => OnAddFriend(
               onContactListType: item,
-              applyingList: applyingList,
               myProfile: myProfile,
             ),
           ),
@@ -183,7 +180,6 @@ Widget addFriendSearchList(
   BuildContext context, {
   required UserType myProfile,
   required ValueNotifier<List<UserType>?> searchResults,
-  required ValueNotifier<List<String>?> applyingList,
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
@@ -208,7 +204,6 @@ Widget addFriendSearchList(
               phoneNumber: item.phoneNumber,
               userData: item,
             ),
-            applyingList: applyingList,
             myProfile: myProfile,
           ),
         ),
@@ -224,7 +219,6 @@ Widget friendRequestLists(
   BuildContext context, {
   required UserType myProfile,
   required List<UserType>? userList,
-  required ValueNotifier<List<String>?> applyingList,
   required bool isDataReady,
   required ValueNotifier<bool> isRefresfriendRequest,
   required Future<void> Function() onRefresh,
@@ -268,7 +262,6 @@ Widget friendRequestLists(
                 phoneNumber: item.phoneNumber,
                 userData: item,
               ),
-              applyingList: applyingList,
               myProfile: myProfile,
             ),
           ),

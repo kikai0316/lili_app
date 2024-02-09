@@ -1,8 +1,5 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
@@ -18,6 +15,7 @@ import 'package:lili_app/view/pages/friend_page.dart';
 import 'package:lili_app/view/pages/fullscreen_post_page.dart';
 import 'package:lili_app/view/pages/photograph_page.dart';
 import 'package:lili_app/view/profile_pages/my_profile_page.dart';
+import 'package:lili_app/view_model/post_timer.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 
@@ -178,7 +176,7 @@ Widget titleWidget(
             ),
           ),
           nText(
-            "閲覧できません。",
+            "投稿がないため、閲覧できません。",
             isGradation: total == postCount,
             color: Colors.grey.withOpacity(0.5),
             fontSize: safeAreaWidth / 40,
@@ -242,130 +240,49 @@ class PostTinerWidget extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final safeAreaHeight = safeHeight(context);
     final safeAreaWidth = MediaQuery.of(context).size.width;
-    final timeText = useState<String?>("");
-    Timer? timer;
-    void timeMessageUpData(
-      DateTime targetTime,
-    ) {
-      timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-        final now = DateTime.now();
-        final difference = targetTime.difference(now);
-        if (difference.isNegative) {
-          timeText.value = null;
-        } else {
-          timeText.value = formatDuration(difference);
+    final postTimerNotifierState = ref.watch(postTimerNotifierProvider);
+    final List<Widget> postTimerWidegt = postTimerNotifierState.when(
+      data: (value) {
+        if (myProfile.postList.wakeUp == null) return [const SizedBox()];
+        if (isPostTimeAvailable()) {
+          return [
+            Padding(
+              padding: yPadding(context),
+              child: nText("投稿の時間になりました！", fontSize: safeAreaWidth / 30),
+            ),
+            postButtonWidget(context, myProfile),
+          ];
         }
-      });
-    }
-
-    useEffect(
-      () {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          final postTimeType = getNextPostTime();
-          if (postTimeType != null) {
-            final now = DateTime.now();
-            final DateTime baseDate =
-                now.hour < 3 ? DateTime(now.year, now.month, now.day - 1) : now;
-            final time = convertTimeStringToDateTime(
-              postTimeData[postTimeType]!,
-              baseDate,
-            );
-            timeMessageUpData(time);
-          } else {
-            timeText.value = null;
-          }
-        });
-        return () => timer?.cancel();
+        if (isEndPostTime()) {
+          return [
+            nText(
+              "今日の投稿は終了しました。\n次は午前3時以降から起床の投稿ができます",
+              fontSize: safeAreaWidth / 30,
+              height: 1.5,
+            ),
+          ];
+        }
+        return List.generate(
+          2,
+          (i) => nText(
+            ["次の投稿時間まで", if (value != null) formatDuration(value) else ""][i],
+            shadows: mainBoxShadow(shadow: 1),
+            fontSize: [safeAreaWidth / 30, safeAreaWidth / 9][i],
+          ),
+        );
       },
-      [],
+      error: (e, s) => [],
+      loading: () => [],
     );
-
     return SizedBox(
-      width: safeAreaWidth,
-      height: safeAreaHeight * 0.25,
-      // color: Colors.white,
-      child: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: isPostTimeAvailable() || myProfile.postList.wakeUp == null
-              ? [
-                  if (myProfile.postList.wakeUp == null)
-                    Padding(
-                      padding: customPadding(bottom: safeAreaHeight * 0.01),
-                      child: nContainer(
-                        padding: xPadding(
-                          context,
-                          top: safeAreaWidth * 0.025,
-                          bottom: safeAreaWidth * 0.025,
-                        ),
-                        radius: 20,
-                        color: Colors.white,
-                        child: nText(
-                          "起きましたか？\n起きたら投稿しましょう！！",
-                          fontSize: safeAreaWidth / 30,
-                          height: 1.5,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  CustomAnimatedOpacityButton(
-                    onTap: () => ScreenTransition(
-                      context,
-                      PhotographPage(
-                        myProfile: myProfile,
-                      ),
-                    ).top(),
-                    child: nContainer(
-                      padding: EdgeInsets.all(safeAreaWidth * 0.05),
-                      alignment: Alignment.center,
-                      boxShadow: mainBoxShadow(shadow: 0.1),
-                      height: safeAreaWidth * 0.21,
-                      width: safeAreaWidth * 0.21,
-                      isCircle: true,
-                      border: mainBorder(
-                        color: Colors.white,
-                        width: 6,
-                      ),
-                    ),
-                  ),
-                ]
-              : timeText.value != null
-                  ? [
-                      nText(
-                        "次の投稿時間まで",
-                        fontSize: safeAreaWidth / 30,
-                        shadows: mainBoxShadow(
-                          shadow: 1,
-                        ),
-                      ),
-                      nText(
-                        timeText.value ?? "",
-                        fontSize: safeAreaWidth / 9,
-                        shadows: mainBoxShadow(
-                          shadow: 1,
-                        ),
-                      ),
-                    ]
-                  : [
-                      nContainer(
-                        padding: xPadding(
-                          context,
-                          top: safeAreaWidth * 0.025,
-                          bottom: safeAreaWidth * 0.025,
-                        ),
-                        radius: 20,
-                        color: Colors.white,
-                        child: nText(
-                          "今日の投稿は終了しました\n午前3時に起床の投稿ができます",
-                          fontSize: safeAreaWidth / 25,
-                          height: 1.5,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-        ),
-      ),
-    );
+        height: safeAreaHeight * 0.25,
+        width: safeAreaWidth,
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: postTimerWidegt,
+          ),
+        ),);
   }
 
   bool isPostTimeAvailable() {
@@ -380,7 +297,6 @@ class PostTinerWidget extends HookConsumerWidget {
       final DateTime postTime =
           DateTime(now.year, now.month, now.day, hour, minute);
       final DateTime postTimeEnd = postTime.add(const Duration(minutes: 10));
-
       if (now.isAfter(postTime) && now.isBefore(postTimeEnd)) {
         return true;
       }
@@ -388,29 +304,87 @@ class PostTinerWidget extends HookConsumerWidget {
     return false;
   }
 
-  PostTimeType? getNextPostTime() {
-    final now = DateTime.now();
-    final todayOrYesterday =
-        now.hour < 3 ? now.subtract(const Duration(days: 1)) : now;
-    final resetTime = DateTime(
-      todayOrYesterday.year,
-      todayOrYesterday.month,
-      todayOrYesterday.day,
-      3,
-    );
-    final List<PostTimeType> postTimes = postTimeData.keys.toList();
-    postTimes.removeAt(0);
-    final baseTime = now.isBefore(resetTime) ? resetTime : now;
-    for (final postTime in postTimes) {
-      final time = convertTimeStringToDateTime(postTimeData[postTime]!, null);
-      if (baseTime.isBefore(time) || baseTime.isBefore(resetTime)) {
-        return postTime;
-      }
-    }
-    if (now.hour >= 3) {
-      return postTimes.first;
-    }
-
-    return null;
+  bool isEndPostTime() {
+    final DateTime now = DateTime.now();
+    final int hours = now.hour;
+    final int minutes = now.minute;
+    if (hours == 22 && minutes >= 11) return true;
+    if (hours == 23) return true;
+    if (hours >= 0 && hours <= 2) return true;
+    return false;
   }
+}
+
+Widget wakeUpPostBackgroundPage(
+  BuildContext context,
+  UserType myProfile,
+) {
+  final safeAreaHeight = safeHeight(context);
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return Column(
+    children: [
+      AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Padding(
+          padding: EdgeInsets.all(safeAreaWidth * 0.03),
+          child: imgWidget(assetFile: "wakeup.png", borderRadius: 20),
+        ),
+      ),
+      Padding(
+        padding: customPadding(top: safeAreaHeight * 0.1),
+        child: nText(
+          "おはようございます！\n今日の始まりの一枚を投稿してみましょう！",
+          height: 1.5,
+          isOverflow: false,
+          fontSize: safeAreaWidth / 20,
+        ),
+      ),
+      Padding(
+        padding: customPadding(top: safeAreaHeight * 0.1),
+        child: mainButton(
+          context,
+          height: safeAreaHeight * 0.05,
+          width: safeAreaWidth * 0.55,
+          radius: 10,
+          text: "起床の投稿をする",
+          fontSize: safeAreaWidth / 30,
+          onTap: () => ScreenTransition(
+            context,
+            PhotographPage(
+              myProfile: myProfile,
+            ),
+          ).top(),
+        ),
+      ),
+      const Spacer(),
+      postButtonWidget(context, myProfile),
+    ],
+  );
+}
+
+Widget postButtonWidget(
+  BuildContext context,
+  UserType myProfile,
+) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return CustomAnimatedOpacityButton(
+    onTap: () => ScreenTransition(
+      context,
+      PhotographPage(
+        myProfile: myProfile,
+      ),
+    ).top(),
+    child: nContainer(
+      padding: EdgeInsets.all(safeAreaWidth * 0.05),
+      alignment: Alignment.center,
+      boxShadow: mainBoxShadow(shadow: 0.1),
+      height: safeAreaWidth * 0.21,
+      width: safeAreaWidth * 0.21,
+      isCircle: true,
+      border: mainBorder(
+        color: Colors.white,
+        width: 6,
+      ),
+    ),
+  );
 }

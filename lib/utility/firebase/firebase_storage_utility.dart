@@ -97,9 +97,7 @@ Future<String?> dbStorageWakeUpPostUpload({
           (result) =>
               Future.forEach<Reference>(result.items, (ref) => ref.delete()),
         );
-    final mountainsRef = storageRef.child(
-      "$now",
-    );
+    final mountainsRef = storageRef.child(now.toString());
     await mountainsRef.putFile(img);
     return mountainsRef.getDownloadURL();
   } catch (e) {
@@ -142,7 +140,10 @@ Future<PostListType?> dbStoragePostDownload({
         final getImg = await item.getDownloadURL();
         dataList.add(
           PostType(
-              postImg: getImg, doing: split[1], postDateTime: postDateTime,),
+            postImg: getImg,
+            doing: split[1],
+            postDateTime: postDateTime,
+          ),
         );
       }());
     }
