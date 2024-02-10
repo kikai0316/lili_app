@@ -52,7 +52,7 @@ Future<void> _scheduleDaily8AMNotification() async {
     PostTimeType.pm15: [15, 0],
     PostTimeType.pm18: [18, 0],
     PostTimeType.pm20: [20, 0],
-    PostTimeType.pm22: [18, 53],
+    PostTimeType.pm22: [22, 00],
   };
   for (final entry in times.entries) {
     final time = entry.value;

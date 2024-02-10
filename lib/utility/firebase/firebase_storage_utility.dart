@@ -48,28 +48,8 @@ Future<String?> dbStoragePostUpload({
     onTimeOut();
     return null;
   }
-  final deleteList = getPostTimeTypesAfterIncluding(postTime);
   final storageRef = storage.ref("users/$id/posts");
   try {
-    await storageRef.listAll().then((result) {
-      for (final item in result.items) {
-        final List<String> parts = item.name.split('@');
-        if (parts.length == 2) {
-          final getDataTime = DateTime.parse(parts.first);
-          final postTime = getPostTimeType(getDataTime);
-          if (postTime != null) {
-            if (deleteList.contains(postTime)) {
-              item.delete();
-            }
-          } else {
-            item.delete();
-          }
-        } else {
-          item.delete();
-        }
-      }
-    });
-
     final mountainsRef = storageRef.child(
       "$nowTime@$nowState",
     );

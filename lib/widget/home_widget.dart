@@ -357,7 +357,10 @@ Widget wakeUpPostBackgroundPage(
         ),
       ),
       const Spacer(),
-      postButtonWidget(context, myProfile),
+      Padding(
+        padding: customPadding(bottom: safeAreaHeight * 0.05),
+        child: postButtonWidget(context, myProfile),
+      ),
     ],
   );
 }

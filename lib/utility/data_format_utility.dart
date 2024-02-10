@@ -67,6 +67,7 @@ DateTime convertTimeStringToDateTime(String timeString, DateTime? baseDate) {
 
 bool isWithinPostTimeRange(DateTime dateTime) {
   for (final entry in postTimeData.entries) {
+    if (entry.key == PostTimeType.wakeUp) continue;
     final List<String> timeParts = entry.value.split(':');
     final int hour = int.parse(timeParts[0]);
     final int minute = int.parse(timeParts[1]);
