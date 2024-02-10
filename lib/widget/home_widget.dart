@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/app_bar.dart';
@@ -244,7 +243,7 @@ class PostTinerWidget extends HookConsumerWidget {
     final List<Widget> postTimerWidegt = postTimerNotifierState.when(
       data: (value) {
         if (myProfile.postList.wakeUp == null) return [const SizedBox()];
-        if (isPostTimeAvailable()) {
+        if (isPostTimeAvailable(myProfile)) {
           return [
             Padding(
               padding: yPadding(context),
@@ -275,17 +274,18 @@ class PostTinerWidget extends HookConsumerWidget {
       loading: () => [],
     );
     return SizedBox(
-        height: safeAreaHeight * 0.25,
-        width: safeAreaWidth,
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: postTimerWidegt,
-          ),
-        ),);
+      height: safeAreaHeight * 0.25,
+      width: safeAreaWidth,
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: postTimerWidegt,
+        ),
+      ),
+    );
   }
 
-  bool isPostTimeAvailable() {
+  bool isPostTimeAvailable(UserType myProfile) {
     final DateTime now = DateTime.now();
     for (final entry in postTimeData.entries) {
       if (entry.key == PostTimeType.wakeUp) {
@@ -298,7 +298,7 @@ class PostTinerWidget extends HookConsumerWidget {
           DateTime(now.year, now.month, now.day, hour, minute);
       final DateTime postTimeEnd = postTime.add(const Duration(minutes: 10));
       if (now.isAfter(postTime) && now.isBefore(postTimeEnd)) {
-        return true;
+        if (!myProfile.postList.isPostTimeNotNull(entry.value)) return true;
       }
     }
     return false;
