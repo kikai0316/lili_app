@@ -57,14 +57,34 @@ class FullScreenPostPage extends HookConsumerWidget {
               ),
               leftIconType: BackIconStyleType.arrowBackBottomIcon,
             ),
-            body: Padding(
-              padding: EdgeInsets.all(safeAreaWidth * 0.04),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 3 / 4,
-                    child: imgWidget(
+            body: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: nContainer(
+                      alignment: Alignment.bottomCenter,
+                      height: safeAreaHeight / 2,
+                      width: double.infinity,
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: customPadding(bottom: safeAreaHeight * 0.1),
+                        child: nText(
+                          "タップでもどる",
+                          fontSize: safeAreaWidth / 20,
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  child: Padding(
+                    padding: EdgeInsets.all(safeAreaWidth * 0.03),
+                    child: AspectRatio(
+                      aspectRatio: 3 / 4,
+                      child: imgWidget(
                         borderRadius: 30,
                         color: subColor,
                         boxShadow: mainBoxShadow(),
@@ -90,10 +110,12 @@ class FullScreenPostPage extends HookConsumerWidget {
                                   ),
                                 ),
                               )
-                            : null,),
+                            : null,
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

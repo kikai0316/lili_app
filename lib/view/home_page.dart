@@ -65,36 +65,22 @@ class HomePage extends HookConsumerWidget {
                   isRefres.value = false;
                 }
               },
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isRefres.value)
-                      SizedBox(
-                        height: safeAreaHeight * 0.1,
-                      ),
-                    titleWidget(context, "私の親友たち", isView: true),
-                    myFriendWidget(context, allFriends, userData),
-                    Padding(
-                      padding: yPadding(context),
-                      child: line(),
+              child: ListView.builder(
+                itemCount: postTimeData.entries.length + 1, // 縦方向のアイテム数
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return myFriendWidget(context, allFriends, userData);
+                  }
+                  return postWidget(
+                    context,
+                    postTimeData.values.elementAt(index - 1),
+                    sortPostDataList(
+                      postTimeData.values.elementAt(index - 1),
+                      [...allFriends, userData],
                     ),
-                    for (final item in postTimeData.values) ...{
-                      postWidget(
-                        context,
-                        item,
-                        sortPostDataList(
-                          item,
-                          [...allFriends, userData],
-                        ),
-                        userData,
-                      ),
-                    },
-                    SizedBox(
-                      height: safeAreaHeight * 0.25,
-                    ),
-                  ],
-                ),
+                    userData,
+                  );
+                },
               ),
             )
           : wakeUpPostBackgroundPage(context, userData),

@@ -16,26 +16,6 @@ Future<File> localFile(String fileName) async {
   return File('$path/$fileName');
 }
 
-// Future<File> localWriteList(
-//   List<String> data,
-// ) async {
-//   final file = await localFile("applying");
-//   final jsonList = jsonEncode(data);
-//   return file.writeAsString(jsonList);
-// }
-
-// Future<List<String>> localReadList() async {
-//   try {
-//     final file = await localFile("applying");
-//     final String jsonList = await file.readAsString();
-//     final List<String> mylist =
-//         List<String>.from(jsonDecode(jsonList) as Iterable<dynamic>);
-//     return mylist;
-//   } catch (e) {
-//     return [];
-//   }
-// }
-
 Future<bool> localWritePastPostData(
   PostTimeType postTime,
   PastPostType postData,

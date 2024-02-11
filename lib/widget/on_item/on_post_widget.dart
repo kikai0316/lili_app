@@ -19,50 +19,48 @@ Widget onPostWidget(
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return CustomAnimatedOpacityButton(
     onTap: postData != null && isView ? onTap : null,
-    child: SizedBox(
-      width: safeAreaWidth * 0.3,
-      child: AspectRatio(
-        aspectRatio: 3 / 4,
-        child: imgWidget(
-          borderRadius: 15,
-          color: mainBackGroundColor,
-          networkUrl: postData?.postImg,
-          border: postData?.postImg == null
-              ? mainBorder(color: subColor, width: 4)
-              : null,
-          child: Stack(
-            children: [
-              if (postData?.postImg == null)
-                Align(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.no_photography,
-                        color: subColor,
-                        size: safeAreaWidth / 10,
-                      ),
-                      nText(
-                        "投稿していません",
-                        fontSize: safeAreaWidth / 40,
-                        color: subColor,
-                      ),
-                    ],
-                  ),
+    child: AspectRatio(
+      aspectRatio: 3 / 4,
+      child: imgWidget(
+        borderRadius: 15,
+        color: mainBackGroundColor,
+        networkUrl: postData?.postImg,
+        border: postData?.postImg == null
+            ? mainBorder(color: subColor, width: 4)
+            : null,
+        child: Stack(
+          children: [
+            if (postData?.postImg == null)
+              Align(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.no_photography,
+                      color: subColor,
+                      size: safeAreaWidth / 12,
+                    ),
+                    nText(
+                      "投稿していません",
+                      fontSize: safeAreaWidth / 40,
+                      height: 1.5,
+                      color: subColor,
+                    ),
+                  ],
                 ),
-              if (postData?.doing != null && (postData?.doing ?? "").isNotEmpty)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: textWidget(context, postData!.doing!),
-                ),
-              if (!isView) notViewWidget(),
-              if (userData != null)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: accountWidget(context, userData),
-                ),
-            ],
-          ),
+              ),
+            if (postData?.doing != null && (postData?.doing ?? "").isNotEmpty)
+              Align(
+                alignment: Alignment.bottomRight,
+                child: textWidget(context, postData!.doing!),
+              ),
+            if (!isView) notViewWidget(),
+            if (userData != null)
+              Align(
+                alignment: Alignment.topCenter,
+                child: accountWidget(context, userData),
+              ),
+          ],
         ),
       ),
     ),
