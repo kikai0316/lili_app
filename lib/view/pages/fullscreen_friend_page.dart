@@ -95,27 +95,32 @@ class FullScreenFriendPage extends HookConsumerWidget {
                                         padding: customPadding(
                                           left: safeAreaWidth * 0.03,
                                         ),
-                                        child: nContainer(
-                                          padding: EdgeInsets.all(
-                                              safeAreaWidth * 0.01,),
-                                          border: mainBorder(
-                                              color: subColor, width: 3,),
-                                          isCircle: true,
-                                          color: Colors.white,
-                                          child: nText(
-                                            textAlign: TextAlign.left,
-                                            userData.toDayMood ?? "",
-                                            fontSize: safeAreaWidth / 15,
-                                            isOverflow: false,
-                                            height: 1.3,
-                                          ),
+                                        child: nText(
+                                          textAlign: TextAlign.left,
+                                          userData.toDayMood ?? "",
+                                          fontSize: safeAreaWidth / 15,
+                                          isOverflow: false,
+                                          height: 1.3,
                                         ),
                                       ),
                                   ],
                                 ),
                                 Padding(
-                                  padding:
-                                      customPadding(top: safeAreaHeight * 0.02),
+                                  padding: customPadding(
+                                    top: safeAreaHeight * 0.005,
+                                  ),
+                                  child: nText(
+                                    userData.userId,
+                                    textAlign: TextAlign.left,
+                                    fontSize: safeAreaWidth / 30,
+                                    bold: 700,
+                                    height: 1.3,
+                                    isOverflow: false,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: customPadding(
+                                      top: safeAreaHeight * 0.015,),
                                   child: nText(
                                     userData.comment,
                                     textAlign: TextAlign.left,
@@ -146,16 +151,17 @@ class FullScreenFriendPage extends HookConsumerWidget {
                       text: mainButtonText(friendsState.value),
                       textColor: mainButtonTextColor(friendsState.value),
                       onTap: mainButtonTapEvent(
-                          context,
-                          ref,
-                          friendsState.value,
-                          isLoading,
-                          OnContactListType(
-                            phoneNumber: userData.phoneNumber,
-                            userData: userData,
-                          ),
-                          myProfile,
-                          onChange: (value) => friendsState.value = value,),
+                        context,
+                        ref,
+                        friendsState.value,
+                        isLoading,
+                        OnContactListType(
+                          phoneNumber: userData.phoneNumber,
+                          userData: userData,
+                        ),
+                        myProfile,
+                        onChange: (value) => friendsState.value = value,
+                      ),
                     ),
                   ),
                 },

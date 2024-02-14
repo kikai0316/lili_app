@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class FullScreenPastPostPage extends HookConsumerWidget {
     final String postTime = formattedTime(postList[index.value].postDateTime);
     return imgWidget(
       size: double.infinity,
-      fileData: postList[index.value].postImg,
+      fileData: File(postList[index.value].postImgPath),
       child: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(
@@ -95,7 +96,7 @@ class FullScreenPastPostPage extends HookConsumerWidget {
                           borderRadius: 30,
                           color: subColor,
                           boxShadow: mainBoxShadow(),
-                          fileData: postList[index.value].postImg,
+                          fileData: File(postList[index.value].postImgPath),
                           child: postList[index.value].doing != null
                               ? Padding(
                                   padding: EdgeInsets.all(safeAreaWidth * 0.03),
@@ -152,19 +153,20 @@ class FullScreenPastPostPage extends HookConsumerWidget {
                   children: [
                     for (int i = 0; i < 2; i++)
                       Expanded(
-                          child: GestureDetector(
-                        onTap: [
-                          if (0 != index.value) () => index.value-- else null,
-                          if (postList.length - 1 != index.value)
-                            () => index.value++
-                          else
-                            null,
-                        ][i],
-                        child: Container(
-                          height: double.infinity,
-                          color: Colors.transparent,
+                        child: GestureDetector(
+                          onTap: [
+                            if (0 != index.value) () => index.value-- else null,
+                            if (postList.length - 1 != index.value)
+                              () => index.value++
+                            else
+                              null,
+                          ][i],
+                          child: Container(
+                            height: double.infinity,
+                            color: Colors.transparent,
+                          ),
                         ),
-                      ),),
+                      ),
                   ],
                 ),
               ],

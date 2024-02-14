@@ -56,10 +56,7 @@ Widget postWidget(
                   context,
                   userData: postDataList[index - 1],
                   isView: isView,
-                  notPostEmoji: notPostEmoji(
-                    postDataList[index - 1].postList.wakeUp,
-                    timeDate,
-                  ),
+                  isWakeUp: timeDate == "起床",
                   postData: dataFormatUserDataToPostData(
                     timeDate,
                     postDataList[index - 1],
@@ -68,6 +65,7 @@ Widget postWidget(
                     context,
                     FullScreenPostPage(
                       userData: postDataList[index - 1],
+                      isWakeUp: timeDate == "起床",
                       postData: dataFormatUserDataToPostData(
                         timeDate,
                         postDataList[index - 1],
@@ -92,10 +90,13 @@ Widget myFriendWidget(
   BuildContext context,
   List<UserType> allFriends,
   UserType myProfile,
+  ValueNotifier<bool> isRefres,
 ) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
+  final safeAreaHeight = safeHeight(context);
   return Column(
     children: [
+      if (isRefres.value) SizedBox(height: safeAreaHeight * 0.1),
       titleWidget(
         context,
         "私の親友たち",
@@ -119,6 +120,7 @@ Widget myFriendWidget(
                   size: safeAreaWidth * 0.2,
                   userData: allFriends[index - 1],
                   myProfile: myProfile,
+                  backgroundColor: mainBackGroundColor,
                 ),
               );
             },
@@ -169,7 +171,7 @@ Widget titleWidget(
             child: Icon(
               isTime && isView == false ? Icons.visibility_off : Icons.lock,
               size: safeAreaWidth / 20,
-              color: Colors.grey.withOpacity(0.5),
+              color: !isTime ? Colors.grey.withOpacity(0.5) : Colors.white,
             ),
           ),
         Padding(
@@ -177,9 +179,7 @@ Widget titleWidget(
           child: nText(
             title,
             fontSize: safeAreaWidth / 23,
-            color: !isTime || isView == false
-                ? Colors.grey.withOpacity(0.5)
-                : Colors.white,
+            color: !isTime ? Colors.grey.withOpacity(0.5) : Colors.white,
           ),
         ),
         if (isTimeDataTitle && isTime && isView == true)
@@ -189,11 +189,10 @@ Widget titleWidget(
             fontSize: safeAreaWidth / 35,
           ),
         const Spacer(),
-        if (!isTime || isView == false)
+        if (isView == false && isTime)
           nText(
-            isTime && isView == false ? "投稿できなかったため、閲覧できません" : "投稿時間以降に解放されます",
+            "投稿できなかったため、閲覧できません",
             isGradation: total == postCount,
-            color: Colors.grey.withOpacity(0.5),
             fontSize: safeAreaWidth / 35,
           ),
       ],
@@ -267,7 +266,7 @@ class PostTinerWidget extends HookConsumerWidget {
             postButtonWidget(context, myProfile),
           ];
         }
-        if (isEndPostTime()) {
+        if (isEndPostTime() || value == null) {
           return [
             nText(
               "今日の投稿は終了しました。\n次は午前3時以降から起床の投稿ができます",
@@ -279,7 +278,7 @@ class PostTinerWidget extends HookConsumerWidget {
         return List.generate(
           2,
           (i) => nText(
-            ["次の投稿時間まで", if (value != null) formatDuration(value) else ""][i],
+            ["次の投稿時間まで", formatDuration(value)][i],
             shadows: mainBoxShadow(shadow: 1),
             fontSize: [safeAreaWidth / 30, safeAreaWidth / 9][i],
           ),

@@ -69,7 +69,12 @@ class HomePage extends HookConsumerWidget {
                 itemCount: postTimeData.entries.length + 1, // 縦方向のアイテム数
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return myFriendWidget(context, allFriends, userData);
+                    return myFriendWidget(
+                      context,
+                      allFriends,
+                      userData,
+                      isRefres,
+                    );
                   }
                   return postWidget(
                     context,

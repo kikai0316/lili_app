@@ -43,6 +43,7 @@ Widget myProfileMainWidget(
                     userData: myProfile,
                     size: safeAreaWidth * 0.22,
                     myProfile: myProfile,
+                    backgroundColor: subColor,
                     isName: false,
                   ),
                 ),
@@ -144,9 +145,8 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
                       child: onPostWidget(
                         context,
                         postData: dataFormatUserDataToPostData(item, userData),
-                        notPostEmoji:
-                            notPostEmoji(userData.postList.wakeUp, item),
                         isView: true,
+                        isWakeUp: item == "起床",
                         onTap: () {},
                       ),
                     ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
@@ -7,15 +9,17 @@ import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/pages/fullscreen_past_post_page.dart';
 
-Widget onPastPostdWidget(BuildContext context,
-    {required double width,
-    required String date,
-    required PastPostListType? postListData,
-    required bool isMini,}) {
+Widget onPastPostdWidget(
+  BuildContext context, {
+  required double width,
+  required String date,
+  required PastPostListType? postListData,
+  required bool isMini,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
   final split = date.split("/");
-  if (postListData == null) {
+  if (postListData == null || postListData.wakeUp == null) {
     return const SizedBox();
   }
   return CustomAnimatedOpacityButton(
@@ -41,7 +45,9 @@ Widget onPastPostdWidget(BuildContext context,
               imgWidget(
                 color: subColor,
                 borderRadius: 13,
-                fileData: postListData.wakeUp?.postImg,
+                fileData: File(
+                  postListData.wakeUp!.postImgPath,
+                ),
               ),
               nContainer(
                 padding: xPadding(context, xSize: safeAreaWidth * 0.02),

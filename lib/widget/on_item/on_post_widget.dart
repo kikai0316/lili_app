@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
@@ -8,14 +9,12 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 
-Widget onPostWidget(
-  BuildContext context, {
-  required PostType? postData,
-  UserType? userData,
-  required String notPostEmoji,
-  required VoidCallback onTap,
-  required bool isView,
-}) {
+Widget onPostWidget(BuildContext context,
+    {required PostType? postData,
+    UserType? userData,
+    required VoidCallback onTap,
+    required bool isView,
+    required bool isWakeUp,}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return CustomAnimatedOpacityButton(
     onTap: postData != null && isView ? onTap : null,
@@ -59,6 +58,29 @@ Widget onPostWidget(
               Align(
                 alignment: Alignment.topCenter,
                 child: accountWidget(context, userData),
+              ),
+            if (isWakeUp && postData != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: customPadding(bottom: safeAreaWidth * 0.005),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      for (int i = 0; i < 2; i++)
+                        nText(
+                            [
+                              "起床時間",
+                              DateFormat('HH:mm').format(postData.postDateTime),
+                            ][i],
+                            fontSize: [
+                              safeAreaWidth / 45,
+                              safeAreaWidth / 20,
+                            ][i],
+                            height: 1.2,),
+                    ],
+                  ),
+                ),
               ),
           ],
         ),

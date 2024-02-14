@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
-import 'package:lili_app/constant/color.dart';
-import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
@@ -13,6 +11,7 @@ Widget onProfileWidget(
   required UserType userData,
   required UserType myProfile,
   required double size,
+  required Color backgroundColor,
   bool isName = true,
 }) {
   return CustomAnimatedOpacityButton(
@@ -23,7 +22,7 @@ Widget onProfileWidget(
         myProfile: myProfile,
         friendsStateType: FriendsStateType.appUserFriended,
       ),
-    ),
+    ).top(),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -32,14 +31,13 @@ Widget onProfileWidget(
           isCircle: true,
           networkUrl: userData.img,
           assetFile: notImg(),
-          child: userData.toDayMood != null
+          child: (userData.toDayMood ?? "").isNotEmpty
               ? Align(
                   alignment: const Alignment(1.1, 1.1),
                   child: nContainer(
                     padding: EdgeInsets.all(size / 30),
-                    border: mainBorder(color: subColor, width: 3),
                     isCircle: true,
-                    color: Colors.white,
+                    color: backgroundColor,
                     child: nText(userData.toDayMood!, fontSize: size / 3),
                   ),
                 )

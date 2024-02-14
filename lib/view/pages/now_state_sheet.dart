@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
+import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
 
@@ -23,91 +24,67 @@ class NowStateSheet extends HookConsumerWidget {
       },
       [],
     );
-    return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.7),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.transparent,
+    return bottomSheetScaffold(context,
+        backGroundColor: subColor,
+        title: "今何していますか？",
+        height: safeAreaHeight * 0.9,
+        body: SafeArea(
+            child: Padding(
+          padding: xPadding(context, top: safeAreaHeight * 0.05),
+          child: Column(children: [
+            nTextFormField(
+              context,
+              textController: textEditingController,
+              fontSize: safeAreaWidth / 15,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              maxLength: 10,
+              hintText: "",
+              onChanged: (value) => count.value = value.length,
             ),
-          ),
-          Padding(
-            padding: xPadding(context),
-            child: Column(
-              children: [
-                Padding(
-                  padding: customPadding(
-                    top: safeAreaHeight * 0.13,
-                    bottom: safeAreaHeight * 0.07,
-                  ),
-                  child: nText(
-                    "今何していますか？",
-                    fontSize: safeAreaWidth / 15,
-                  ),
-                ),
-                nTextFormField(
-                  context,
-                  textController: textEditingController,
-                  fontSize: safeAreaWidth / 15,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  maxLength: 10,
-                  hintText: "",
-                  onChanged: (value) => count.value = value.length,
-                ),
-                Padding(
-                  padding: customPadding(bottom: safeAreaHeight * 0.03),
-                  child: line(),
-                ),
-                SizedBox(
-                  width: safeAreaWidth,
-                  child: Wrap(
-                    runSpacing: safeAreaHeight * 0.01,
-                    alignment: WrapAlignment.spaceBetween,
-                    children: [
-                      for (final item in nowStateDataList)
-                        CustomAnimatedOpacityButton(
-                          onTap: () {
-                            textEditingController?.text = item;
-                            count.value = item.length;
-                          },
-                          child: nContainer(
-                            padding: xPadding(
-                              context,
-                              xSize: safeAreaWidth * 0.04,
-                              top: safeAreaWidth * 0.03,
-                              bottom: safeAreaWidth * 0.03,
-                            ),
-                            radius: 50,
-                            border: mainBorder(),
-                            child: nText(item, fontSize: safeAreaWidth / 43),
-                          ),
+            Padding(
+              padding: customPadding(bottom: safeAreaHeight * 0.03),
+              child: line(),
+            ),
+            SizedBox(
+              width: safeAreaWidth,
+              child: Wrap(
+                runSpacing: safeAreaHeight * 0.01,
+                alignment: WrapAlignment.spaceBetween,
+                children: [
+                  for (final item in nowStateDataList)
+                    CustomAnimatedOpacityButton(
+                      onTap: () {
+                        textEditingController?.text = item;
+                        count.value = item.length;
+                      },
+                      child: nContainer(
+                        padding: xPadding(
+                          context,
+                          xSize: safeAreaWidth * 0.04,
+                          top: safeAreaWidth * 0.03,
+                          bottom: safeAreaWidth * 0.03,
                         ),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: yPadding(context),
-                  child: mainButton(
-                    context,
-                    text: count.value == 0 ? "設定しない" : "完了",
-                    onTap: () {
-                      Navigator.pop(context);
-                      onSuccess(textEditingController?.text ?? "");
-                    },
-                  ),
-                ),
-              ],
+                        radius: 50,
+                        border: mainBorder(),
+                        child: nText(item, fontSize: safeAreaWidth / 43),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            Padding(
+              padding: customPadding(top: safeAreaHeight * 0.04),
+              child: mainButton(
+                context,
+                text: count.value == 0 ? "設定しない" : "完了",
+                onTap: () {
+                  Navigator.pop(context);
+                  onSuccess(textEditingController?.text ?? "");
+                },
+              ),
+            ),
+          ],),
+        ),),);
   }
 }

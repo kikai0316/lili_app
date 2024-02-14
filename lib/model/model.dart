@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -252,17 +251,17 @@ class PostType {
 }
 
 class PastPostType {
-  File postImg;
+  String postImgPath;
   String? doing;
   DateTime postDateTime;
   PastPostType({
-    required this.postImg,
+    required this.postImgPath,
     required this.doing,
     required this.postDateTime,
   });
   Map<String, dynamic> toMap() {
     return {
-      'postImg': postImg,
+      'postImgPath': postImgPath,
       'doing': doing,
       'postDateTime': postDateTime.toString(),
     };
@@ -270,7 +269,7 @@ class PastPostType {
 
   factory PastPostType.fromMap(Map<String, dynamic> map) {
     return PastPostType(
-      postImg: map['postImg'] as File,
+      postImgPath: map['postImgPath'] as String,
       doing: map['doing'] as String?,
       postDateTime: DateTime.parse(map['postDateTime'] as String),
     );

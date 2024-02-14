@@ -20,6 +20,7 @@ import 'package:lili_app/constant/data.dart';
 import 'package:lili_app/constant/message.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
+import 'package:lili_app/utility/firebase/firebase_firestore_utility.dart';
 import 'package:lili_app/utility/firebase/firebase_storage_utility.dart';
 import 'package:lili_app/utility/notistack_utility.dart';
 import 'package:lili_app/utility/path_provider_utility.dart';
@@ -27,6 +28,7 @@ import 'package:lili_app/utility/permission_utlity.dart';
 import 'package:lili_app/utility/type_updata_utility.dart';
 import 'package:lili_app/utility/utility.dart';
 import 'package:lili_app/view/pages/now_state_sheet.dart';
+import 'package:lili_app/view/pages/today_mode_sheet.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/photograph_page.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -218,13 +220,44 @@ class PhotographPage extends HookConsumerWidget {
                                 context,
                                 picture: picture,
                                 postTapEvent: isWakeUp
-                                    ? () => postEvent(
+                                    ? () => bottomSheet(
                                           context,
-                                          ref,
-                                          picture.value!,
-                                          isLoading,
-                                          "",
-                                          true,
+                                          page: ToDayModeSheet(
+                                            myProfile: myProfile,
+                                            onSuccess: (value) async {
+                                              isLoading.value = true;
+                                              final isUpData =
+                                                  await dbFirestoreUpDataData(
+                                                      myProfile.openId,
+                                                      {"today_mood": value},);
+                                              if (!context.mounted) return;
+                                              if (!isUpData) {
+                                                isLoading.value = false;
+                                                errorAlertDialog(context,
+                                                    subTitle: eMessageSystem,);
+                                                return;
+                                              }
+                                              final userData = userTypeUpDate(
+                                                myProfile,
+                                                toDayMood: value,
+                                              );
+                                              final userDataNotifier = ref.read(
+                                                userDataNotifierProvider
+                                                    .notifier,
+                                              );
+                                              await userDataNotifier
+                                                  .userDataUpDate(userData);
+                                              if (!context.mounted) return;
+                                              postEvent(
+                                                context,
+                                                ref,
+                                                picture.value!,
+                                                isLoading,
+                                                "",
+                                                true,
+                                              );
+                                            },
+                                          ),
                                         )
                                     : () => bottomSheet(
                                           context,
@@ -251,7 +284,8 @@ class PhotographPage extends HookConsumerWidget {
             ],
           ),
         ),
-        loadinPage(context: context, isLoading: isLoading.value),
+        loadinPage(
+            context: context, isLoading: isLoading.value, text: "アップロード中です...",),
       ],
     );
   }
@@ -304,7 +338,7 @@ class PhotographPage extends HookConsumerWidget {
       isLoading.value = true;
       final RenderRepaintBoundary boundary = repaintBoundaryKey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      final ui.Image image = await boundary.toImage();
       final ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       if (!context.mounted) return;
@@ -378,6 +412,7 @@ class PhotographPage extends HookConsumerWidget {
       );
       if (!context.mounted) return;
       if (compressedFile == null) {
+        isLoading.value = false;
         errorAlertDialog(context, subTitle: eMessageSystem);
         return;
       }
@@ -427,7 +462,7 @@ class PhotographPage extends HookConsumerWidget {
       await localWritePastPostData(
         postTimeType,
         PastPostType(
-          postImg: fileImg,
+          postImgPath: fileImg.path,
           doing: nowState,
           postDateTime: nowTime,
         ),
