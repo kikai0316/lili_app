@@ -6,6 +6,7 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/login/phone_login_page.dart';
 import 'package:lili_app/widget/login_widget.dart';
@@ -37,12 +38,11 @@ class LineLoginPage extends HookConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding:
-                                yPadding(context, ySize: safeAreaHeight * 0.04),
-                            child: nText(
-                              "RoyalHay",
-                              fontSize: safeAreaWidth / 12,
+                            padding: yPadding(
+                              context,
+                              ySize: safeAreaHeight * 0.04,
                             ),
+                            child: logoWidget(context),
                           ),
                           nText(
                             "私たちの日常の一コマを共有する体験",

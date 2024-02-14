@@ -17,6 +17,7 @@ import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
+import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/constant/message.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
@@ -100,10 +101,7 @@ class PhotographPage extends HookConsumerWidget {
           appBar: nAppBar(
             context,
             leftIconType: BackIconStyleType.arrowBackBottomIcon,
-            customTitle: nText(
-              "RoyalHy",
-              fontSize: safeAreaWidth / 14,
-            ),
+            customTitle: logoWidget(context),
           ),
           body: Stack(
             children: [
@@ -228,13 +226,16 @@ class PhotographPage extends HookConsumerWidget {
                                               isLoading.value = true;
                                               final isUpData =
                                                   await dbFirestoreUpDataData(
-                                                      myProfile.openId,
-                                                      {"today_mood": value},);
+                                                myProfile.openId,
+                                                {"today_mood": value},
+                                              );
                                               if (!context.mounted) return;
                                               if (!isUpData) {
                                                 isLoading.value = false;
-                                                errorAlertDialog(context,
-                                                    subTitle: eMessageSystem,);
+                                                errorAlertDialog(
+                                                  context,
+                                                  subTitle: eMessageSystem,
+                                                );
                                                 return;
                                               }
                                               final userData = userTypeUpDate(
@@ -285,7 +286,10 @@ class PhotographPage extends HookConsumerWidget {
           ),
         ),
         loadinPage(
-            context: context, isLoading: isLoading.value, text: "アップロード中です...",),
+          context: context,
+          isLoading: isLoading.value,
+          text: "アップロード中です...",
+        ),
       ],
     );
   }

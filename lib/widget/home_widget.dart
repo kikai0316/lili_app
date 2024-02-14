@@ -228,9 +228,8 @@ PreferredSizeWidget? homePageAppBar(
     ),
     customTitle: nContainer(
       color: mainBackGroundColor,
-      child: nText(
-        "RoyalHy",
-        fontSize: safeAreaWidth / 14,
+      child: logoWidget(
+        context,
       ),
     ),
     customRightIcon: CustomAnimatedOpacityButton(

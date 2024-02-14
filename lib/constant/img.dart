@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:lili_app/constant/constant.dart';
 
 DecorationImage assetImg(String file) {
   return DecorationImage(
@@ -33,4 +34,19 @@ DecorationImage memorImg(Uint8List memorImg) {
 
 String? notImg() {
   return "not.png";
+}
+
+Widget logoWidget(BuildContext context) {
+  final safeAreaHeight = safeHeight(context);
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return Container(
+    height: safeAreaHeight * 0.085,
+    width: safeAreaWidth * 0.7,
+    decoration: const BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage("assets/img/logo2.png"),
+      ),
+    ),
+  );
+  // imgWidget(size: size, assetFile: "logo2.png");
 }

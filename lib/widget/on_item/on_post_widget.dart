@@ -9,12 +9,14 @@ import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 
-Widget onPostWidget(BuildContext context,
-    {required PostType? postData,
-    UserType? userData,
-    required VoidCallback onTap,
-    required bool isView,
-    required bool isWakeUp,}) {
+Widget onPostWidget(
+  BuildContext context, {
+  required PostType? postData,
+  UserType? userData,
+  required VoidCallback onTap,
+  required bool isView,
+  required bool isWakeUp,
+}) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return CustomAnimatedOpacityButton(
     onTap: postData != null && isView ? onTap : null,
@@ -69,15 +71,16 @@ Widget onPostWidget(BuildContext context,
                     children: [
                       for (int i = 0; i < 2; i++)
                         nText(
-                            [
-                              "起床時間",
-                              DateFormat('HH:mm').format(postData.postDateTime),
-                            ][i],
-                            fontSize: [
-                              safeAreaWidth / 45,
-                              safeAreaWidth / 20,
-                            ][i],
-                            height: 1.2,),
+                          [
+                            "起床時間",
+                            DateFormat('HH:mm').format(postData.postDateTime),
+                          ][i],
+                          fontSize: [
+                            safeAreaWidth / 45,
+                            safeAreaWidth / 20,
+                          ][i],
+                          height: 1.2,
+                        ),
                     ],
                   ),
                 ),

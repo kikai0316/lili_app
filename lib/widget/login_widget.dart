@@ -6,6 +6,7 @@ import 'package:lili_app/component/app_bar.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/constant.dart';
+import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 
 PreferredSizeWidget? loginAppBar(
@@ -18,10 +19,7 @@ PreferredSizeWidget? loginAppBar(
     context,
     leftIconType:
         isLeftIcon == true ? BackIconStyleType.arrowBackLeftIcon : null,
-    customTitle: nText(
-      "RoyalHay",
-      fontSize: safeAreaWidth / 15,
-    ),
+    customTitle: logoWidget(context),
     customRightIcon: isRightIcon == true
         ? CustomAnimatedOpacityButton(
             onTap: () {},
