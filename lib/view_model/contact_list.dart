@@ -28,8 +28,9 @@ Future<ContactListType?> getContactList() async {
     final Iterable<Contact> contacts = await ContactsService.getContacts();
     final List<OnContactListType> contactsInfo =
         contacts.where((contact) => contact.phones!.isNotEmpty).map((contact) {
-      final String phoneNumber =
-          contact.phones!.first.value ?? "No Phone Number";
+      final String phoneNumber = contact.phones!.first.value != null
+          ? formatPhoneNumber(contact.phones!.first.value!)
+          : "No Phone Number";
       return OnContactListType(
         contactsImg: contact.avatar,
         contactsName: contact.displayName,
@@ -49,4 +50,10 @@ Future<ContactListType?> getContactList() async {
   } catch (_) {
     return null;
   }
+}
+
+String formatPhoneNumber(String originalPhoneNumber) {
+  final String formattedNumber =
+      originalPhoneNumber.replaceAllMapped(RegExp(r'^\+81'), (match) => '0');
+  return formattedNumber.replaceAll(RegExp(r'[\s\-]'), '');
 }

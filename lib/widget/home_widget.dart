@@ -38,38 +38,43 @@ Widget postWidget(
             .map((e) => dataFormatUserDataToPostData(timeDate, e))
             .toList(),
       ),
-      if (isTime) ...{
+      if (isTime && isView) ...{
         SizedBox(
-          width: safeAreaWidth,
-          child: SingleChildScrollView(
+          height: safeAreaHeight * 0.2,
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                SizedBox(
+            itemCount: postDataList.length + 2,
+            itemBuilder: (context, index) {
+              if (index == 0 || index == postDataList.length + 1) {
+                return SizedBox(
                   width: safeAreaWidth * 0.03,
-                ),
-                for (final item in postDataList)
-                  Padding(
-                    padding: customPadding(right: safeAreaWidth * 0.05),
-                    child: onPostWidget(
-                      context,
-                      userData: item,
-                      isView: isView,
-                      notPostEmoji:
-                          notPostEmoji(item.postList.wakeUp, timeDate),
-                      postData: dataFormatUserDataToPostData(timeDate, item),
-                      onTap: () => ScreenTransition(
-                        context,
-                        FullScreenPostPage(
-                          userData: item,
-                          postData:
-                              dataFormatUserDataToPostData(timeDate, item),
-                        ),
-                      ).top(),
-                    ),
+                );
+              }
+              return Padding(
+                padding: customPadding(right: safeAreaWidth * 0.05),
+                child: onPostWidget(
+                  context,
+                  userData: postDataList[index - 1],
+                  isView: isView,
+                  isWakeUp: timeDate == "起床",
+                  postData: dataFormatUserDataToPostData(
+                    timeDate,
+                    postDataList[index - 1],
                   ),
-              ],
-            ),
+                  onTap: () => ScreenTransition(
+                    context,
+                    FullScreenPostPage(
+                      userData: postDataList[index - 1],
+                      isWakeUp: timeDate == "起床",
+                      postData: dataFormatUserDataToPostData(
+                        timeDate,
+                        postDataList[index - 1],
+                      ),
+                    ),
+                  ).top(),
+                ),
+              );
+            },
           ),
         ),
         Padding(
@@ -85,39 +90,58 @@ Widget myFriendWidget(
   BuildContext context,
   List<UserType> allFriends,
   UserType myProfile,
+  ValueNotifier<bool> isRefres,
 ) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
-  if (allFriends.isEmpty) {
-    return Align(
-      child: Padding(
-        padding: yPadding(context),
-        child: nText(
-          "まだ友達がいません。親友を招待しよう！",
-          fontSize: safeAreaWidth / 30,
-          color: Colors.grey,
-        ),
+  final safeAreaHeight = safeHeight(context);
+  return Column(
+    children: [
+      if (isRefres.value) SizedBox(height: safeAreaHeight * 0.1),
+      titleWidget(
+        context,
+        "私の親友たち",
       ),
-    );
-  }
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      children: [
+      if (allFriends.isNotEmpty)
         SizedBox(
-          width: safeAreaWidth * 0.03,
+          height: safeAreaWidth * 0.25,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: allFriends.length + 2,
+            itemBuilder: (context, index) {
+              if (index == 0 || index == allFriends.length + 1) {
+                return SizedBox(
+                  width: safeAreaWidth * 0.03,
+                );
+              }
+              return Padding(
+                padding: customPadding(right: safeAreaWidth * 0.03),
+                child: onProfileWidget(
+                  context,
+                  size: safeAreaWidth * 0.2,
+                  userData: allFriends[index - 1],
+                  myProfile: myProfile,
+                  backgroundColor: mainBackGroundColor,
+                ),
+              );
+            },
+          ),
         ),
-        for (final userData in allFriends)
-          Padding(
-            padding: customPadding(right: safeAreaWidth * 0.03),
-            child: onProfileWidget(
-              context,
-              size: safeAreaWidth * 0.2,
-              userData: userData,
-              myProfile: myProfile,
+      if (allFriends.isEmpty)
+        Align(
+          child: Padding(
+            padding: yPadding(context),
+            child: nText(
+              "まだ友達がいません。親友を招待しよう！",
+              fontSize: safeAreaWidth / 30,
+              color: Colors.grey,
             ),
           ),
-      ],
-    ),
+        ),
+      Padding(
+        padding: yPadding(context),
+        child: line(),
+      ),
+    ],
   );
 }
 
@@ -125,7 +149,7 @@ Widget titleWidget(
   BuildContext context,
   String title, {
   List<PostType?>? postDataList,
-  required bool isView,
+  bool? isView,
 }) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
@@ -141,46 +165,36 @@ Widget titleWidget(
     ),
     child: Row(
       children: [
-        if (!isTime)
+        if (!isTime || isView == false)
           Padding(
             padding: customPadding(right: safeAreaWidth * 0.01),
             child: Icon(
-              Icons.lock,
+              isTime && isView == false ? Icons.visibility_off : Icons.lock,
               size: safeAreaWidth / 20,
-              color: Colors.grey.withOpacity(0.5),
+              color: !isTime ? Colors.grey.withOpacity(0.5) : Colors.white,
             ),
           ),
         Padding(
           padding: customPadding(right: safeAreaWidth * 0.02),
           child: nText(
-            title + (isTime ? "" : "に投稿できるようになります"),
-            fontSize: safeAreaWidth / (isTime ? 23 : 30),
-            color: isTime ? Colors.white : Colors.grey.withOpacity(0.5),
+            title,
+            fontSize: safeAreaWidth / 23,
+            color: !isTime ? Colors.grey.withOpacity(0.5) : Colors.white,
           ),
         ),
-        if (isTimeDataTitle && isTime)
+        if (isTimeDataTitle && isTime && isView == true)
           nText(
             total == postCount ? "Complete!" : "投稿率 ( $postCount/$total )",
             isGradation: total == postCount,
             fontSize: safeAreaWidth / 35,
           ),
         const Spacer(),
-        if (!isView && isTime) ...{
-          Padding(
-            padding: customPadding(right: safeAreaWidth * 0.01),
-            child: Icon(
-              Icons.lock,
-              size: safeAreaWidth / 30,
-              color: Colors.grey.withOpacity(0.5),
-            ),
-          ),
+        if (isView == false && isTime)
           nText(
-            "投稿がないため、閲覧できません。",
+            "投稿できなかったため、閲覧できません",
             isGradation: total == postCount,
-            color: Colors.grey.withOpacity(0.5),
-            fontSize: safeAreaWidth / 40,
+            fontSize: safeAreaWidth / 35,
           ),
-        },
       ],
     ),
   );
@@ -214,9 +228,8 @@ PreferredSizeWidget? homePageAppBar(
     ),
     customTitle: nContainer(
       color: mainBackGroundColor,
-      child: nText(
-        "RoyalHy",
-        fontSize: safeAreaWidth / 14,
+      child: logoWidget(
+        context,
       ),
     ),
     customRightIcon: CustomAnimatedOpacityButton(
@@ -252,7 +265,7 @@ class PostTinerWidget extends HookConsumerWidget {
             postButtonWidget(context, myProfile),
           ];
         }
-        if (isEndPostTime()) {
+        if (isEndPostTime() || value == null) {
           return [
             nText(
               "今日の投稿は終了しました。\n次は午前3時以降から起床の投稿ができます",
@@ -264,7 +277,7 @@ class PostTinerWidget extends HookConsumerWidget {
         return List.generate(
           2,
           (i) => nText(
-            ["次の投稿時間まで", if (value != null) formatDuration(value) else ""][i],
+            ["次の投稿時間まで", formatDuration(value)][i],
             shadows: mainBoxShadow(shadow: 1),
             fontSize: [safeAreaWidth / 30, safeAreaWidth / 9][i],
           ),

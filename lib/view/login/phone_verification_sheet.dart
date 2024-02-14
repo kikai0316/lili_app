@@ -187,7 +187,7 @@ class PhoneVerificationPage extends HookConsumerWidget {
           myProfile: dbUpData,
         ),
       ).normal();
-      successSnackbar(context, "ようそこ！${dbUpData.name}さん！");
+      successSnackbar(context, "ようこそ！${dbUpData.name}さん！");
     } catch (_) {
       isLoading.value = false;
       messageText.value = nText(

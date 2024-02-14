@@ -140,7 +140,7 @@ Widget addFriendLists(
             ),
           Padding(
             padding: yPadding(context),
-            child: nText("RoyalHayユーザーのお友達", fontSize: safeAreaWidth / 30),
+            child: nText("Zin.comユーザーのお友達", fontSize: safeAreaWidth / 30),
           ),
           ...appUserList.map(
             (item) => OnAddFriend(
@@ -150,7 +150,7 @@ Widget addFriendLists(
           ),
           if (appUserList.isEmpty)
             nText(
-              "現在、RoyalHayにはまだお友達がいません。",
+              "現在、Zin.comにはまだお友達がいません。",
               fontSize: safeAreaWidth / 33,
               color: Colors.grey.withOpacity(0.5),
               bold: 700,

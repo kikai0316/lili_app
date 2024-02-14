@@ -6,7 +6,7 @@ part of 'post_timer.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$postTimerNotifierHash() => r'fc039fc7a62bed4c57e31e0ede674e186450c233';
+String _$postTimerNotifierHash() => r'f53afe60e7724c624f848682426aa0453f9fc32b';
 
 /// See also [PostTimerNotifier].
 @ProviderFor(PostTimerNotifier)

@@ -10,6 +10,8 @@ import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/firebase/firebase_firestore_utility.dart';
 import 'package:lili_app/utility/firebase/firebase_storage_utility.dart';
 import 'package:lili_app/utility/type_updata_utility.dart';
+import 'package:lili_app/utility/utility.dart';
+import 'package:lili_app/view/profile_pages/other_setting_sheet.dart';
 import 'package:lili_app/view_model/all_past_post.dart';
 import 'package:lili_app/view_model/user_data.dart';
 import 'package:lili_app/widget/profile_widgets/my_profile_widget.dart';
@@ -40,7 +42,12 @@ class MyProfilePage extends HookConsumerWidget {
             context,
             title: "プロフィール",
             customRightIcon: CustomAnimatedOpacityButton(
-              onTap: () {},
+              onTap: () => bottomSheet(
+                context,
+                page: OtherSettingSheet(
+                  isLoading: isLoading,
+                ),
+              ),
               child: Icon(
                 Icons.more_horiz,
                 color: Colors.white,
@@ -53,8 +60,11 @@ class MyProfilePage extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      myProfileMainWidget(context, userData,
-                          onRefresh: () => reFetch(ref, userData, isLoading),),
+                      myProfileMainWidget(
+                        context,
+                        userData,
+                        onRefresh: () => reFetch(ref, userData, isLoading),
+                      ),
                       ...todayPostWidget(context, userData),
                       ...pastPostWidget(context, allPadtPostState),
                     ],
@@ -70,7 +80,10 @@ class MyProfilePage extends HookConsumerWidget {
   }
 
   Future<void> reFetch(
-      WidgetRef ref, UserType myProfile, ValueNotifier<bool> isLoading,) async {
+    WidgetRef ref,
+    UserType myProfile,
+    ValueNotifier<bool> isLoading,
+  ) async {
     isLoading.value = true;
     final profileData = await dbFirestoreReadUser(myProfile.openId);
     if (profileData == null) return;

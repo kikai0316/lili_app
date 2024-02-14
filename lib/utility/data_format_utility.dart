@@ -33,9 +33,9 @@ bool isAfterThreeAM(DateTime dateTime) {
 }
 
 List<String> pastPostDateStrings(Iterable<String> dateString) {
-  final DateTime today = DateTime.now();
+  final DateTime today =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   final DateFormat format = DateFormat('yyyy/MM/dd');
-
   final List<DateTime> dates = dateString
       .map((dateStr) {
         try {
@@ -101,59 +101,6 @@ PostType? dataFormatUserDataToPostData(String dateText, UserType user) {
       return user.postList.pm22;
     default:
       return null;
-  }
-}
-
-// PostTimeType? dataFormatTextToPostTimeType(
-//   String postTime,
-// ) {
-//   switch (postTime) {
-//     case "起床":
-//       return PostTimeType.wakeUp;
-//     case "7:00":
-//       return PostTimeType.am7;
-//     case "10:00":
-//       return PostTimeType.am10;
-//     case "12:00":
-//       return PostTimeType.pm12;
-//     case "15:00":
-//       return PostTimeType.pm15;
-//     case "18:00":
-//       return PostTimeType.pm18;
-//     case "20:00":
-//       return PostTimeType.pm20;
-//     case "22:00":
-//       return PostTimeType.pm22;
-//     case "24:00":
-//       return PostTimeType.pm24;
-//     default:
-//       return null;
-//   }
-// }
-
-String notPostEmoji(PostType? wakeUpPost, String dateText) {
-  final isWakeUpPost = wakeUpPost != null;
-  switch (dateText) {
-    case "起床":
-      return "😴";
-    case "7:00":
-      return isWakeUpPost ? "😕" : "😴";
-    case "10:00":
-      return isWakeUpPost ? "😅" : "😴";
-    case "12:00":
-      return isWakeUpPost ? "😇" : "😴";
-    case "15:00":
-      return isWakeUpPost ? "😑" : "😴";
-    case "18:00":
-      return isWakeUpPost ? "😊" : "😴";
-    case "20:00":
-      return isWakeUpPost ? "😎" : "😴";
-    case "22:00":
-      return "😪";
-    case "24:00":
-      return "😪";
-    default:
-      return "😚";
   }
 }
 

@@ -91,6 +91,7 @@ void showAlertDialog(
   String? subTitle,
   String leftButtonText = "OK",
   String? rightButtonText,
+  Color? rightButtonColor,
   void Function()? rightButtonOnTap,
 }) {
   showDialog<void>(
@@ -102,6 +103,7 @@ void showAlertDialog(
       leftButtonText: leftButtonText,
       rightButtonOnTap: rightButtonOnTap,
       rightButtonText: rightButtonText,
+      rightButtonColor: rightButtonColor,
     ),
   );
 }
@@ -113,6 +115,7 @@ Widget cupertinoAlertDialog(
   String leftButtonText = "OK",
   String? rightButtonText,
   VoidCallback? rightButtonOnTap,
+  Color? rightButtonColor,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   final safeAreaHeight = safeHeight(context);
@@ -156,7 +159,7 @@ Widget cupertinoAlertDialog(
           onPressed: rightButtonOnTap,
           child: nText(
             rightButtonText,
-            color: Colors.blue,
+            color: rightButtonColor ?? Colors.blue,
             fontSize: safeAreaWidth / 28,
             bold: 600,
           ),

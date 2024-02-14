@@ -24,7 +24,7 @@ class UserDataNotifier extends _$UserDataNotifier {
       final allRequestFriendsNotifier =
           ref.read(allRequestFriendsNotifierProvider.notifier);
 
-      allFriendsNotifier.init(profileData.friendList);
+      allFriendsNotifier.reFetch(profileData.friendList);
       allRequestFriendsNotifier.getUsers(profileData.friendRequestList);
       return userTypeUpDate(profileData, postListType: postData);
     }
@@ -45,7 +45,7 @@ class UserDataNotifier extends _$UserDataNotifier {
         ref.read(allRequestFriendsNotifierProvider.notifier);
     await allRequestFriendsNotifier.getUsers(profileData.friendRequestList);
     final allFriendsNotifier = ref.read(allFriendsNotifierProvider.notifier);
-    allFriendsNotifier.init(profileData.friendList);
+    allFriendsNotifier.reFetch(profileData.friendList);
     state = await AsyncValue.guard(() async {
       return userTypeUpDate(profileData, postListType: oldData.postList);
     });

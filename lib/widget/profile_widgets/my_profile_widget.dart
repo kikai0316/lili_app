@@ -16,8 +16,11 @@ import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-Widget myProfileMainWidget(BuildContext context, UserType myProfile,
-    {required VoidCallback onRefresh,}) {
+Widget myProfileMainWidget(
+  BuildContext context,
+  UserType myProfile, {
+  required VoidCallback onRefresh,
+}) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return Padding(
@@ -40,6 +43,7 @@ Widget myProfileMainWidget(BuildContext context, UserType myProfile,
                     userData: myProfile,
                     size: safeAreaWidth * 0.22,
                     myProfile: myProfile,
+                    backgroundColor: subColor,
                     isName: false,
                   ),
                 ),
@@ -136,13 +140,15 @@ List<Widget> todayPostWidget(BuildContext context, UserType userData) {
                     ),
                   ),
                   if (isTime(item))
-                    onPostWidget(
-                      context,
-                      postData: dataFormatUserDataToPostData(item, userData),
-                      notPostEmoji:
-                          notPostEmoji(userData.postList.wakeUp, item),
-                      isView: true,
-                      onTap: () {},
+                    SizedBox(
+                      height: safeAreaHeight * 0.2,
+                      child: onPostWidget(
+                        context,
+                        postData: dataFormatUserDataToPostData(item, userData),
+                        isView: true,
+                        isWakeUp: item == "起床",
+                        onTap: () {},
+                      ),
                     ),
                   if (!isTime(item)) myProfilePageRockWidget(context),
                 ],
