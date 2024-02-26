@@ -26,7 +26,6 @@ class PastRecordsPage extends HookConsumerWidget {
       backgroundColor: mainBackGroundColor,
       appBar: nAppBar(
         context,
-        backgroundColor: mainBackGroundColor,
         title: "過去の記録",
         leftIconType: BackIconStyleType.arrowBackBottomIcon,
       ),
@@ -52,11 +51,13 @@ class PastRecordsPage extends HookConsumerWidget {
                     children: [
                       for (final item
                           in pastPostDateStrings(dataMap[items]!.keys))
-                        onPastPostdWidget(context,
-                            width: safeAreaWidth * 0.18,
-                            date: item,
-                            postListData: allPastPost[item],
-                            isMini: true,),
+                        onPastPostdWidget(
+                          context,
+                          width: safeAreaWidth * 0.18,
+                          date: item,
+                          postListData: allPastPost[item],
+                          isMini: true,
+                        ),
                     ],
                   ),
                 ),
@@ -69,7 +70,8 @@ class PastRecordsPage extends HookConsumerWidget {
   }
 
   Map<String, Map<String, PastPostListType>> groupAndSortMapByYearMonth(
-      Map<String, PastPostListType> originalMap,) {
+    Map<String, PastPostListType> originalMap,
+  ) {
     final Map<String, Map<String, PastPostListType>> groupedMap = {};
     for (final key in originalMap.keys) {
       final String yearMonth = key.substring(0, key.lastIndexOf("/"));

@@ -11,7 +11,7 @@ Timer? timer;
 class PostTimerNotifier extends _$PostTimerNotifier {
   @override
   Future<Duration?> build() async {
-    timerPeriodic();
+    // timerPeriodic();
     return null;
   }
 

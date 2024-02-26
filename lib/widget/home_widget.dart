@@ -6,14 +6,11 @@ import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
-import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
-import 'package:lili_app/view/pages/friend_page.dart';
 import 'package:lili_app/view/pages/fullscreen_post_page.dart';
 import 'package:lili_app/view/pages/photograph_page.dart';
-import 'package:lili_app/view/profile_pages/my_profile_page.dart';
 import 'package:lili_app/view_model/post_timer.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_profile_widget.dart';
@@ -204,44 +201,67 @@ PreferredSizeWidget? homePageAppBar(
   BuildContext context, {
   required UserType myProfile,
 }) {
-  final safeAreaWidth = MediaQuery.of(context).size.width;
   return nAppBar(
     context,
-    backgroundColor: mainBackGroundColor,
-    customLeftIcon: CustomAnimatedOpacityButton(
-      onTap: () => ScreenTransition(
-        context,
-        FriendPage(
-          myProfile: myProfile,
-        ),
-      ).left(),
-      child: Badge.count(
-        count: myProfile.friendRequestList.length,
-        isLabelVisible: myProfile.friendRequestList.isNotEmpty,
-        child: nContainer(
-          padding: EdgeInsets.all(safeAreaWidth * 0.013),
-          height: safeAreaWidth * 0.11,
-          width: safeAreaWidth * 0.11,
-          child: imgWidget(assetFile: "friend_icon.png"),
-        ),
-      ),
+    backgroundColor: Colors.transparent,
+    surfaceTintColor: Colors.transparent,
+    customLeftIcon: const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
     ),
-    customTitle: nContainer(
-      color: mainBackGroundColor,
-      child: logoWidget(
-        context,
-      ),
-    ),
-    customRightIcon: CustomAnimatedOpacityButton(
-      onTap: () => ScreenTransition(context, const MyProfilePage()).normal(),
-      child: imgWidget(
-        size: safeAreaWidth * 0.11,
-        border: mainBorder(),
-        networkUrl: myProfile.img,
-        assetFile: notImg(),
-        isCircle: true,
-      ),
-    ),
+    //  CustomAnimatedOpacityButton(
+    //   onTap: () => ScreenTransition(
+    //     context,
+    //     FriendPage(
+    //       myProfile: myProfile,
+    //     ),
+    //   ).left(),
+    //   child: Badge.count(
+    //     count: myProfile.friendRequestList.length,
+    //     isLabelVisible: myProfile.friendRequestList.isNotEmpty,
+    //     child: nContainer(
+    //       padding: EdgeInsets.all(safeAreaWidth * 0.013),
+    //       height: safeAreaWidth * 0.11,
+    //       width: safeAreaWidth * 0.11,
+    //       child: imgWidget(assetFile: "friend_icon.png"),
+    //     ),
+    //   ),
+    // ),
+    // customTitle: logoWidget(
+    //   context,
+    // ),
+    // customRightIcon: Row(
+    //   children: [
+    //     CustomAnimatedOpacityButton(
+    //       onTap: () =>
+    //           ScreenTransition(context, const MyProfilePage()).normal(),
+    //       child: imgWidget(
+    //         size: safeAreaWidth * 0.1,
+    //         border: mainBorder(),
+    //         networkUrl: myProfile.img,
+    //         assetFile: notImg(),
+    //         isCircle: true,
+    //       ),
+    //     ),
+    //     CustomAnimatedOpacityButton(
+    //       onTap: () => ScreenTransition(
+    //         context,
+    //         FriendPage(
+    //           myProfile: myProfile,
+    //         ),
+    //       ).left(),
+    //       child: Badge.count(
+    //         count: myProfile.friendRequestList.length,
+    //         isLabelVisible: myProfile.friendRequestList.isNotEmpty,
+    //         child: nContainer(
+    //           padding: EdgeInsets.all(safeAreaWidth * 0.013),
+    //           height: safeAreaWidth * 0.11,
+    //           width: safeAreaWidth * 0.11,
+    //           child: imgWidget(assetFile: "friend_icon.png"),
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // ),
   );
 }
 

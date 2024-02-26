@@ -19,7 +19,14 @@ Gradient mainGradation() {
   );
 }
 
-BoxBorder mainBorder({Color? color, double width = 1}) {
+BoxBorder mainBorder({Color? color, double width = 1, bool? isOnlyTop}) {
+  if (isOnlyTop == true) {
+    return Border(
+      top: BorderSide(
+        color: color ?? Colors.grey.withOpacity(0.3),
+      ),
+    );
+  }
   return Border.all(
     color: color ?? Colors.grey.withOpacity(0.3),
     width: width,

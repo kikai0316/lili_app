@@ -347,3 +347,29 @@ Widget nListTile(
     ),
   );
 }
+
+Widget onTag(
+  BuildContext context, {
+  required String text,
+  VoidCallback? onTap,
+  bool? isSelect,
+  Color mainColor = Colors.white,
+}) {
+  final safeAreaWidth = MediaQuery.of(context).size.width;
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.all(safeAreaWidth * 0.02),
+      decoration: BoxDecoration(
+        color: isSelect == true ? mainColor : null,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: nText(
+        text,
+        fontSize: safeAreaWidth / 25,
+        color: isSelect == true ? Colors.black : mainColor,
+        bold: 600,
+      ),
+    ),
+  );
+}

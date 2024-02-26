@@ -36,15 +36,18 @@ String? notImg() {
   return "not.png";
 }
 
-Widget logoWidget(BuildContext context) {
+Widget logoWidget(
+  BuildContext context,
+) {
   final safeAreaHeight = safeHeight(context);
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return Container(
-    height: safeAreaHeight * 0.085,
-    width: safeAreaWidth * 0.7,
+    height: safeAreaHeight * 0.025,
+    width: safeAreaWidth * 0.25,
     decoration: const BoxDecoration(
       image: DecorationImage(
         image: AssetImage("assets/img/logo2.png"),
+        fit: BoxFit.fitWidth,
       ),
     ),
   );

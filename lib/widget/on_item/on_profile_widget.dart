@@ -29,19 +29,10 @@ Widget onProfileWidget(
         imgWidget(
           size: size,
           isCircle: true,
-          networkUrl: userData.img,
+          networkUrl:
+              "https://i.pinimg.com/474x/8f/9b/1a/8f9b1aac68c19c782a8e22a60a52007f.jpg",
+          // userData.img,
           assetFile: notImg(),
-          child: (userData.toDayMood ?? "").isNotEmpty
-              ? Align(
-                  alignment: const Alignment(1.1, 1.1),
-                  child: nContainer(
-                    padding: EdgeInsets.all(size / 30),
-                    isCircle: true,
-                    color: backgroundColor,
-                    child: nText(userData.toDayMood!, fontSize: size / 3),
-                  ),
-                )
-              : null,
         ),
         if (isName)
           Padding(

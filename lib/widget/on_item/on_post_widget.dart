@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lili_app/component/button.dart';
 import 'package:lili_app/component/component.dart';
 import 'package:lili_app/constant/color.dart';
@@ -16,75 +15,64 @@ Widget onPostWidget(
   required VoidCallback onTap,
   required bool isView,
   required bool isWakeUp,
+  double borderRadius = 15,
 }) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
   return CustomAnimatedOpacityButton(
     onTap: postData != null && isView ? onTap : null,
     child: AspectRatio(
-      aspectRatio: 3 / 4,
+      aspectRatio: 1 / 1,
       child: imgWidget(
         borderRadius: 15,
         color: mainBackGroundColor,
-        networkUrl: postData?.postImg,
-        border: postData?.postImg == null
-            ? mainBorder(color: subColor, width: 4)
-            : null,
+        networkUrl:
+            "https://i.pinimg.com/474x/8f/9b/1a/8f9b1aac68c19c782a8e22a60a52007f.jpg",
+        // postData?.postImg,
         child: Stack(
           children: [
             if (postData?.postImg == null)
               Align(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.no_photography,
-                      color: subColor,
-                      size: safeAreaWidth / 12,
-                    ),
-                    nText(
-                      "投稿していません",
-                      fontSize: safeAreaWidth / 40,
-                      height: 1.5,
-                      color: subColor,
-                    ),
-                  ],
+                child: Icon(
+                  Icons.no_photography,
+                  color: Colors.white,
+                  size: safeAreaWidth / 12,
                 ),
               ),
-            if (postData?.doing != null && (postData?.doing ?? "").isNotEmpty)
-              Align(
-                alignment: Alignment.bottomRight,
-                child: textWidget(context, postData!.doing!),
-              ),
-            if (!isView) notViewWidget(),
-            if (userData != null)
-              Align(
-                alignment: Alignment.topCenter,
-                child: accountWidget(context, userData),
-              ),
-            if (isWakeUp && postData != null)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: customPadding(bottom: safeAreaWidth * 0.005),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      for (int i = 0; i < 2; i++)
-                        nText(
-                          [
-                            "起床時間",
-                            DateFormat('HH:mm').format(postData.postDateTime),
-                          ][i],
-                          fontSize: [
-                            safeAreaWidth / 45,
-                            safeAreaWidth / 20,
-                          ][i],
-                          height: 1.2,
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+            // if (postData?.doing != null && (postData?.doing ?? "").isNotEmpty)
+            //   Align(
+            //     alignment: Alignment.bottomRight,
+            //     child: textWidget(context, postData!.doing!),
+            //   ),
+            // if (!isView) notViewWidget(),
+            // if (userData != null)
+            //   Align(
+            //     alignment: Alignment.topCenter,
+            //     child: accountWidget(context, userData),
+            //   ),
+            // if (isWakeUp && postData != null)
+            //   Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: Padding(
+            //       padding: customPadding(bottom: safeAreaWidth * 0.005),
+            //       child: Column(
+            //         mainAxisAlignment: MainAxisAlignment.end,
+            //         children: [
+            //           for (int i = 0; i < 2; i++)
+            //             nText(
+            //               [
+            //                 "起床時間",
+            //                 DateFormat('HH:mm').format(postData.postDateTime),
+            //               ][i],
+            //               fontSize: [
+            //                 safeAreaWidth / 45,
+            //                 safeAreaWidth / 20,
+            //               ][i],
+            //               height: 1.2,
+            //             ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),
