@@ -12,7 +12,8 @@ PreferredSizeWidget? nAppBar(
   Widget? customRightIcon,
   Widget? customLeftIcon,
   Widget? customTitle,
-  Color backgroundColor = const Color.fromRGBO(0, 0, 0, 0),
+  Color backgroundColor = mainBackGroundColor,
+  Color surfaceTintColor = mainBackGroundColor,
   BackIconStyleType? leftIconType = BackIconStyleType.arrowBackLeftIcon,
   VoidCallback? customLeftOnTap,
 }) {
@@ -20,7 +21,7 @@ PreferredSizeWidget? nAppBar(
 
   return AppBar(
     backgroundColor: backgroundColor,
-    surfaceTintColor: backgroundColor,
+    surfaceTintColor: surfaceTintColor,
     elevation: 10,
     automaticallyImplyLeading: false,
     title: SizedBox(
@@ -58,11 +59,10 @@ PreferredSizeWidget? nAppBar(
                   ),
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            width: safeAreaWidth * 0.11,
-            child: customRightIcon,
-          ),
+          customRightIcon ??
+              SizedBox(
+                width: safeAreaWidth * 0.11,
+              ),
         ],
       ),
     ),

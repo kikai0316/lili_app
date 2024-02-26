@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lili_app/model/model.dart';
-import 'package:lili_app/view/home_page.dart';
+import 'package:lili_app/view/initiale_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -39,7 +39,7 @@ class MyApp extends HookConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: InitialePage(),
     );
   }
 }

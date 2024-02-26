@@ -5,11 +5,11 @@ import 'package:lili_app/component/loading.dart';
 import 'package:lili_app/constant/color.dart';
 import 'package:lili_app/constant/constant.dart';
 import 'package:lili_app/constant/data.dart';
+import 'package:lili_app/constant/img.dart';
 import 'package:lili_app/model/model.dart';
 import 'package:lili_app/utility/data_format_utility.dart';
 import 'package:lili_app/utility/screen_transition_utility.dart';
 import 'package:lili_app/view/pages/past_records_page.dart';
-import 'package:lili_app/view/pages/today_mode_page.dart';
 import 'package:lili_app/view/profile_pages/edit_profile_page.dart';
 import 'package:lili_app/widget/on_item/on_past_post_widget.dart';
 import 'package:lili_app/widget/on_item/on_post_widget.dart';
@@ -26,10 +26,10 @@ Widget myProfileMainWidget(
   return Padding(
     padding: xPadding(context, bottom: safeAreaHeight * 0.03),
     child: nContainer(
-      padding: EdgeInsets.all(safeAreaWidth * 0.05),
+      padding: EdgeInsets.all(safeAreaWidth * 0.03),
       width: safeAreaWidth,
       radius: 25,
-      color: subColor,
+      color: Colors.white.withOpacity(0.1),
       child: Column(
         children: [
           SizedBox(
@@ -41,7 +41,7 @@ Widget myProfileMainWidget(
                   child: onProfileWidget(
                     context,
                     userData: myProfile,
-                    size: safeAreaWidth * 0.22,
+                    size: safeAreaWidth * 0.2,
                     myProfile: myProfile,
                     backgroundColor: subColor,
                     isName: false,
@@ -61,50 +61,35 @@ Widget myProfileMainWidget(
               ],
             ),
           ),
-          Padding(
-            padding: customPadding(top: safeAreaHeight * 0.02),
-            child: nText(myProfile.name, fontSize: safeAreaWidth / 20),
-          ),
-          Padding(
-            padding: customPadding(
-              bottom: safeAreaHeight * 0.02,
-              top: safeAreaHeight * 0.008,
+          for (int i = 0; i < 2; i++)
+            Padding(
+              padding: customPadding(
+                top: [safeAreaHeight * 0.01, 0.0][i],
+                bottom: safeAreaHeight * [0.005, 0.015][i],
+              ),
+              child: nText(
+                [myProfile.name, myProfile.userId][i],
+                fontSize: safeAreaWidth / [20, 30][i],
+                color: [Colors.white, Colors.grey][i],
+                bold: 700,
+              ),
             ),
-            child: nText(
-              myProfile.userId,
-              fontSize: safeAreaWidth / 25,
-              color: Colors.grey,
-              bold: 700,
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              for (int i = 0; i < 2; i++)
-                mainButton(
-                  context,
-                  height: safeAreaHeight * 0.05,
-                  width: safeAreaWidth * 0.38,
-                  radius: 13,
-                  borderColor: Colors.white.withOpacity(0.3),
-                  backGroundColor: subColor,
-                  text: [
-                    "今日の気分変更",
-                    "プロフィール編集",
-                  ][i],
-                  fontSize: safeAreaWidth / 32,
-                  textColor: Colors.white,
-                  onTap: [
-                    () => ScreenTransition(
-                          context,
-                          ToDayModePage(
-                            myProfile: myProfile,
-                          ),
-                        ).top(),
-                    () => ScreenTransition(context, const EditProfilePage())
-                        .normal(),
-                  ][i],
-                ),
+              mainButton(
+                context,
+                height: safeAreaHeight * 0.05,
+                width: safeAreaWidth * 0.38,
+                radius: 13,
+                borderColor: Colors.white.withOpacity(0.3),
+                backGroundColor: subColor,
+                text: "プロフィール編集",
+                fontSize: safeAreaWidth / 32,
+                textColor: Colors.white,
+                onTap: () =>
+                    ScreenTransition(context, const EditProfilePage()).normal(),
+              ),
             ],
           ),
         ],
@@ -115,49 +100,84 @@ Widget myProfileMainWidget(
 
 List<Widget> todayPostWidget(BuildContext context, UserType userData) {
   final safeAreaWidth = MediaQuery.of(context).size.width;
-  final safeAreaHeight = safeHeight(context);
-  bool isTime(String timeDate) => timeDate == "起床" || isTimePassed(timeDate);
   return [
     myProfilePageTitleWidget(context, "今日の記録", top: 0),
-    SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          SizedBox(
-            width: safeAreaWidth * 0.01,
-          ),
-          for (final item in postTimeData.values) ...{
-            Padding(
-              padding: xPadding(context, xSize: safeAreaWidth * 0.02),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: customPadding(bottom: safeAreaHeight * 0.01),
-                    child: nText(
-                      item,
-                      fontSize: safeAreaWidth / 28,
-                      color: Colors.grey,
-                    ),
+    Align(
+      child: nContainer(
+        padding: EdgeInsets.all(safeAreaWidth * 0.01),
+        width: safeAreaWidth * 0.7,
+        radius: 20,
+        color: Colors.white.withOpacity(0.1),
+        // border: mainBorder(
+        //     color: Colors.white.withOpacity(0.1), width: safeAreaWidth * 0.01),
+        child: AspectRatio(
+          aspectRatio: 1 / 1,
+          child: Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            runAlignment: WrapAlignment.spaceBetween,
+            children: [
+              for (final item in postTimeData.values) ...{
+                SizedBox(
+                  width: safeAreaWidth * 0.22,
+                  child: onPostWidget(
+                    context,
+                    postData: dataFormatUserDataToPostData(item, userData),
+                    isView: true,
+                    isWakeUp: item == "起床",
+                    borderRadius: 50,
+                    onTap: () {},
                   ),
-                  if (isTime(item))
-                    SizedBox(
-                      height: safeAreaHeight * 0.2,
-                      child: onPostWidget(
-                        context,
-                        postData: dataFormatUserDataToPostData(item, userData),
-                        isView: true,
-                        isWakeUp: item == "起床",
-                        onTap: () {},
-                      ),
-                    ),
-                  if (!isTime(item)) myProfilePageRockWidget(context),
-                ],
+                ),
+              },
+              SizedBox(
+                height: safeAreaWidth * 0.22,
+                width: safeAreaWidth * 0.22,
+                child: logoWidget(context),
               ),
-            ),
-          },
-        ],
+            ],
+          ),
+        ),
       ),
     ),
+    // SingleChildScrollView(
+    //   scrollDirection: Axis.horizontal,
+    //   child: Row(
+    //     children: [
+    //       SizedBox(
+    //         width: safeAreaWidth * 0.01,
+    //       ),
+    //       for (final item in postTimeData.values) ...{
+    //         Padding(
+    //           padding: xPadding(context, xSize: safeAreaWidth * 0.02),
+    //           child: Column(
+    //             children: [
+    //               Padding(
+    //                 padding: customPadding(bottom: safeAreaHeight * 0.01),
+    //                 child: nText(
+    //                   item,
+    //                   fontSize: safeAreaWidth / 28,
+    //                   color: Colors.grey,
+    //                 ),
+    //               ),
+    //               if (isTime(item))
+    //                 SizedBox(
+    //                   height: safeAreaHeight * 0.2,
+    //                   child: onPostWidget(
+    //                     context,
+    //                     postData: dataFormatUserDataToPostData(item, userData),
+    //                     isView: true,
+    //                     isWakeUp: item == "起床",
+    //                     onTap: () {},
+    //                   ),
+    //                 ),
+    //               if (!isTime(item)) myProfilePageRockWidget(context),
+    //             ],
+    //           ),
+    //         ),
+    //       },
+    //     ],
+    //   ),
+    // ),
   ];
 }
 
@@ -285,7 +305,7 @@ Widget myProfilePageTitleWidget(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        nText(text, fontSize: safeAreaWidth / 22),
+        nText(text, fontSize: safeAreaWidth / 25),
         child,
       ],
     ),
